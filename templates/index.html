@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Seeing Guide</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<div id="auth-wall">
+    <p>Sign in to continue.</p>
+    <script
+        data-authed="window.location.reload()"
+        src="https://replit.com/public/js/repl-auth-v2.js">
+    </script>
+</div>
+
+<div id="app" style="display:none;">
+    <header>
+        <div id="meta">
+            <span id="tank-display">tank: <span id="tank-value">—</span></span>
+            <a id="billing-link" href="#" onclick="manageBilling(event)">Manage billing</a>
+        </div>
+    </header>
+
+    <main>
+        <div id="session-start" style="display:none;">
+            <button id="start-btn" onclick="startSession()">Begin session</button>
+        </div>
+
+        <div id="chat-area" style="display:none;">
+            <div id="transcript"></div>
+            <div id="input-row">
+                <textarea id="user-input" placeholder="" rows="3" onkeydown="handleKey(event)"></textarea>
+                <button id="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
