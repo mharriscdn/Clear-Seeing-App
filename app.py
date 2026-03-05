@@ -18,7 +18,15 @@ app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
 init_login_manager(app)
 
 # Initialize database tables on startup
-db.init_db()
+try:
+    db.init_db()
+except Exception as e:
+    print("DB init failed:", e)
+
+
+@app.route("/health")
+def health():
+    return "OK", 200
 
 
 @app.before_request
@@ -30,8 +38,8 @@ def make_session_permanent():
 # Frontend
 # ---------------------------------------------------------------------------
 
+
 @app.route("/")
-@require_login
 def index():
     return render_template("index.html")
 
@@ -39,6 +47,7 @@ def index():
 # ---------------------------------------------------------------------------
 # API — Auth / User
 # ---------------------------------------------------------------------------
+
 
 @app.route("/api/me")
 @auth.require_auth
@@ -55,6 +64,7 @@ def api_me():
 # API — Sessions
 # ---------------------------------------------------------------------------
 
+
 @app.route("/api/session/new", methods=["POST"])
 @auth.require_auth
 def api_new_session():
@@ -67,6 +77,7 @@ def api_new_session():
 # API — Chat
 # ---------------------------------------------------------------------------
 
+
 @app.route("/api/chat", methods=["POST"])
 @auth.require_auth
 def api_chat():
@@ -76,10 +87,12 @@ def api_chat():
     user_message = data.get("user_message", "").strip()
 
     if not session_id or not user_message:
-        return jsonify({"error": "session_id and user_message are required"}), 400
+        return jsonify({"error":
+                        "session_id and user_message are required"}), 400
 
     try:
-        assistant_text, transcript = chat_service.process_chat(session_id, user["id"], user_message)
+        assistant_text, transcript = chat_service.process_chat(
+            session_id, user["id"], user_message)
     except ValueError as e:
         return jsonify({"error": str(e)}), 403
     except Exception as e:
@@ -87,17 +100,20 @@ def api_chat():
         return jsonify({"error": "Failed to get response from Claude"}), 500
 
     return jsonify({
-        "assistant_text": assistant_text,
-        "transcript": [
-            {"role": m["role"], "content": m["content"], "created_at": str(m["created_at"])}
-            for m in transcript
-        ],
+        "assistant_text":
+        assistant_text,
+        "transcript": [{
+            "role": m["role"],
+            "content": m["content"],
+            "created_at": str(m["created_at"])
+        } for m in transcript],
     })
 
 
 # ---------------------------------------------------------------------------
 # API — Billing (Stripe)
 # ---------------------------------------------------------------------------
+
 
 @app.route("/api/billing/checkout", methods=["POST"])
 @auth.require_auth
@@ -111,7 +127,8 @@ def api_checkout():
     cancel_url = f"{base_url}/?checkout=cancel"
 
     try:
-        checkout_url = billing_service.get_checkout_url(user["email"], plan, success_url, cancel_url)
+        checkout_url = billing_service.get_checkout_url(
+            user["email"], plan, success_url, cancel_url)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
@@ -135,7 +152,8 @@ def api_portal():
         return jsonify({"error": "Failed to create portal session"}), 500
 
     if not portal_url:
-        return jsonify({"error": "No Stripe customer found for this account"}), 404
+        return jsonify({"error":
+                        "No Stripe customer found for this account"}), 404
 
     return jsonify({"url": portal_url})
 
