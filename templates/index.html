@@ -8,15 +8,7 @@
 </head>
 <body>
 
-<div id="auth-wall">
-    <p>Sign in to continue.</p>
-    <script
-        data-authed="window.location.reload()"
-        src="https://replit.com/public/js/repl-auth-v2.js">
-    </script>
-</div>
-
-<div id="app" style="display:none;">
+<div id="app">
     <header>
         <div id="meta">
             <span id="tank-display">tank: <span id="tank-value">—</span></span>
@@ -25,7 +17,7 @@
     </header>
 
     <main>
-        <div id="session-start" style="display:none;">
+        <div id="session-start">
             <button id="start-btn" onclick="startSession()">Begin session</button>
         </div>
 

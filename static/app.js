@@ -1,31 +1,18 @@
 let currentSessionId = null;
 
+// Load user info on page load
 async function init() {
-    let me;
     try {
         const res = await fetch("/api/me");
-        if (res.status === 401) {
-            // Not authenticated — auth wall stays visible
-            return;
+        if (!res.ok) return;
+        const me = await res.json();
+        const tankEl = document.getElementById("tank-value");
+        if (tankEl) {
+            tankEl.textContent = me.tank_remaining != null ? me.tank_remaining : "—";
         }
-        me = await res.json();
     } catch (e) {
-        console.error("Failed to reach /api/me", e);
-        return;
+        console.error("Failed to load user info", e);
     }
-
-    // Show app, hide auth wall
-    document.getElementById("auth-wall").style.display = "none";
-    document.getElementById("app").style.display = "flex";
-
-    // Populate tank display
-    const tankEl = document.getElementById("tank-value");
-    if (tankEl) {
-        tankEl.textContent = me.tank_remaining != null ? me.tank_remaining : "—";
-    }
-
-    // Show the "Begin session" button
-    document.getElementById("session-start").style.display = "flex";
 }
 
 async function startSession() {
@@ -46,12 +33,11 @@ async function startSession() {
 
         currentSessionId = data.session_id;
 
-        // Swap UI
         document.getElementById("session-start").style.display = "none";
         document.getElementById("chat-area").style.display = "flex";
 
-        // Load the initial assistant message
-        loadTranscript();
+        // Render the fixed opening message
+        renderMessage({ role: "assistant", content: "What\u2019s in your central view right now?" });
 
     } catch (e) {
         console.error("startSession error:", e);
@@ -59,14 +45,6 @@ async function startSession() {
         btn.disabled = false;
         btn.textContent = "Begin session";
     }
-}
-
-async function loadTranscript() {
-    // After creating a session, the opening message is already saved.
-    // We re-use the chat response to get the transcript.
-    // For the initial load, just fetch transcript by sending a dummy refresh.
-    // Simpler: just render the opening message directly.
-    renderMessage({ role: "assistant", content: "What\u2019s in your central view right now?" });
 }
 
 function renderMessage(msg) {
@@ -104,7 +82,6 @@ async function sendMessage() {
     input.disabled = true;
     btn.disabled = true;
 
-    // Optimistically render the user message
     renderMessage({ role: "user", content: text });
 
     try {
@@ -119,7 +96,6 @@ async function sendMessage() {
         if (!res.ok) {
             renderMessage({ role: "assistant", content: "[Error: " + (data.error || "unknown") + "]" });
         } else {
-            // Render full transcript to stay in sync
             renderTranscript(data.transcript);
         }
     } catch (e) {
@@ -140,7 +116,6 @@ async function manageBilling(e) {
         if (data.url) {
             window.open(data.url, "_blank");
         } else {
-            // No Stripe customer yet — send to checkout
             const checkoutRes = await fetch("/api/billing/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

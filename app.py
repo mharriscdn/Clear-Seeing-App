@@ -1,15 +1,29 @@
 import os
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from werkzeug.middleware.proxy_fix import ProxyFix
 import db
 import auth
+from replit_auth import make_replit_blueprint, init_login_manager, require_login
 from services import chat_service, session_service, billing_service
 import stripe_webhooks
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-me")
+app.secret_key = os.environ.get("SESSION_SECRET")
+
+# ProxyFix is required so url_for() generates https:// URLs correctly behind Replit's proxy
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Register Replit OIDC auth blueprint at /auth prefix
+app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+init_login_manager(app)
 
 # Initialize database tables on startup
 db.init_db()
+
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 
 # ---------------------------------------------------------------------------
@@ -17,6 +31,7 @@ db.init_db()
 # ---------------------------------------------------------------------------
 
 @app.route("/")
+@require_login
 def index():
     return render_template("index.html")
 
@@ -68,7 +83,6 @@ def api_chat():
     except ValueError as e:
         return jsonify({"error": str(e)}), 403
     except Exception as e:
-        # Surface the error clearly rather than silently failing
         print(f"[api_chat] Error: {e}")
         return jsonify({"error": "Failed to get response from Claude"}), 500
 
