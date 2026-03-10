@@ -285,18 +285,18 @@ class TestProcessSignal:
     def test_valid_signal_returns_new_phase_and_found_true(self):
         session = make_session(phase="mirror")
         with patch("services.phase_engine.db") as mock_db:
-            new_phase, found = process_signal(session,
-                                              '{"phase_signal": "advance"}',
-                                              message_id=1)
+            new_phase, found, _ = process_signal(session,
+                                                 '{"phase_signal": "advance"}',
+                                                 message_id=1)
         assert found is True
         assert new_phase == "examinability"
 
     def test_missing_signal_defaults_to_stay(self):
         session = make_session(phase="mirror")
         with patch("services.phase_engine.db") as mock_db:
-            new_phase, found = process_signal(session,
-                                              "No signal here.",
-                                              message_id=1)
+            new_phase, found, _ = process_signal(session,
+                                                 "No signal here.",
+                                                 message_id=1)
         assert found is False
         assert new_phase == "mirror"
 
@@ -310,16 +310,16 @@ class TestProcessSignal:
         session = make_session(phase="orient")
         with patch("services.phase_engine.db") as mock_db:
             mock_db.increment_evasion_count.return_value = MAX_EVASIONS
-            new_phase, _ = process_signal(session,
-                                          '{"phase_signal": "stay"}',
-                                          message_id=1)
+            new_phase, _, _sig = process_signal(session,
+                                               '{"phase_signal": "stay"}',
+                                               message_id=1)
         assert new_phase == "recurrence_normalization"
 
     def test_stay_below_evasion_threshold_holds_phase(self):
         session = make_session(phase="orient")
         with patch("services.phase_engine.db") as mock_db:
             mock_db.increment_evasion_count.return_value = MAX_EVASIONS - 1
-            new_phase, _ = process_signal(session,
-                                          '{"phase_signal": "stay"}',
-                                          message_id=1)
+            new_phase, _, _sig = process_signal(session,
+                                               '{"phase_signal": "stay"}',
+                                               message_id=1)
         assert new_phase == "orient"
