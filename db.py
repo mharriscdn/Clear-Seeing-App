@@ -72,6 +72,15 @@ def init_db():
     cur.execute(
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS signal_parse_failed BOOLEAN DEFAULT FALSE"
     )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS phase_signal TEXT"
+    )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS old_phase TEXT"
+    )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS new_phase TEXT"
+    )
 
     conn.commit()
     cur.close()
@@ -265,3 +274,18 @@ def get_signal_failure_rate():
     cur.close()
     conn.close()
     return dict(row) if row else {"failures": 0, "total": 0}
+
+
+def log_signal_transition(message_id, phase_signal, old_phase, new_phase):
+    """Records the signal and phase transition for every assistant message."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE messages
+           SET phase_signal = %s, old_phase = %s, new_phase = %s
+           WHERE id = %s""",
+        (phase_signal, old_phase, new_phase, message_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()

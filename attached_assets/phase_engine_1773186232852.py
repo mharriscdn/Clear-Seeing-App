@@ -178,7 +178,7 @@ def process_signal(session, response_text, message_id):
     2. If missing: log failure, default to stay
     3. Check evasion counter
     4. Apply signal to phase engine
-    5. Return new phase
+    5. Return new phase, signal_found, and signal string
 
     Returns: (new_phase, signal_found, signal)
     """
