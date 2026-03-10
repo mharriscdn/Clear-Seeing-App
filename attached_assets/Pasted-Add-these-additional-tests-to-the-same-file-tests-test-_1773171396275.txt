@@ -1,0 +1,94 @@
+Add these additional tests to the same file:
+
+tests/test_conversation_flow.py
+
+Append the following below the existing test.
+
+def test_evasion_exit_after_three_stays():
+
+    session = make_session()
+
+    responses = [
+        ('Text\n{"phase_signal": "stay"}'),
+        ('Text\n{"phase_signal": "stay"}'),
+        ('Text\n{"phase_signal": "stay"}'),
+    ]
+
+    with patch("services.chat_service.llm.call_claude") as mock_llm:
+        with patch("services.chat_service.db") as mock_db:
+            with patch("services.phase_engine.db") as mock_phase_db:
+
+                mock_phase_db.increment_evasion_count.side_effect = [1, 2, 3]
+
+                mock_llm.side_effect = [
+                    (responses[0], 100, "claude"),
+                    (responses[1], 100, "claude"),
+                    (responses[2], 100, "claude"),
+                ]
+
+                process_chat(1, 1, "message 1")
+                process_chat(1, 1, "message 2")
+                process_chat(1, 1, "message 3")
+
+                mock_phase_db.update_session_phase.assert_called_with(
+                    1, "recurrence_normalization"
+                )
+def test_hold_both_forces_path_b_routes_to_gibraltar():
+
+    session = make_session()
+    session["conversation_phase"] = "hold_both_forces"
+    session["entry_charge"] = 8
+    session["exit_charge"] = 5
+
+    response = 'Text\n{"phase_signal": "path_b"}'
+
+    with patch("services.chat_service.llm.call_claude") as mock_llm:
+        with patch("services.chat_service.db") as mock_db:
+            with patch("services.phase_engine.db") as mock_phase_db:
+
+                mock_llm.return_value = (response, 100, "claude")
+
+                process_chat(1, 1, "message")
+
+                mock_phase_db.update_session_phase.assert_called_with(
+                    1, "gibraltar"
+                )
+def test_hold_both_forces_path_a_routes_to_recurrence():
+
+    session = make_session()
+    session["conversation_phase"] = "hold_both_forces"
+    session["entry_charge"] = 5
+    session["exit_charge"] = 4
+
+    response = 'Text\n{"phase_signal": "path_a"}'
+
+    with patch("services.chat_service.llm.call_claude") as mock_llm:
+        with patch("services.chat_service.db") as mock_db:
+            with patch("services.phase_engine.db") as mock_phase_db:
+
+                mock_llm.return_value = (response, 100, "claude")
+
+                process_chat(1, 1, "message")
+
+                mock_phase_db.update_session_phase.assert_called_with(
+                    1, "recurrence_normalization"
+                )
+def test_missing_signal_defaults_to_stay():
+
+    session = make_session()
+
+    response = "LLM forgot to include a signal"
+
+    with patch("services.chat_service.llm.call_claude") as mock_llm:
+        with patch("services.chat_service.db") as mock_db:
+            with patch("services.phase_engine.db") as mock_phase_db:
+
+                mock_llm.return_value = (response, 100, "claude")
+
+                process_chat(1, 1, "message")
+
+                mock_phase_db.update_session_phase.assert_not_called()
+
+Now run:
+
+python -m pytest tests/test_conversation_flow.py -v
