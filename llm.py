@@ -32,7 +32,7 @@ def call_claude(messages, session):
 
     response = client.messages.create(
         model=MODEL,
-        max_tokens=1024,
+        max_tokens=4096,
         system=system_prompt,
         messages=messages,
     )
