@@ -17,7 +17,11 @@ import pytest
 # Helpers
 # ---------------------------------------------------------------------------
 
-def make_session(phase="mirror", entry_charge=None, exit_charge=None, session_id=1):
+
+def make_session(phase="mirror",
+                 entry_charge=None,
+                 exit_charge=None,
+                 session_id=1):
     return {
         "id": session_id,
         "conversation_phase": phase,
@@ -34,6 +38,7 @@ from services.phase_engine import parse_signal, VALID_SIGNALS, TRANSITION_MAP
 
 
 class TestParseSignal:
+
     def test_advance(self):
         assert parse_signal('{"phase_signal": "advance"}') == "advance"
 
@@ -50,7 +55,8 @@ class TestParseSignal:
         assert parse_signal('{"phase_signal": "path_c"}') == "path_c"
 
     def test_three_evasion_exit(self):
-        assert parse_signal('{"phase_signal": "three_evasion_exit"}') == "three_evasion_exit"
+        assert parse_signal(
+            '{"phase_signal": "three_evasion_exit"}') == "three_evasion_exit"
 
     def test_signal_embedded_in_prose(self):
         text = 'Some coaching text here. {"phase_signal": "advance"} More text.'
@@ -85,6 +91,7 @@ from services.phase_engine import apply_signal
 
 
 class TestApplySignal:
+
     def test_advance_follows_transition_map(self):
         for phase, expected_next in TRANSITION_MAP.items():
             if expected_next is None:
@@ -111,7 +118,8 @@ class TestApplySignal:
             result = apply_signal(session, "stay")
         assert result == "recurrence_normalization"
 
-    def test_three_evasion_exit_always_routes_to_recurrence_normalization(self):
+    def test_three_evasion_exit_always_routes_to_recurrence_normalization(
+            self):
         for phase in TRANSITION_MAP:
             session = make_session(phase=phase)
             with patch("services.phase_engine.db") as mock_db:
@@ -122,7 +130,8 @@ class TestApplySignal:
         session = make_session(phase="orient")
         with patch("services.phase_engine.db") as mock_db:
             apply_signal(session, "three_evasion_exit")
-            mock_db.update_perceptual_state.assert_called_once_with(session["id"], "path_a")
+            mock_db.update_perceptual_state.assert_called_once_with(
+                session["id"], "path_a")
 
     def test_fork_path_b_routes_to_gibraltar(self):
         session = make_session(phase="hold_both_forces")
@@ -164,7 +173,8 @@ class TestApplySignal:
         session = make_session(phase="mirror")
         with patch("services.phase_engine.db") as mock_db:
             apply_signal(session, "advance")
-            mock_db.update_session_phase.assert_called_once_with(session["id"], "examinability")
+            mock_db.update_session_phase.assert_called_once_with(
+                session["id"], "examinability")
 
     def test_db_not_updated_on_stay(self):
         session = make_session(phase="mirror")
@@ -181,13 +191,15 @@ from services.phase_engine import check_evasion, EVASION_PHASES, MAX_EVASIONS
 
 
 class TestCheckEvasion:
+
     def test_stay_in_evasion_phase_increments_counter(self):
         for phase in EVASION_PHASES:
             session = make_session(phase=phase)
             with patch("services.phase_engine.db") as mock_db:
                 mock_db.increment_evasion_count.return_value = 1
                 check_evasion(session, "stay")
-                mock_db.increment_evasion_count.assert_called_once_with(session["id"])
+                mock_db.increment_evasion_count.assert_called_once_with(
+                    session["id"])
 
     def test_advance_in_evasion_phase_does_not_increment(self):
         session = make_session(phase="orient")
@@ -231,6 +243,7 @@ from services.phase_engine import determine_path_from_charge
 
 
 class TestDeterminePathFromCharge:
+
     def test_delta_gte_3_returns_path_b(self):
         session = make_session(entry_charge=8, exit_charge=5)
         assert determine_path_from_charge(session) == "path_b"
@@ -268,17 +281,22 @@ from services.phase_engine import process_signal
 
 
 class TestProcessSignal:
+
     def test_valid_signal_returns_new_phase_and_found_true(self):
         session = make_session(phase="mirror")
         with patch("services.phase_engine.db") as mock_db:
-            new_phase, found = process_signal(session, '{"phase_signal": "advance"}', message_id=1)
+            new_phase, found = process_signal(session,
+                                              '{"phase_signal": "advance"}',
+                                              message_id=1)
         assert found is True
         assert new_phase == "examinability"
 
     def test_missing_signal_defaults_to_stay(self):
         session = make_session(phase="mirror")
         with patch("services.phase_engine.db") as mock_db:
-            new_phase, found = process_signal(session, "No signal here.", message_id=1)
+            new_phase, found = process_signal(session,
+                                              "No signal here.",
+                                              message_id=1)
         assert found is False
         assert new_phase == "mirror"
 
@@ -292,12 +310,16 @@ class TestProcessSignal:
         session = make_session(phase="orient")
         with patch("services.phase_engine.db") as mock_db:
             mock_db.increment_evasion_count.return_value = MAX_EVASIONS
-            new_phase, _ = process_signal(session, '{"phase_signal": "stay"}', message_id=1)
+            new_phase, _ = process_signal(session,
+                                          '{"phase_signal": "stay"}',
+                                          message_id=1)
         assert new_phase == "recurrence_normalization"
 
     def test_stay_below_evasion_threshold_holds_phase(self):
         session = make_session(phase="orient")
         with patch("services.phase_engine.db") as mock_db:
             mock_db.increment_evasion_count.return_value = MAX_EVASIONS - 1
-            new_phase, _ = process_signal(session, '{"phase_signal": "stay"}', message_id=1)
+            new_phase, _ = process_signal(session,
+                                          '{"phase_signal": "stay"}',
+                                          message_id=1)
         assert new_phase == "orient"
