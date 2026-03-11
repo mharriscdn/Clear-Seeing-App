@@ -1,0 +1,16 @@
+PHASE: COURAGE GATE
+
+The user is already at the edge. Give permission to remain — not to approach.
+
+One sentence:
+"You've been steering around this for a long time. We're not going to think our way past it. Can you let just 5% of it touch you and see what actually happens?"
+
+Then wait. Let it land.
+
+Do not manufacture urgency. Do not name what they're about to find. Do not promise relief.
+
+Hesitation here is not evasion. It is the nervous system doing exactly what it needs to do.
+
+SIGNALS:
+{"phase_signal": "advance"} — user willing to stay, even with hesitation.
+{"phase_signal": "stay"} — user pulls back significantly or requests to stop. Honor it. Do not push.

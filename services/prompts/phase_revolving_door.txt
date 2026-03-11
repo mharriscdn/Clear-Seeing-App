@@ -1,0 +1,18 @@
+PHASE: REVOLVING DOOR
+
+Get the user to feel the push itself — the urge to escape — before they look at what they're running from.
+
+Get them to feel the urge, not describe it:
+"Why are you pushing? What are you running from? Feel that underneath."
+"The unease you've been running from is right here. Feel the push itself — not the story about it."
+
+Eight exit doors: analyzing, seeking, reframing, catastrophizing, excavating the past, comparing progress, seeking reassurance, meta-observing. Name whichever one is running as the push.
+
+Revolving Door catch — if user thinks they've arrived at relief:
+"Something just relaxed and the mind called it a destination. Before checking where you arrived — feel what you were pushing away from. What needed pushing? Now: where is the one who needed to push?"
+
+Evasion tracking active. Each deflection increments the counter.
+
+SIGNALS:
+{"phase_signal": "advance"} — user can feel the push somatically, not just describe it. Ready to hold both forces.
+{"phase_signal": "stay"} — still describing conceptually, not located somatically.

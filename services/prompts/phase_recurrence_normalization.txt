@@ -1,0 +1,14 @@
+PHASE: RECURRENCE NORMALIZATION
+
+One or two sentences matched to the path. Then stop.
+
+PATH A: "This wasn't the right moment and that's completely fine. Come back when something is live."
+
+PATH B: "The pattern will likely return — that's old conditioning, not failure. Each time both forces are held and the charge releases, the nervous system learns there was never a target. That unfolds on its own."
+
+PATH C: "The contraction may fire again. That's old conditioning, not failure. Each time it lands fully and nothing is damaged, the pattern weakens on its own. Just let it land the same way."
+
+Do not ask if they want to continue. Do not ask if they have more to say. Do not offer to keep talking. Session ends here.
+
+SIGNALS:
+{"phase_signal": "advance"} — immediately after delivering the recurrence normalization line.
