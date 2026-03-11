@@ -4,6 +4,27 @@ One entry per test run. Most recent at the top.
 
 ---
 
+## Run 3 — March 11, 2026
+
+**Trigger:** Signal fallback feature implemented.
+
+**Changes since last run:**
+- `set_signal_retry` added to `db.py` — sets boolean flag on sessions table when Claude misses a signal
+- `get_system_prompt` updated to accept `signal_retry=False` — when True, appends next phase module under `--- NEXT PHASE (for reference) ---` header
+- `TRANSITION_MAP` added to `llm.py` — defines advance path through all 14 phases
+- `call_claude` passes `signal_retry` flag through to `get_system_prompt`
+- `chat_service.py` reads flag from session, passes to `call_claude`, resets after every turn
+
+**Results:**
+- Engine tests: 68 passed / 0 failed
+- Live prompt tests: 9 passed / 0 failed
+
+**Notes:**
+- All previous tests still passing
+- 9 new tests added since Run 1 (68 total vs 59)
+
+---
+
 ## Run 1 — March 11, 2026
 
 **Trigger:** First full live prompt test run. Modular prompts confirmed working.
