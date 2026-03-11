@@ -25,6 +25,24 @@ PHASE_MODULE_MAP = {
     "complete":                 None,
 }
 
+TRANSITION_MAP = {
+    "mirror":                   "examinability",
+    "examinability":            "activation_check",
+    "activation_check":         "orient",
+    "recovery":                 "examinability",
+    "orient":                   "pointer",
+    "pointer":                  "revolving_door",
+    "revolving_door":           "hold_both_forces",
+    "hold_both_forces":         "courage_gate",
+    "courage_gate":             "hittability",
+    "hittability":              "integration",
+    "integration":              "re_examination",
+    "gibraltar":                "re_examination",
+    "re_examination":           "recurrence_normalization",
+    "recurrence_normalization": "complete",
+    "complete":                 None,
+}
+
 
 def _get_client():
     global _client
@@ -39,12 +57,16 @@ def _load(filename):
         return f.read().strip()
 
 
-def get_system_prompt(phase="mirror"):
+def get_system_prompt(phase="mirror", signal_retry=False):
     """
     Assembles system prompt from:
       core.txt + phase module + signal_instruction.txt
 
-    Falls back to full system_prompt.txt if phase module not found.
+    If signal_retry is True, appends the next phase module under a
+    '--- NEXT PHASE (for reference) ---' header so Claude has more context
+    after a signal parse failure.
+
+    Falls back to core + signal only if phase is 'complete' or unrecognised.
     """
     core = _load("core.txt")
     signal = _load("signal_instruction.txt")
@@ -52,22 +74,32 @@ def get_system_prompt(phase="mirror"):
     phase_file = PHASE_MODULE_MAP.get(phase)
     if phase_file:
         phase_module = _load(phase_file)
-        return f"{core}\n\n{phase_module}\n\n{signal}"
+        prompt = f"{core}\n\n{phase_module}\n\n{signal}"
+
+        if signal_retry:
+            next_phase = TRANSITION_MAP.get(phase)
+            next_file = PHASE_MODULE_MAP.get(next_phase) if next_phase else None
+            if next_file:
+                next_module = _load(next_file)
+                prompt += f"\n\n--- NEXT PHASE (for reference) ---\n\n{next_module}"
+
+        return prompt
 
     # Fallback — phase is 'complete' or unrecognised
     return f"{core}\n\n{signal}"
 
 
-def call_claude(messages, session):
+def call_claude(messages, session, signal_retry=False):
     """
     Calls Claude with assembled modular system prompt and message history.
     messages: list of dicts with 'role' and 'content'
     session: session dict — conversation_phase used to select phase module
+    signal_retry: if True, next phase module is appended for context
     Returns: (response_text, token_count, model_name)
     """
     client = _get_client()
     phase = session.get("conversation_phase", "mirror") if session else "mirror"
-    system_prompt = get_system_prompt(phase)
+    system_prompt = get_system_prompt(phase, signal_retry=signal_retry)
 
     response = client.messages.create(
         model=MODEL,
