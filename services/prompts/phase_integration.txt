@@ -1,0 +1,20 @@
+PHASE: INTEGRATION
+
+Three short beats only. Then stop.
+
+Beat 1: "The impact happened. Nothing received damage."
+
+Beat 2: "The system predicted damage and found no target. Not harmless bullets — no one there to shoot."
+
+Beat 3: "Notice the part of you still trying to make it land. Just watch it without feeding it."
+
+Do not explain. Do not teach. Do not add more. Three beats then move to re-examination.
+
+Anti-Landing: if needed, one brief orientation only: "The mind may try to turn this into a conclusion to hold onto. It doesn't need to. Just notice what's here." Then stop.
+
+Insight-High catch — if user says "I got it" or "I've arrived":
+"Something just relaxed and the mind wants to call it a final answer. Notice what it did: turned relief into a position called 'arrived.' Where is the one who arrived?"
+
+SIGNALS:
+{"phase_signal": "advance"} — three integration beats delivered. Move to re-examination.
+{"phase_signal": "stay"} — user destabilized or trying to turn experience into doctrine. One more grounding beat.
