@@ -1,306 +1,245 @@
 CLEAR SEEING APP
-
 Bottleneck Guide
-
 Version 1 — March 2026
 
 
 When something looks wrong, don't guess. Ask these questions in order and find where the system is breaking.
-
 Think of this like diagnosing a car — you don't replace the engine before checking if it's out of gas. Start at Question 1 and work down until you find the problem.
 
 
----
+
+Quick Diagnosis
+Start here. Find your answer in under 10 seconds.
+
+•	Question 1 — Engine broken?
+•	Question 2 — Claude behaving wrong?
+•	Question 3 — Signal missing too often?
+•	Question 4 — Costs jumped?
+•	Question 5 — Claude getting wordy?
+•	Question 6 — System getting slow?
+•	Question 7 — One phase broke after a prompt edit?
+•	Question 8 — Core prompt got too small?
+
+
+
+The Four Places This System Can Break
+Every failure in this system comes down to one of these four things. Find which one it is, then go to the matching question.
+
+•	1. Backend logic — phase engine or database broke. Start at Question 1.
+•	2. Prompt behavior — Claude stopped producing the right signals. Start at Question 2.
+•	3. Signal reliability — Claude is forgetting the JSON signal. Start at Question 3.
+•	4. Cost or latency — prompts grew or responses got slow. Start at Question 4 or 6.
+
+
 
 Question 1 — Did I break the engine?
-
 Run this first. Every time. Before anything else.
 
-```
 python -m pytest -v
-```
 
 What this checks
-
 The core logic of the system — phase transitions, signal handling, conversation flow. The 59 backend tests cover all of it.
 
 What passing looks like
-
 59 passed
 
 If it fails
-
 The problem is in the backend logic. Look at phase_engine.py or chat_service.py. Do not go further until this passes.
 
 When to run
+•	Before deploying anything
+•	After editing phase_engine.py
+•	After editing chat_service.py
+•	After editing db.py
 
-- Before deploying anything
-- After editing phase_engine.py
-- After editing chat_service.py
-- After editing db.py
 
-
----
 
 Question 2 — Is Claude behaving correctly?
-
 This checks whether the actual prompts still produce the right behavior. Uses real Claude API calls.
 
-```
 python -m pytest tests/test_live_prompts.py -v
-```
 
 What this checks
-
 The 8 known user escape scenarios — the classic ways people avoid contact. Claude should return the correct signal for each one.
 
 What passing looks like
-
-```
-test_seeking_reassurance_path_b    PASS
-test_analyzing_path_b              PASS
-test_reframing_path_a              PASS
-test_catastrophizing_path_c        PASS
-test_excavating_the_past_path_b    PASS
-test_comparing_progress_path_b     PASS
-test_seeking_certainty_path_c      PASS
-test_meta_observing_path_b         PASS
-```
+•	test_seeking_reassurance_path_b    PASS
+•	test_analyzing_path_b              PASS
+•	test_reframing_path_a              PASS
+•	test_catastrophizing_path_c        PASS
+•	test_excavating_the_past_path_b    PASS
+•	test_comparing_progress_path_b     PASS
+•	test_seeking_certainty_path_c      PASS
+•	test_meta_observing_path_b         PASS
 
 Cost to run
-
 Roughly $0.10 to $0.20 per full run.
 
 If a test fails
-
 The prompts degraded. Check recent edits to core.txt, the phase modules, or the signal instruction. Do not deploy until passing.
 
 When to run
+•	After any prompt edit
+•	After switching Claude model versions
+•	Before deploying to real users
 
-- After any prompt edit
-- After switching Claude model versions
-- Before deploying to real users
 
-
----
 
 Question 3 — Is Claude forgetting the signal?
-
 The whole phase engine depends on Claude ending every response with a JSON signal. If it forgets, the session gets stuck.
 
 Where to check
-
-```sql
-SELECT COUNT(*) FILTER (WHERE signal_parse_failed = TRUE) * 100.0 / COUNT(*) AS failure_rate
-FROM messages
-WHERE role = 'assistant';
-```
+SELECT COUNT(*) FILTER (WHERE signal_parse_failed = TRUE) * 100.0 / COUNT(*) AS failure_rate FROM messages WHERE role = 'assistant';
 
 Healthy range
-
 Less than 3%
 
 If it rises above 3%
-
-- Claude response may be getting cut off — check max_tokens setting
-- Signal instruction in the prompt may have weakened — check signal_instruction.txt
-- A phase module may be too long and crowding out the signal
+•	Claude response may be getting cut off — check max_tokens setting
+•	Signal instruction in the prompt may have weakened — check signal_instruction.txt
+•	A phase module may be too long and crowding out the signal
 
 When to check
+•	After prompt edits
+•	After model upgrades
+•	Periodically once real users are active
 
-- After prompt edits
-- After model upgrades
-- Periodically once real users are active
 
-
----
 
 Question 4 — Is the system getting expensive?
-
 Token cost is the main operating cost. Each turn in a session uses tokens from the system prompt, the conversation history, and Claude's response.
 
 Where to check
-
-```sql
-SELECT session_id, SUM(token_count) AS total_tokens
-FROM messages
-GROUP BY session_id
-ORDER BY total_tokens DESC
-LIMIT 20;
-```
+SELECT session_id, SUM(token_count) AS total_tokens FROM messages GROUP BY session_id ORDER BY total_tokens DESC LIMIT 20;
 
 Healthy range
-
 50,000 to 70,000 tokens per session
 
 If it rises significantly
-
-- System prompt grew — check if core.txt or a phase module got larger
-- Claude responses got verbose — check median response length per phase (see Question 5)
-- Conversation history growing too long — normal for long sessions, revisit later
+•	System prompt grew — check if core.txt or a phase module got larger
+•	Claude responses got verbose — check median response length per phase (see Question 5)
+•	Conversation history growing too long — normal for long sessions, revisit later
 
 Token breakdown per turn
-
 System prompt tokens + conversation history tokens + Claude response tokens = total per turn. At 15 turns per session that adds up fast.
 
 When to check
+•	After prompt edits
+•	Once real users are active — weekly check
 
-- After prompt edits
-- Once real users are active — weekly check
 
-
----
 
 Question 5 — Is Claude getting verbose?
-
 Claude should be short. Most responses should be 80 to 150 words. If a phase starts producing long answers, it's drifting into explanation mode.
 
 Where to check
-
-```sql
-SELECT new_phase, AVG(token_count) AS avg_tokens
-FROM messages
-WHERE role = 'assistant'
-GROUP BY new_phase
-ORDER BY avg_tokens DESC;
-```
+SELECT new_phase, AVG(token_count) AS avg_tokens FROM messages WHERE role = 'assistant' GROUP BY new_phase ORDER BY avg_tokens DESC;
 
 Healthy range per response
-
 80 to 150 words
 
 If one phase is running long
-
 Tighten that phase module — add a reminder to stay brief. Do not add a hard cap on response length until you see a real pattern across multiple sessions.
 
 When to check
+•	After collecting 50 or more real sessions
+•	If token costs rise unexpectedly
 
-- After collecting 50 or more real sessions
-- If token costs rise unexpectedly
 
-
----
 
 Question 6 — Is the system getting slow?
-
 Response time matters. If users wait more than 3 seconds they disengage.
 
 How to see latency
-
 The live test suite prints latency for each call. Run the live tests and look at the timing output.
 
 Healthy range
-
 1 to 3 seconds per Claude call
 
 If it rises above 3 seconds
-
-- System prompt grew — larger prompts take longer to process
-- Claude API may be slow — check Anthropic status page
-- Network issue on Replit
+•	System prompt grew — larger prompts take longer to process
+•	Claude API may be slow — check Anthropic status page
+•	Network issue on Replit
 
 When to check
+•	Run the live tests and read the latency output
+•	If users report slowness
 
-- Run the live tests and read the latency output
-- If users report slowness
 
-
----
 
 Question 7 — Did a specific phase module break?
-
 The 8 exit tests cover whether sessions end correctly. But they don't tell you which phase broke in the middle. Gate tests cover this.
 
 These tests are not built yet. When built, each one sends a single message to a specific phase and checks that Claude produces a valid signal.
 
 What to run (once built)
-
-```
 python -m pytest tests/test_gate_behavior.py -v
-```
 
 If a gate test fails
-
 Open that phase module and look at the signal rules section. Something in the prompt changed and broke the signal logic for that gate.
 
 When to run
+•	After editing any individual phase module
 
-- After editing any individual phase module
 
-
----
 
 Question 8 — Is the core prompt too thin?
-
 The core prompt is what keeps Claude grounded across all phases. If it gets cut too small, Claude starts soothing, skipping gates, or losing the plot.
 
 This is a one-time experiment, not a regular test. Run it once to find the floor. Lock in the smallest version that still passes the 8 exit tests. Then stop.
 
 How to run it
-
-- Create core_medium.txt, core_small.txt, core_minimal.txt with progressively less content
-- Point the test file at each version
-- Run the 8 live prompt tests against each
-- Find where tests start failing
-- Use the smallest version that still passes everything
+•	Create core_medium.txt, core_small.txt, core_minimal.txt with progressively less content
+•	Point the test file at each version
+•	Run the 8 live prompt tests against each
+•	Find where tests start failing
+•	Use the smallest version that still passes everything
 
 When to run
-
 Once, when you want to reduce token cost. Not a regular check.
 
 
----
 
 When to run these checks
 
 Before deploying any change
-- Run Question 1 (engine tests)
-- Run Question 2 (live Claude tests) if prompts changed
+•	Run Question 1 (engine tests)
+•	Run Question 2 (live Claude tests) if prompts changed
 
 After editing prompts
-- Run Question 2 (live Claude tests)
-- Run Question 7 (gate tests) once built
+•	Run Question 2 (live Claude tests)
+•	Run Question 7 (gate tests) once built
 
 After upgrading Claude model
-- Run Question 1 and Question 2
-- Check Question 3 (signal failure rate)
+•	Run Question 1 and Question 2
+•	Check Question 3 (signal failure rate)
 
 Weekly once real users are active
-- Check Question 3 (signal failure rate)
-- Check Question 4 (token cost)
-- Check Question 6 (latency)
+•	Check Question 3 (signal failure rate)
+•	Check Question 4 (token cost)
+•	Check Question 6 (latency)
 
 When something feels wrong
-- Start at Question 1 and work down in order
+•	Start at Question 1 and work down in order
 
 
----
 
 Baseline Results
-
 Fill this in after the first full test run. These numbers are what normal looks like. If something drifts from here, you have a reference point.
 
 Date of baseline run: _______________
-
 Engine tests: ___ passed / ___ failed
-
 Live prompt tests: ___ passed / ___ failed
-
 Signal failure rate: ___%
-
 Average tokens per session: ___
-
 Median response length: ___ words
-
 Average Claude latency: ___ seconds
 
 
----
 
 Why this document exists
-
 Without this I will forget what tests exist, what they check, and what normal looks like.
-
 This is the diagnostic guide for the system. When something breaks, start at Question 1 and work down until you find the constraint.
-
 Update this document whenever new tests are added or healthy ranges change.
+
+If the system breaks and this guide didn't help you find the problem — update the guide so next time it will.
