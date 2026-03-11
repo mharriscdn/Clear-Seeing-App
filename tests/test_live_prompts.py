@@ -152,6 +152,27 @@ def test_reframing_path_a():
             "I think I'm fine with it."
         )
     )
+    # First evasion — Claude names the escape and invites back
+    # Add a scripted Claude stay response and a second evasion turn
+    messages.append({
+        "role": "assistant",
+        "content": (
+            "The mind just did something interesting — it agreed to hold both "
+            "and then immediately resolved it. That's not holding both. That's "
+            "the escape winning. The charge you came in with was a 7. That "
+            "doesn't disappear because the mind has decided it should. "
+            "Can you feel that underneath the conclusion?"
+            '\n{"phase_signal": "stay"}'
+        )
+    })
+    messages.append({
+        "role": "user",
+        "content": (
+            "No, I really am fine. I've thought about it a lot and I've genuinely "
+            "processed it. I don't feel any charge around it anymore. I think "
+            "I'm good."
+        )
+    })
     response, input_tokens, output_tokens, latency = call_claude(system, messages)
     signal = parse_signal(response)
     assert signal is not None, f"No signal found in response:\n{response}"
