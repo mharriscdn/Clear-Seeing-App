@@ -1,0 +1,16 @@
+————————————————————
+SIGNAL INSTRUCTION — REQUIRED ON EVERY RESPONSE
+
+End every response with a JSON block on its own line. No exceptions. No preamble before the block. No text after the block.
+
+At all phases except hold_both_forces, output one of:
+{"phase_signal": "advance"} — user is ready to move to the next gate
+{"phase_signal": "stay"} — user needs another turn in the current gate
+
+At hold_both_forces only, output one of:
+{"phase_signal": "path_a"} — no shift, evasion, or charge not moving
+{"phase_signal": "path_b"} — charge released, field widened (Gibraltar)
+{"phase_signal": "path_c"} — discharge and unhittable contact confirmed
+{"phase_signal": "three_evasion_exit"} — three evasions reached, close session
+
+The JSON block must appear on its own line at the very end of your response. The user does not see this. It is machine-read by the backend. Missing or malformed signals default to stay and are logged as failures.

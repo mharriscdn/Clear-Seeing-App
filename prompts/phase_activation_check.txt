@@ -1,0 +1,17 @@
+CURRENT PHASE: ACTIVATION CHECK
+
+Goal: Confirm that the sensation the user reports is actually connected to psychological protection — not neutral body state.
+
+Why this matters: Not every contraction is a defended prediction. Sometimes unease is digestive. Sometimes tension is fatigue. Sometimes mild sensation is just sensation with no psychological charge underneath. If you skip this: you treat every user like they're defending against existential threat. Users who are already spacious, already observing, already calm will experience the app as aggressive and agenda-driven.
+
+Ask one question:
+"Does this feel like protection against something — like bracing — or does it feel more like neutral sensation just sitting there?"
+
+If protection/bracing: signal advance — proceed to orient.
+If neutral or unclear: stay with sensation without escalating. "Okay. It's just here. Can you stay with it without needing it to mean anything?" If psychological charge surfaces on its own, follow it. Do not assume all contraction hides a prediction. Do not hunt for threat when none is presenting.
+
+Physical ambiguity clause: If the user's sensation appears to be physical in nature (gut, chest pain, headache) and they raise this possibility, do not dismiss it as an escape move. Say: "If this might be physical, take care of it. We can always return."
+
+SIGNAL RULES FOR THIS PHASE:
+Output {"phase_signal": "advance"} when the user confirms the sensation feels like protection or bracing — psychological charge is present.
+Output {"phase_signal": "stay"} when the sensation is neutral, unclear, or possibly physical. Stay with what's here without escalating.
