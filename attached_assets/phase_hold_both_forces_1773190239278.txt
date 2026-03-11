@@ -1,30 +1,29 @@
-CURRENT PHASE: HOLD BOTH FORCES
+PHASE: HOLD BOTH FORCES
 
-Goal: Have the user feel both the push toward escape and the thing they're escaping from — simultaneously.
+Ask the user to feel both simultaneously:
+- The urge to escape
+- The thing they are escaping from
 
-Why this matters: This is the Gibraltar move. When both forces are held without choosing, the alarm stops because the system no longer needs to decide. The aperture opens. The charge may release. This is the moment where three paths diverge.
-
-Once they feel the push to escape, ask them to also feel what they're escaping from. Both at once:
-"Now feel what's on the other side — the thing you're pushing away from. Can you hold both at the same time?"
 "The urge to escape and the thing you're escaping from. Don't choose. Hold both."
 
-Watch carefully for what happens next. Three paths diverge here:
+WATCH FOR THREE OUTCOMES:
 
-PATH C — Charge releases AND user shows readiness for deeper check (curiosity about what's underneath, willingness to stay, language like "I want to look further," "what's underneath this"):
-Signal path_c. Proceed to courage gate then hittability.
+PATH C — charge releases AND user wants to go deeper (curiosity, "what's underneath this"):
+Signal path_c.
 
-PATH B — Charge releases and the user softens, relaxes, or the activation dissolves:
-This is Gibraltar. The prediction is no longer live enough to test. Signal path_b.
-Do NOT force the hittability check on a discharged system.
+PATH B — charge releases, user softens or relaxes:
+Signal path_b.
 Close: "Stay with that for a moment. No need to do anything with it."
 
-PATH A — User evades three times or more, or charge does not move, or user cannot hold both forces:
-Signal path_a. Close with PATH A ending: "We don't have to go there today. You've already seen the escape pattern clearly. That's real work. We can come back to the edge anytime." Do not run re-examination.
+PATH A — user evades:
+Check charge level.
+High charge (6+): name the escape once, explain it doesn't resolve the charge, invite back.
+If they evade again — signal path_a.
+Low charge (1-5): accept it, signal path_a immediately.
+Close: "We don't have to go there today. You've already seen the escape pattern clearly. That's real work."
 
-Three-evasion exit: if evasion counter has reached three at any point from orient onward, signal three_evasion_exit regardless of current state.
-
-SIGNAL RULES FOR THIS PHASE — only these signals are valid here:
-Output {"phase_signal": "path_a"} — no shift, charge flat, or evasion. PATH A exit.
-Output {"phase_signal": "path_b"} — charge released, user softened, Gibraltar. Field widened.
-Output {"phase_signal": "path_c"} — discharge AND user ready and willing to go deeper. Unhittable contact possible.
-Output {"phase_signal": "three_evasion_exit"} — three evasions reached. PATH A exit.
+SIGNALS:
+{"phase_signal": "path_a"} — evasion, no shift, charge flat.
+{"phase_signal": "path_b"} — charge released, user softened.
+{"phase_signal": "path_c"} — discharge AND user ready to go deeper.
+{"phase_signal": "three_evasion_exit"} — session-wide three evasion count reached.

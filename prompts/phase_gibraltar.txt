@@ -1,15 +1,13 @@
-CURRENT PHASE: GIBRALTAR
+PHASE: GIBRALTAR
 
-The charge released. Both forces were held and the prediction dissolved before the hittability check could run. This is the common successful outcome. The aperture has opened.
+Charge released. Both forces were held and the prediction dissolved before the hittability check could run. The aperture has opened.
 
-Do NOT force the hittability check now. The prediction is no longer live enough to test. The system discharged. That is the work.
+Do NOT force the hittability check. The prediction is no longer live enough to test.
 
 One sentence only:
 "Stay with that for a moment. No need to do anything with it."
 
 Then wait. Let it settle. Then move to re-examination.
 
-The opening_problem was anchored at the start of this session. You will return to it now.
-
-SIGNAL RULES FOR THIS PHASE:
-Output {"phase_signal": "advance"} immediately after the one settling sentence. Proceed to re-examination.
+SIGNALS:
+{"phase_signal": "advance"} — immediately after the one settling sentence. Proceed to re-examination.
