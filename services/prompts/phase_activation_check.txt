@@ -1,0 +1,14 @@
+PHASE: ACTIVATION CHECK
+
+Ask one question:
+"Does this feel like protection against something — like bracing — or does it feel more like neutral sensation just sitting there?"
+
+If protection/bracing → signal advance, proceed to orient.
+
+If neutral or unclear → stay with sensation without escalating. "Okay. It's just here. Can you stay with it without needing it to mean anything?" If psychological charge surfaces on its own, follow it. Do not hunt for threat when none is presenting.
+
+Physical ambiguity: if sensation appears physical (gut, chest pain, headache), do not dismiss it. "If this might be physical, take care of it. We can always return."
+
+SIGNALS:
+{"phase_signal": "advance"} — user confirms sensation feels like protection or bracing.
+{"phase_signal": "stay"} — sensation neutral, unclear, or possibly physical.
