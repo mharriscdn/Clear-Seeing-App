@@ -1,3 +1,5 @@
+Here is the HOLD BOTH FORCES rewrite to apply now.
+Change 1 — Replace prompts/phase_hold_both_forces.txt entirely with this:
 CURRENT PHASE: HOLD BOTH FORCES
 
 Goal: Have the user feel both the push toward escape and the thing they're escaping from — simultaneously.
@@ -46,3 +48,5 @@ Output {"phase_signal": "path_a"} — no shift, charge flat, or evasion. PATH A 
 Output {"phase_signal": "path_b"} — charge released, user softened, field widened.
 Output {"phase_signal": "path_c"} — discharge AND user ready and willing to go deeper. Unhittable contact possible.
 Output {"phase_signal": "three_evasion_exit"} — session-wide three evasion count reached. Exit regardless of current state.
+Change 2 — In system_prompt.txt, find the section starting with CURRENT PHASE: HOLD BOTH FORCES and replace everything from that line through the end of the signal rules block with the exact same content above.
+Do not run tests. Do not commit to main. Stay on feature/phase-engine branch. Confirm both files updated.
