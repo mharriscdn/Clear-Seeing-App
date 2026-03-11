@@ -26,6 +26,8 @@ def process_chat(session_id, user_id, user_message):
     if not session:
         raise ValueError("Session not found or access denied")
 
+    signal_retry = session.get("signal_retry", False)
+
     existing_messages = db.get_session_messages(session_id)
 
     # First user reply sets opening_problem
@@ -42,8 +44,8 @@ def process_chat(session_id, user_id, user_message):
     all_messages = existing_messages + [{"role": "user", "content": user_message}]
     claude_messages = [{"role": m["role"], "content": m["content"]} for m in all_messages]
 
-    # Call Claude — full system prompt every turn (until prompt-modules branch)
-    assistant_text, token_count, model_name = llm.call_claude(claude_messages, session)
+    # Call Claude — pass signal_retry so next phase module is included if last signal failed
+    assistant_text, token_count, model_name = llm.call_claude(claude_messages, session, signal_retry=signal_retry)
 
     # Save assistant reply — get message_id for signal failure logging
     saved_msg = db.save_message(
@@ -63,6 +65,9 @@ def process_chat(session_id, user_id, user_message):
     new_phase, signal_found, signal = phase_engine.process_signal(
         session, assistant_text, message_id
     )
+
+    # --- SIGNAL RETRY FLAG ---
+    db.set_signal_retry(session_id, not signal_found)
 
     # --- SIGNAL LOGGING ---
     if signal_found:

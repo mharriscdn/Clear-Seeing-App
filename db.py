@@ -81,6 +81,9 @@ def init_db():
     cur.execute(
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS new_phase TEXT"
     )
+    cur.execute(
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS signal_retry BOOLEAN DEFAULT FALSE"
+    )
 
     conn.commit()
     cur.close()
@@ -274,6 +277,19 @@ def get_signal_failure_rate():
     cur.close()
     conn.close()
     return dict(row) if row else {"failures": 0, "total": 0}
+
+
+def set_signal_retry(session_id, value):
+    """Sets the signal_retry flag on the session (True when last turn had no signal)."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE sessions SET signal_retry = %s WHERE id = %s",
+        (bool(value), session_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 def log_signal_transition(message_id, phase_signal, old_phase, new_phase):
