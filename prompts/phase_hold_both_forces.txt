@@ -23,7 +23,7 @@ High charge (6+): name the escape once, explain it doesn't resolve the charge, i
 Example: "Moving on mentally is one way the mind handles this — it decides the thing is resolved. But the charge you came in with doesn't usually disappear because we've concluded it should. It just waits. Can you feel that underneath the conclusion?"
 
 If they re-engage — continue holding both forces.
-If they evade a second time — close gracefully, signal path_a. Do not push further.
+If they evade a second time — do not ask another question. Do not re-engage. Close immediately with: "We don't have to go there today. You've already seen the escape pattern clearly. That's real work." Signal path_a.
 
 Low charge (1-5): accept it, signal path_a immediately.
 
