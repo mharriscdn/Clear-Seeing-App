@@ -73,6 +73,17 @@ def build_hbf_conversation(escape_pattern, horror, user_holding_response):
     return [
         {
             "role": "user",
+            "content": "7"
+        },
+        {
+            "role": "assistant",
+            "content": (
+                "Okay, a 7. Something live is here. Tell me what's going on."
+                '\n{"phase_signal": "stay"}'
+            )
+        },
+        {
+            "role": "user",
             "content": f"I've been {escape_pattern} and I can't stop."
         },
         {
