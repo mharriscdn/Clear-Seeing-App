@@ -2,9 +2,36 @@
 Chat service — Phase 2 coaching logic.
 Phase engine is now live. Structure enforced by backend, not prompt.
 """
+import re
 import db
 import llm
 from services import phase_engine
+
+
+def _try_capture_entry_charge(session_id, session, existing_messages, user_message):
+    """
+    During the mirror phase, capture the user's charge rating and persist it.
+
+    Conditions required before extracting:
+      - Session is still in 'mirror' phase
+      - entry_charge has not yet been recorded
+      - At least one assistant message exists (the mirror has been delivered)
+
+    Extracts the first integer 1–10 found in the user message.
+    """
+    if session.get("conversation_phase") != "mirror":
+        return
+    if session.get("entry_charge") is not None:
+        return
+    assistant_messages = [m for m in existing_messages if m["role"] == "assistant"]
+    if not assistant_messages:
+        return
+
+    match = re.search(r'\b(10|[1-9])\b', user_message)
+    if match:
+        charge = int(match.group(1))
+        db.update_session_charge(session_id, "entry_charge", charge)
+        print(f"[chat_service] entry_charge captured: {charge} (session {session_id})")
 
 
 def process_chat(session_id, user_id, user_message):
@@ -39,6 +66,9 @@ def process_chat(session_id, user_id, user_message):
 
     if is_first_user_reply:
         db.set_opening_problem(session_id, user_message)
+
+    # Capture entry_charge if the user just answered the charge question
+    _try_capture_entry_charge(session_id, session, existing_messages, user_message)
 
     # Build Claude message list
     all_messages = existing_messages + [{"role": "user", "content": user_message}]
