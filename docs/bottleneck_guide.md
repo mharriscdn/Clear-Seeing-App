@@ -38,10 +38,11 @@ Run this first. Every time. Before anything else.
 python -m pytest -v
 
 What this checks
-The core logic of the system — phase transitions, signal handling, conversation flow. The 59 backend tests cover all of it.
+The core logic of the system — phase transitions, signal handling, conversation flow. The 76 backend tests cover all of it.
 
 What passing looks like
-59 passed
+76 passed
+Includes charge capture tests — entry_charge written at intake, exit_charge written at re-examination exit, Path A does not write exit_charge.
 
 If it fails
 The problem is in the backend logic. Look at phase_engine.py or chat_service.py. Do not go further until this passes.
@@ -167,6 +168,14 @@ When to check
 
 
 
+Question 6b — Should I switch to Gunicorn?
+The app runs on python app.py with threaded=True. This is the correct architecture for an IO-bound LLM app. Do not switch to Gunicorn unless Replit's autoscaler consistently shows 2+ containers running simultaneously — meaning one process genuinely cannot handle the concurrency. If that threshold is never reached, Gunicorn adds complexity and database connection risk with no benefit. Gunicorn runs multiple worker processes. Each opens its own connection pool. On Replit's PostgreSQL this can exhaust the connection limit fast. Flask threaded mode shares one pool cleanly. Check the autoscaler dashboard before considering any change.
+
+When to check
+•       When Replit autoscaler shows 2+ containers consistently
+
+
+
 Question 7 — Did a specific phase module break?
 The 8 exit tests cover whether sessions end correctly. But they don't tell you which phase broke in the middle. Gate tests cover this.
 
@@ -235,6 +244,9 @@ Signal failure rate: TBD (needs real user data)
 Average tokens per session: TBD (needs real user data)
 Median response length: TBD (needs real user data)
 Average Claude latency: 2.5–4.3 seconds
+Average entry charge:  TBD (needs real user data)
+Average exit charge:   TBD (needs real user data)
+Average charge delta:  TBD (needs real user data)
 
 
 
