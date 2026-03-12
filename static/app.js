@@ -57,11 +57,15 @@ async function startSession() {
     }
 }
 
+function stripSignal(content) {
+    return content.replace(/\{[^{}]*"phase_signal"[^{}]*\}/g, "").trim();
+}
+
 function renderMessage(msg) {
     const transcript = document.getElementById("transcript");
     const el = document.createElement("div");
     el.className = `message ${msg.role}`;
-    el.textContent = msg.content;
+    el.textContent = msg.role === "assistant" ? stripSignal(msg.content) : msg.content;
     transcript.appendChild(el);
     transcript.scrollTop = transcript.scrollHeight;
 }
