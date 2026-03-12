@@ -40,6 +40,7 @@ def make_session_permanent():
 
 
 @app.route("/")
+@require_login
 def index():
     return render_template("index.html")
 

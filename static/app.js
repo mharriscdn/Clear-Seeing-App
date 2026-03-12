@@ -4,6 +4,10 @@ let currentSessionId = null;
 async function init() {
     try {
         const res = await fetch("/api/me");
+        if (res.status === 401) {
+            window.location.href = "/auth/replit_auth";
+            return;
+        }
         if (!res.ok) return;
         const me = await res.json();
         const tankEl = document.getElementById("tank-value");
@@ -22,6 +26,12 @@ async function startSession() {
 
     try {
         const res = await fetch("/api/session/new", { method: "POST" });
+
+        if (res.status === 401) {
+            window.location.href = "/auth/replit_auth";
+            return;
+        }
+
         const data = await res.json();
 
         if (!res.ok || !data.session_id) {
