@@ -34,6 +34,49 @@ def _try_capture_entry_charge(session_id, session, existing_messages, user_messa
         print(f"[chat_service] entry_charge captured: {charge} (session {session_id})")
 
 
+def _try_capture_exit_charge(session_id, session, existing_messages, user_message):
+    """
+    During the re_examination phase, capture the user's exit charge rating.
+
+    Conditions required before extracting:
+      - Session is in 're_examination' phase
+      - exit_charge has not yet been recorded
+      - At least one assistant message exists (the re-examination question has been asked)
+
+    Extracts the first integer 1–10 found in the user message.
+    """
+    if session.get("conversation_phase") != "re_examination":
+        return
+    if session.get("exit_charge") is not None:
+        return
+    assistant_messages = [m for m in existing_messages if m["role"] == "assistant"]
+    if not assistant_messages:
+        return
+
+    match = re.search(r'\b(10|[1-9])\b', user_message)
+    if match:
+        charge = int(match.group(1))
+        db.update_session_charge(session_id, "exit_charge", charge)
+        print(f"[chat_service] exit_charge captured: {charge} (session {session_id})")
+
+
+def charge_delta_summary(entry_charge, exit_charge):
+    """
+    Returns a one-line closing reference to both charge numbers.
+    Used by Claude (via prompt instruction) and directly testable.
+
+      charge dropped  → "You came in at {entry}. You're at {exit} now."
+      charge same     → "You came in at {entry}. Still at {exit}. The charge held."
+      charge rose     → "You came in at {entry}. It's at {exit}. The system tightened."
+    """
+    if exit_charge < entry_charge:
+        return f"You came in at {entry_charge}. You're at {exit_charge} now."
+    elif exit_charge == entry_charge:
+        return f"You came in at {entry_charge}. Still at {exit_charge}. The charge held."
+    else:
+        return f"You came in at {entry_charge}. It's at {exit_charge}. The system tightened."
+
+
 def process_chat(session_id, user_id, user_message):
     """
     Handles a user message for a given session:
@@ -69,6 +112,9 @@ def process_chat(session_id, user_id, user_message):
 
     # Capture entry_charge if the user just answered the charge question
     _try_capture_entry_charge(session_id, session, existing_messages, user_message)
+
+    # Capture exit_charge if the user just answered the re-examination charge question
+    _try_capture_exit_charge(session_id, session, existing_messages, user_message)
 
     # Build Claude message list
     all_messages = existing_messages + [{"role": "user", "content": user_message}]
