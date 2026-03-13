@@ -56,14 +56,10 @@ html, body {
     text-transform: uppercase;
 }
 
-.door-wrap {
-    width: 280px;
-}
-
-.door-svg {
-    width: 100%;
-    height: auto;
+.door-image {
+    width: 260px;
     display: block;
+    margin: 28px auto 28px auto;
 }
 
 .headline {
