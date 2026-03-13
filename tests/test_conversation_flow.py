@@ -41,9 +41,9 @@ def test_basic_conversation_flow():
             with patch("services.phase_engine.db") as mock_phase_db:
 
                 mock_llm.side_effect = [
-                    (responses[0][1], 100, "claude"),
-                    (responses[1][1], 100, "claude"),
-                    (responses[2][1], 100, "claude"),
+                    {"content": responses[0][1], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+                    {"content": responses[1][1], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+                    {"content": responses[2][1], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
                 ]
 
                 mock_db.get_session.return_value = make_session()
@@ -81,9 +81,9 @@ def test_evasion_exit_after_three_stays():
                 mock_phase_db.increment_evasion_count.side_effect = [1, 2, 3]
 
                 mock_llm.side_effect = [
-                    (responses[0], 100, "claude"),
-                    (responses[1], 100, "claude"),
-                    (responses[2], 100, "claude"),
+                    {"content": responses[0], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+                    {"content": responses[1], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+                    {"content": responses[2], "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
                 ]
 
                 process_chat(1, 1, "message 1")
@@ -112,7 +112,7 @@ def test_hold_both_forces_path_b_routes_to_gibraltar():
                 mock_db.save_message.return_value = {"id": 1}
                 mock_phase_db.increment_evasion_count.return_value = 0
 
-                mock_llm.return_value = (response, 100, "claude")
+                mock_llm.return_value = {"content": response, "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"}
 
                 process_chat(1, 1, "message")
 
@@ -138,7 +138,7 @@ def test_hold_both_forces_path_a_routes_to_recurrence():
                 mock_db.save_message.return_value = {"id": 1}
                 mock_phase_db.increment_evasion_count.return_value = 0
 
-                mock_llm.return_value = (response, 100, "claude")
+                mock_llm.return_value = {"content": response, "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"}
 
                 process_chat(1, 1, "message")
 
@@ -160,7 +160,7 @@ def test_missing_signal_defaults_to_stay():
                 mock_db.save_message.return_value = {"id": 1}
                 mock_phase_db.increment_evasion_count.return_value = 0
 
-                mock_llm.return_value = (response, 100, "claude")
+                mock_llm.return_value = {"content": response, "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"}
 
                 process_chat(1, 1, "message")
 

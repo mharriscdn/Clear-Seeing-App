@@ -39,7 +39,7 @@ def test_chat_advance_signal():
          patch("services.chat_service.db") as mock_db, \
          patch("services.phase_engine.db") as mock_phase_db:
 
-        mock_llm.return_value = (mock_llm_response, 150, "claude-test")
+        mock_llm.return_value = {"content": mock_llm_response, "input_tokens": 100, "output_tokens": 50, "cached_tokens": 0, "model": "claude-test"}
 
         mock_db.get_session.return_value = make_session(phase="mirror")
         mock_db.get_session_messages.return_value = []

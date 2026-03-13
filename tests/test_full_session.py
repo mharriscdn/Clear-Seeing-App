@@ -15,11 +15,11 @@ def test_full_session_flow():
     user_id = 1
 
     responses = [
-        ("Reflection text\n{\"phase_signal\":\"stay\"}", 100, "claude"),
-        ("Examine text\n{\"phase_signal\":\"advance\"}", 100, "claude"),
-        ("Orient text\n{\"phase_signal\":\"advance\"}", 100, "claude"),
-        ("Hold both\n{\"phase_signal\":\"advance\"}", 100, "claude"),
-        ("Release\n{\"phase_signal\":\"path_b\"}", 100, "claude"),
+        {"content": "Reflection text\n{\"phase_signal\":\"stay\"}",  "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+        {"content": "Examine text\n{\"phase_signal\":\"advance\"}",   "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+        {"content": "Orient text\n{\"phase_signal\":\"advance\"}",    "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+        {"content": "Hold both\n{\"phase_signal\":\"advance\"}",      "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
+        {"content": "Release\n{\"phase_signal\":\"path_b\"}",         "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"},
     ]
 
     user_messages = [
