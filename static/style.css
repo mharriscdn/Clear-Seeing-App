@@ -236,6 +236,30 @@ html, body {
     cursor: not-allowed;
 }
 
+/* ─── SITUATION ANCHOR ────────────────────────────────────── */
+
+#situation-anchor {
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.4rem 0 1.2rem;
+    border-bottom: 1px solid #2a2a2a;
+    margin-bottom: 0.5rem;
+}
+
+.anchor-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.anchor-text {
+    font-size: 0.95rem;
+    color: #c0c0c0;
+    font-style: italic;
+    line-height: 1.55;
+}
+
 /* ─── CHAT AREA ───────────────────────────────────────────── */
 
 #chat-area {
