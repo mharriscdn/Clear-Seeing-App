@@ -22,7 +22,7 @@ async function init() {
 async function startSession() {
     const btn = document.getElementById("start-btn");
     btn.disabled = true;
-    btn.textContent = "Starting...";
+    btn.textContent = "Starting\u2026";
 
     try {
         const res = await fetch("/api/session/new", { method: "POST" });
@@ -37,23 +37,70 @@ async function startSession() {
         if (!res.ok || !data.session_id) {
             alert("Could not start session. Please try again.");
             btn.disabled = false;
-            btn.textContent = "Begin session";
+            btn.textContent = "BEGIN SESSION";
             return;
         }
 
         currentSessionId = data.session_id;
 
-        document.getElementById("session-start").style.display = "none";
-        document.getElementById("chat-area").style.display = "flex";
-
-        // Render the fixed opening message
-        renderMessage({ role: "assistant", content: "What\u2019s in your central view right now?" });
+        document.getElementById("landing-screen").style.display = "none";
+        document.getElementById("orientation-screen").style.display = "flex";
+        document.getElementById("orientation-input").focus();
 
     } catch (e) {
         console.error("startSession error:", e);
         alert("Could not start session.");
         btn.disabled = false;
-        btn.textContent = "Begin session";
+        btn.textContent = "BEGIN SESSION";
+    }
+}
+
+function handleOrientationKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendOrientationMessage();
+    }
+}
+
+async function sendOrientationMessage() {
+    const input = document.getElementById("orientation-input");
+    const btn = document.getElementById("orientation-send-btn");
+    const text = input.value.trim();
+
+    if (!text || !currentSessionId) return;
+
+    input.disabled = true;
+    btn.disabled = true;
+
+    // Switch to chat view immediately so user sees their message appear
+    document.getElementById("orientation-screen").style.display = "none";
+    document.getElementById("chat-area").style.display = "flex";
+
+    renderMessage({ role: "user", content: text });
+
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_id: currentSessionId, user_message: text }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            renderMessage({ role: "assistant", content: data.error || "Something went wrong. Please try again." });
+        } else {
+            renderTranscript(data.transcript);
+        }
+    } catch (e) {
+        console.error("sendOrientationMessage error:", e);
+        renderMessage({ role: "assistant", content: "[Connection error]" });
+    } finally {
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+        if (userInput) userInput.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
+        if (userInput) userInput.focus();
     }
 }
 

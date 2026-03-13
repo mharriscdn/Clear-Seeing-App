@@ -5,104 +5,224 @@
 }
 
 :root {
-    --bg: #f7f5f1;
-    --fg: #1a1a1a;
-    --muted: #888;
-    --border: #d4d0c8;
-    --accent: #2a2a2a;
-    --assistant-bg: #efede8;
-    --user-bg: #ffffff;
+    --bg: #000000;
+    --fg: #f2f2f2;
+    --muted: #888888;
+    --border: #555555;
+    --chat-border: #2a2a2a;
+    --assistant-bg: #111111;
+    --user-bg: #0d0d0d;
 }
 
 html, body {
     height: 100%;
-    font-family: 'Georgia', serif;
+    font-family: Georgia, serif;
     background: var(--bg);
     color: var(--fg);
     font-size: 16px;
-    line-height: 1.6;
-}
-
-#auth-wall {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    gap: 1.5rem;
-    color: var(--muted);
-    font-style: italic;
+    line-height: 1.65;
 }
 
 #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    max-width: 680px;
-    margin: 0 auto;
+    height: 100%;
 }
 
-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
+/* ─── LANDING ─────────────────────────────────────────────── */
 
-#meta {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    font-size: 0.8rem;
-    color: var(--muted);
-}
-
-#billing-link {
-    color: var(--muted);
-    text-decoration: none;
-    border-bottom: 1px solid var(--border);
-}
-
-#billing-link:hover {
-    color: var(--fg);
-}
-
-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding: 0 1.5rem;
-}
-
-#session-start {
-    flex: 1;
+#landing-screen {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.landing-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 340px;
+    gap: 1.6rem;
+    text-align: center;
+}
+
+.logo {
+    font-family: Georgia, serif;
+    font-size: 0.85rem;
+    font-weight: normal;
+    letter-spacing: 0.35em;
+    color: var(--fg);
+    text-transform: uppercase;
+}
+
+.door-wrap {
+    width: 180px;
+}
+
+.door-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.headline {
+    font-size: 1.55rem;
+    line-height: 1.35;
+    color: var(--fg);
+}
+
+.headline .italic {
+    font-style: italic;
+}
+
+.subtext {
+    font-size: 1rem;
+    color: var(--fg);
 }
 
 #start-btn {
     background: none;
     border: 1px solid var(--border);
     color: var(--fg);
-    font-family: inherit;
-    font-size: 0.9rem;
-    padding: 0.6rem 1.4rem;
+    font-family: Georgia, serif;
+    font-size: 0.78rem;
+    padding: 0.75rem 2.2rem;
     cursor: pointer;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    width: 100%;
+    max-width: 260px;
+    transition: border-color 0.15s;
 }
 
 #start-btn:hover {
-    border-color: var(--accent);
+    border-color: var(--fg);
 }
 
-#chat-area {
-    flex: 1;
+#start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.landing-footer {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.landing-footer a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid #444;
+}
+
+.landing-footer a:hover {
+    color: var(--fg);
+    border-bottom-color: var(--fg);
+}
+
+/* ─── ORIENTATION SCREEN ──────────────────────────────────── */
+
+#orientation-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.orientation-inner {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+    gap: 2.5rem;
+    text-align: center;
+}
+
+.orientation-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    font-size: 1rem;
+    color: var(--fg);
+    line-height: 1.7;
+}
+
+.orientation-copy .muted {
+    color: var(--muted);
+}
+
+.orientation-input-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.prompt-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+}
+
+.orientation-input-row {
+    display: flex;
+    gap: 0.6rem;
+    width: 100%;
+    align-items: flex-end;
+}
+
+#orientation-input {
+    flex: 1;
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 0.65rem 0.85rem;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+}
+
+#orientation-input:focus {
+    border-color: #888;
+}
+
+#orientation-send-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: Georgia, serif;
+    font-size: 0.8rem;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+#orientation-send-btn:hover {
+    border-color: var(--fg);
+}
+
+#orientation-send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ─── CHAT AREA ───────────────────────────────────────────── */
+
+#chat-area {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
 }
 
 #transcript {
@@ -124,6 +244,7 @@ main {
 
 .message.assistant {
     background: var(--assistant-bg);
+    border: 1px solid var(--chat-border);
     align-self: flex-start;
     color: var(--fg);
 }
@@ -139,16 +260,16 @@ main {
     display: flex;
     gap: 0.75rem;
     padding: 1rem 0 1.5rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--chat-border);
     align-items: flex-end;
 }
 
 #user-input {
     flex: 1;
-    font-family: inherit;
+    font-family: Georgia, serif;
     font-size: 0.95rem;
+    background: #0a0a0a;
     border: 1px solid var(--border);
-    background: var(--user-bg);
     color: var(--fg);
     padding: 0.6rem 0.8rem;
     resize: none;
@@ -157,14 +278,14 @@ main {
 }
 
 #user-input:focus {
-    border-color: var(--accent);
+    border-color: #888;
 }
 
 #send-btn {
-    background: var(--accent);
-    border: none;
-    color: var(--bg);
-    font-family: inherit;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: Georgia, serif;
     font-size: 0.85rem;
     padding: 0.6rem 1.2rem;
     cursor: pointer;
@@ -173,10 +294,23 @@ main {
 }
 
 #send-btn:hover {
-    opacity: 0.85;
+    border-color: var(--fg);
 }
 
 #send-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* ─── AUTH WALL ───────────────────────────────────────────── */
+
+#auth-wall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 1.5rem;
+    color: var(--muted);
+    font-style: italic;
 }
