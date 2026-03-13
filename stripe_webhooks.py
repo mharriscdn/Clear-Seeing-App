@@ -1,9 +1,17 @@
 import os
 import stripe
 import db
+from datetime import datetime, timedelta
 
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
+
+# Capacity granted per plan (in cents → capacity units)
+_CHECKOUT_AMOUNT_MAP = {
+    499:  {"units": 4990, "set_reset": True},   # month one  ($4.99)
+    999:  {"units": 9990, "set_reset": True},   # subscription ($9.99)
+    500:  {"units": 5000, "set_reset": False},  # top-up ($5.00) — no expiry change
+}
 
 
 def handle_webhook(payload, sig_header):
@@ -32,7 +40,22 @@ def handle_webhook(payload, sig_header):
 
     elif event_type == "checkout.session.completed":
         customer_id = data.get("customer")
-        _update_user_by_customer(customer_id, "active")
+        amount_total = data.get("amount_total")
+
+        plan = _CHECKOUT_AMOUNT_MAP.get(amount_total)
+        if plan:
+            reset_date = (
+                (datetime.utcnow() + timedelta(days=30)).date()
+                if plan["set_reset"] else None
+            )
+            _add_capacity_for_customer(customer_id, plan["units"], reset_date)
+            _update_user_by_customer(customer_id, "active")
+        else:
+            print(
+                f"[stripe_webhooks] Unknown amount_total={amount_total} on "
+                f"checkout.session.completed — no capacity change made"
+            )
+            _update_user_by_customer(customer_id, "active")
 
     return {"received": True}, 200
 
@@ -47,6 +70,21 @@ def _update_user_by_customer(customer_id, status):
     except Exception as e:
         # Log but don't crash — webhook must return 200
         print(f"[stripe_webhooks] Failed to update user for customer {customer_id}: {e}")
+
+
+def _add_capacity_for_customer(customer_id, units, reset_date):
+    """Looks up the Stripe customer email and adds capacity units."""
+    try:
+        customer = stripe.Customer.retrieve(customer_id)
+        email = customer.get("email")
+        if email:
+            db.add_capacity_by_email(email, units, set_reset_date=reset_date)
+            print(
+                f"[stripe_webhooks] Added {units} capacity units to {email} "
+                f"(reset_date={reset_date})"
+            )
+    except Exception as e:
+        print(f"[stripe_webhooks] Failed to add capacity for customer {customer_id}: {e}")
 
 
 def create_checkout_session(user_email, price_id, success_url, cancel_url):

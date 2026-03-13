@@ -45,7 +45,7 @@ def run_process_chat(session, user_message, prior_messages=None, llm_response=No
          patch("services.chat_service.db") as mock_db, \
          patch("services.phase_engine.db") as mock_phase_db:
 
-        mock_llm.return_value = (llm_response, 100, "claude-test")
+        mock_llm.return_value = {"content": llm_response, "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude-test"}
         mock_db.get_session.return_value = session
         mock_db.get_session_messages.return_value = prior_messages
         mock_db.save_message.return_value = {"id": 99}
