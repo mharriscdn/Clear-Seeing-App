@@ -3,32 +3,112 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clear Seeing Guide</title>
+    <title>Clear Seeing</title>
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
 <div id="app">
-    <header>
-        <div id="meta">
-            <span id="tank-display">tank: <span id="tank-value">—</span></span>
-            <a id="billing-link" href="#" onclick="manageBilling(event)">Manage billing</a>
-        </div>
-    </header>
 
-    <main>
-        <div id="session-start">
-            <button id="start-btn" onclick="startSession()">Begin session</button>
-        </div>
+    <!-- LANDING SCREEN -->
+    <div id="landing-screen">
+        <div class="landing-inner">
+            <h1 class="logo">CLEAR SEEING</h1>
 
-        <div id="chat-area" style="display:none;">
-            <div id="transcript"></div>
-            <div id="input-row">
-                <textarea id="user-input" placeholder="" rows="3" onkeydown="handleKey(event)"></textarea>
-                <button id="send-btn" onclick="sendMessage()">Send</button>
+            <!-- Revolving door SVG -->
+            <div class="door-wrap">
+                <svg class="door-svg" viewBox="0 0 220 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Outer housing rim (top ellipse) -->
+                    <ellipse cx="110" cy="68" rx="98" ry="22" fill="#1c1c1c" stroke="#e0e0e0" stroke-width="2.5"/>
+                    <!-- Outer housing sides -->
+                    <line x1="12" y1="68" x2="12" y2="200" stroke="#e0e0e0" stroke-width="2.5"/>
+                    <line x1="208" y1="68" x2="208" y2="200" stroke="#e0e0e0" stroke-width="2.5"/>
+                    <!-- Bottom ellipse (floor of housing) -->
+                    <ellipse cx="110" cy="200" rx="98" ry="22" fill="#0a0a0a" stroke="#e0e0e0" stroke-width="2"/>
+                    <!-- Inner top ellipse (slightly smaller, inside rim) -->
+                    <ellipse cx="110" cy="68" rx="80" ry="16" fill="none" stroke="#888" stroke-width="1"/>
+                    <!-- Door cross – vertical blade -->
+                    <line x1="110" y1="52" x2="110" y2="216" stroke="#c8c8c8" stroke-width="2"/>
+                    <!-- Door cross – horizontal blade (foreshortened as ellipse arc) -->
+                    <path d="M 30,120 Q 110,108 190,120" fill="none" stroke="#c8c8c8" stroke-width="2"/>
+                    <path d="M 30,140 Q 110,152 190,140" fill="none" stroke="#c8c8c8" stroke-width="2"/>
+                    <!-- Left panel shading -->
+                    <path d="M 12,68 Q 12,72 30,120 Q 12,72 12,200" fill="none" stroke="none"/>
+                    <path d="M 30,120 L 110,120 L 110,140 L 30,140 Z" fill="#111" stroke="none"/>
+                    <!-- Right panel shading -->
+                    <path d="M 190,120 L 110,120 L 110,140 L 190,140 Z" fill="#0d0d0d" stroke="none"/>
+                    <!-- Left panel glass effect -->
+                    <path d="M 12,68 L 110,68 L 110,200 L 12,200 Z" fill="url(#leftGlass)" stroke="none"/>
+                    <!-- Right panel glass effect -->
+                    <path d="M 110,68 L 208,68 L 208,200 L 110,200 Z" fill="url(#rightGlass)" stroke="none"/>
+                    <!-- HERE label -->
+                    <text x="60" y="128" text-anchor="middle" fill="#d8d8d8" font-family="Georgia,serif" font-size="11" letter-spacing="2">HERE</text>
+                    <!-- Door handle dot – left -->
+                    <circle cx="88" cy="134" r="3" fill="#d8d8d8"/>
+                    <!-- THERE label -->
+                    <text x="160" y="128" text-anchor="middle" fill="#d8d8d8" font-family="Georgia,serif" font-size="11" letter-spacing="2">THERE</text>
+                    <!-- Door handle dot – right -->
+                    <circle cx="132" cy="134" r="3" fill="#d8d8d8"/>
+                    <!-- Floor line below housing -->
+                    <line x1="12" y1="222" x2="208" y2="222" stroke="#444" stroke-width="1"/>
+
+                    <defs>
+                        <linearGradient id="leftGlass" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#333" stop-opacity="0.35"/>
+                            <stop offset="100%" stop-color="#111" stop-opacity="0.1"/>
+                        </linearGradient>
+                        <linearGradient id="rightGlass" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#111" stop-opacity="0.1"/>
+                            <stop offset="100%" stop-color="#333" stop-opacity="0.35"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="headline">
+                <div>Stop Pushing.</div>
+                <div class="italic">The Next Move Is Obvious.</div>
+            </div>
+
+            <p class="subtext">Bring what&rsquo;s live.</p>
+
+            <button id="start-btn" onclick="startSession()">BEGIN SESSION</button>
+
+            <p class="landing-footer">
+                credits: <span id="tank-value">—</span>
+                &nbsp;&middot;&nbsp;
+                <a href="#" onclick="manageBilling(event)">manage billing</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ORIENTATION SCREEN -->
+    <div id="orientation-screen" style="display:none;">
+        <div class="orientation-inner">
+            <div class="orientation-copy">
+                <p>Bring the situation that&rsquo;s most charged right now.</p>
+                <p class="muted">Not a story about the past.<br>Not a theory about the future.</p>
+                <p>What is actually happening.</p>
+            </div>
+            <div class="orientation-input-wrap">
+                <label class="prompt-label" for="orientation-input">What&rsquo;s in your central view right now?</label>
+                <div class="orientation-input-row">
+                    <textarea id="orientation-input" rows="3" onkeydown="handleOrientationKey(event)"></textarea>
+                    <button id="orientation-send-btn" onclick="sendOrientationMessage()">Send</button>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- CHAT AREA -->
+    <div id="chat-area" style="display:none;">
+        <div id="transcript"></div>
+        <div id="input-row">
+            <textarea id="user-input" placeholder="" rows="3" onkeydown="handleKey(event)"></textarea>
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
 </div>
 
 <script src="/static/app.js"></script>
