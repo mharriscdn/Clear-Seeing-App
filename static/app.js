@@ -12,7 +12,7 @@ async function init() {
         const me = await res.json();
         const tankEl = document.getElementById("tank-value");
         if (tankEl) {
-            tankEl.textContent = me.tank_remaining != null ? me.tank_remaining : "—";
+            tankEl.textContent = me.capacity_remaining != null ? me.capacity_remaining : "—";
         }
     } catch (e) {
         console.error("Failed to load user info", e);
