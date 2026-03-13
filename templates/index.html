@@ -85,13 +85,16 @@
     <!-- ORIENTATION SCREEN -->
     <div id="orientation-screen" style="display:none;">
         <div class="orientation-inner">
-            <div class="orientation-copy">
-                <p>Bring the situation that&rsquo;s most charged right now.</p>
-                <p class="muted">Not a story about the past.<br>Not a theory about the future.</p>
-                <p>What is actually happening.</p>
+            <div class="session-header">
+                <div class="session-logo">CLEAR SEEING</div>
+                <div class="session-headline">
+                    <div class="session-push">Stop Pushing.</div>
+                    <div class="session-obvious">The Next Move Is Obvious.</div>
+                </div>
             </div>
+            <div class="session-divider"></div>
+            <p class="session-prompt">What&rsquo;s in your central view right now?</p>
             <div class="orientation-input-wrap">
-                <label class="prompt-label" for="orientation-input">What&rsquo;s in your central view right now?</label>
                 <div class="orientation-input-row">
                     <textarea id="orientation-input" rows="3" onkeydown="handleOrientationKey(event)"></textarea>
                     <button id="orientation-send-btn" onclick="sendOrientationMessage()">Send</button>

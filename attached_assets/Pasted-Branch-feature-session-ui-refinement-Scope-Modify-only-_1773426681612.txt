@@ -1,0 +1,174 @@
+Branch: feature/session-ui-refinement
+
+Scope:
+Modify only the UI displayed AFTER the user clicks "Begin Session".
+
+Files allowed to change:
+- clear_seeing_app_landing.html
+- any related CSS used by that page
+
+Do NOT modify:
+- backend logic
+- chat_service.py
+- llm.py
+- db.py
+- stripe_webhooks.py
+- session handling logic
+- tests
+
+
+OBJECTIVE
+
+The session page should feel like a continuation of the landing page,
+not a new interface.
+
+Remove the feeling of a generic chatbot input screen.
+
+Maintain the same visual identity as the landing page.
+
+
+--------------------------------------------------
+PAGE STRUCTURE
+--------------------------------------------------
+
+Background:
+black (#000000)
+
+Typography:
+Georgia serif
+
+Primary text color:
+#f2f2f2
+
+Everything centered vertically.
+
+
+--------------------------------------------------
+HEADER (CARRIED FROM LANDING PAGE)
+--------------------------------------------------
+
+Display at top of session page:
+
+CLEAR SEEING
+
+Stop Pushing.
+The Next Move Is Obvious.
+
+Style changes from landing page:
+
+CLEAR SEEING
+  font-size: 20px
+  letter-spacing: 0.25em
+
+Stop Pushing.
+  font-size: 24px
+
+The Next Move Is Obvious.
+  font-size: 24px
+  font-style: italic
+
+
+--------------------------------------------------
+VISUAL DIVIDER
+--------------------------------------------------
+
+Add a thin horizontal divider below the header.
+
+Example CSS:
+
+width: 180px
+height: 1px
+background: #333
+margin: 36px auto
+
+
+--------------------------------------------------
+SESSION PROMPT
+--------------------------------------------------
+
+Below the divider display:
+
+What's in your central view right now?
+
+font-size: 20px
+
+
+--------------------------------------------------
+INPUT AREA
+--------------------------------------------------
+
+Below the prompt render the existing message input.
+
+Layout:
+
+[input field] [Send]
+
+Input width: ~420px
+Send button to the right.
+
+Input style:
+
+background: #111
+border: 1px solid #444
+color: #f2f2f2
+padding: 12px
+font-family: Georgia
+
+Send button:
+
+border: 1px solid #555
+background: transparent
+color: #f2f2f2
+padding: 10px 16px
+text-transform: uppercase
+letter-spacing: 0.12em
+
+
+--------------------------------------------------
+REMOVE
+--------------------------------------------------
+
+Remove any extra instructions or explanation text.
+
+The page should contain only:
+
+CLEAR SEEING
+Stop Pushing.
+The Next Move Is Obvious.
+
+divider
+
+What's in your central view right now?
+
+input box
+
+
+--------------------------------------------------
+USER EXPERIENCE GOAL
+--------------------------------------------------
+
+The page should feel calm, focused, and intentional.
+
+The user should feel they have entered the same
+space as the landing page, not a chatbot interface.
+
+
+--------------------------------------------------
+SUCCESS CRITERIA
+--------------------------------------------------
+
+After clicking "Begin Session":
+
+The user sees:
+
+CLEAR SEEING
+Stop Pushing.
+The Next Move Is Obvious.
+
+------------------
+
+What's in your central view right now?
+
+[input] [Send]
+
+No backend behavior changes.
