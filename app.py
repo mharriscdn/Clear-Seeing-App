@@ -56,7 +56,7 @@ def api_me():
     return jsonify({
         "email": user["email"],
         "subscription_status": user["subscription_status"],
-        "tank_remaining": user["tank_remaining"],
+        "capacity_remaining": user["capacity_remaining"],
     })
 
 

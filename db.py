@@ -129,8 +129,9 @@ def get_or_create_user(email):
     cur.execute("SELECT * FROM users WHERE email = %s", (email, ))
     user = cur.fetchone()
     if not user:
-        cur.execute("INSERT INTO users (email) VALUES (%s) RETURNING *",
-                    (email, ))
+        cur.execute(
+            "INSERT INTO users (email, capacity_remaining) VALUES (%s, 4990) RETURNING *",
+            (email, ))
         user = cur.fetchone()
         conn.commit()
     cur.close()
