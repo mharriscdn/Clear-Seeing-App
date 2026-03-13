@@ -1,0 +1,141 @@
+Branch: feature/landing-ui
+
+Scope:
+Update only the landing page UI and the first screen shown after clicking "Begin Session".
+
+Do NOT modify:
+- backend logic
+- chat_service.py
+- llm.py
+- billing
+- database
+- tests
+- session handling logic
+
+This task is strictly UI layout and copy.
+
+
+--------------------------------------------------
+LANDING PAGE
+--------------------------------------------------
+
+Replace the current landing page layout with the following structure.
+
+Background:
+#000000 (black)
+
+Typography:
+Georgia serif
+
+Primary text color:
+#f2f2f2
+
+Secondary text color:
+#888888
+
+
+Layout must be vertically centered using flexbox.
+
+
+Structure from top to bottom:
+
+CLEAR SEEING
+
+[ existing revolving door SVG graphic ]
+(The current door graphic must remain unchanged.
+Do not redesign or replace the SVG.)
+
+Headline:
+
+Stop Pushing.
+The Next Move Is Obvious.
+
+Second line should be italic.
+
+Subtext:
+
+Bring what's live.
+
+CTA Button:
+
+BEGIN SESSION
+
+Button style:
+outline button
+border: #555
+uppercase text
+letter spacing: 0.2em
+no background fill
+
+Footer line:
+
+credits: {capacity_remaining} · manage billing
+
+Replace the word "tank" with "credits".
+
+Maximum content width: 340px
+
+
+
+--------------------------------------------------
+FIRST SCREEN AFTER "BEGIN SESSION"
+--------------------------------------------------
+
+When the user clicks BEGIN SESSION,
+do NOT immediately show a blank chat box.
+
+Instead show a short orientation screen.
+
+Background remains black.
+
+Centered text block.
+
+
+Display this copy:
+
+--------------------------------------------------
+
+Bring the situation that's most charged right now.
+
+Not a story about the past.
+Not a theory about the future.
+
+What is actually happening.
+
+--------------------------------------------------
+
+Below that show a prompt box.
+
+Prompt text above the input:
+
+What's in your central view right now?
+
+Input field width: 420px
+Send button to the right.
+
+
+The user should feel like they are being invited into a focused conversation,
+not dropped into a generic chatbot.
+
+Do NOT add any additional explanation or instructions.
+
+
+--------------------------------------------------
+SUCCESS CRITERIA
+--------------------------------------------------
+
+Landing page shows:
+
+CLEAR SEEING
+[door graphic]
+Stop Pushing.
+The Next Move Is Obvious.
+Bring what's live.
+BEGIN SESSION
+credits: #### · manage billing
+
+
+After clicking BEGIN SESSION the user sees the orientation text
+and then the input field.
+
+No backend behavior should change.
