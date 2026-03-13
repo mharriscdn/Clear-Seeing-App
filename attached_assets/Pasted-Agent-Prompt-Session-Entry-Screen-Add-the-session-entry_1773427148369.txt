@@ -1,0 +1,158 @@
+Agent Prompt — Session Entry Screen
+
+Add the session entry screen that appears after the user clicks BEGIN SESSION but before the first message is sent.
+
+Do not modify any backend logic.
+
+This is a UI layout change only.
+
+SESSION ENTRY SCREEN
+
+Render this layout when the session begins.
+
+Use the same visual style as the landing page.
+
+Background:
+
+#000000
+
+Primary text:
+
+#f2f2f2
+
+Secondary text:
+
+#888888
+
+Font:
+
+Georgia, serif
+
+Everything centered vertically.
+
+Header (carried from landing page)
+
+Display:
+
+CLEAR SEEING
+
+Stop Pushing.
+The Next Move Is Obvious.
+
+Style:
+
+CLEAR SEEING
+
+font-size: 20px
+letter-spacing: 0.25em
+
+Stop Pushing.
+
+font-size: 24px
+
+The Next Move Is Obvious.
+
+font-size: 24px
+font-style: italic
+Divider
+
+Below the header show a thin divider.
+
+width: 180px
+height: 1px
+background: #333
+margin: 36px auto
+Prompt
+
+Display:
+
+What's in your central view right now?
+
+Style:
+
+font-size: 20px
+color: #f2f2f2
+Input Layout
+
+Below the prompt render the input field and send button.
+
+Layout:
+
+[input field]   [SEND]
+
+Input style:
+
+background: #111
+border: 1px solid #444
+color: #f2f2f2
+padding: 12px
+font-family: Georgia
+width: 420px
+
+Send button style:
+
+background: transparent
+border: 1px solid #555
+color: #f2f2f2
+padding: 10px 16px
+letter-spacing: 0.12em
+text-transform: uppercase
+Behaviour
+
+When the user presses SEND:
+
+Capture the message.
+
+Transition to the chat view.
+
+Store the message as the session anchor (already implemented).
+
+Render the SITUATION block above the conversation.
+
+Do not modify the anchor implementation that was just added.
+
+Resulting Flow
+
+User clicks BEGIN SESSION
+
+They see:
+
+CLEAR SEEING
+
+Stop Pushing.
+The Next Move Is Obvious.
+
+────────────
+
+What's in your central view right now?
+
+[input] [SEND]
+
+After they send the message, the screen becomes:
+
+CLEAR SEEING
+
+Stop Pushing.
+The Next Move Is Obvious.
+
+────────────
+
+SITUATION
+"user's message"
+
+────────────
+
+assistant response
+Important Constraints
+
+Do NOT:
+
+redesign the revolving door graphic
+
+change backend logic
+
+change message storage
+
+alter the SITUATION anchor code
+
+This task is only the session entry layout.
