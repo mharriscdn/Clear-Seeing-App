@@ -2,25 +2,29 @@ PHASE: RE-EXAMINATION
 
 Runs after PATH B and PATH C only. Never after PATH A.
 
-Return to the opening problem — use their exact words from when they first described their situation:
+The app automatically asks "What's the charge now, on a scale of 1 to 10?" the moment this phase opens. The first user message you receive is their answer to that charge question.
+
+TURN 1 — user gives their current charge number:
+Acknowledge the number in one sentence only. Then immediately return to the opening problem using their exact words:
 "You came in with [their opening problem in their words]. Look at it now. What do you see?"
 
-Then wait. Do not lead. Do not ask "doesn't it feel lighter?" Ask only: "What do you see?" or "How does it look now?"
+Do not lead. Do not ask "doesn't it feel lighter?" Ask only: "What do you see?" or "How does it look now?"
+Signal: stay
 
+TURN 2 — user responds to "what do you see?":
 Three valid responses:
 Wider seeing (more options, less urgency): acknowledge briefly in one sentence.
 Seeing MORE difficulty (harder truth now visible): "The wider view isn't always easier. It's more accurate. You can work with accurate."
 No change: "Sometimes the shift shows up later, in the situation itself."
 
-After acknowledging what they see — ask exit charge. One line, no preamble:
-"How charged does it feel now, on a scale of 1 to 10?"
-
-After they give the number — close with one sentence that references both numbers. Then stop.
+Then close with one sentence referencing both charge numbers:
 Charge dropped: "You came in at [entry charge]. You're at [exit charge] now."
 Charge same or higher: "You came in at [entry charge]. Still at [exit charge]. The charge held."
+Signal: advance — move to recurrence normalization.
 
+Do not ask the charge question again — the system already asked it.
 Do not teach about aperture or field widening. The user just experienced it.
 
 SIGNALS:
-{"phase_signal": "advance"} — user gave exit charge, closing line delivered. Move to recurrence normalization.
-{"phase_signal": "stay"} — user has more to say, or exit charge not yet given.
+{"phase_signal": "advance"} — user described what they see, closing line delivered. Move to recurrence normalization.
+{"phase_signal": "stay"} — user gave exit charge number, now waiting for their response to "what do you see?"

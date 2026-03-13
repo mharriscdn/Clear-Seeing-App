@@ -77,6 +77,11 @@ def charge_delta_summary(entry_charge, exit_charge):
         return f"You came in at {entry_charge}. It's at {exit_charge}. The system tightened."
 
 
+# Injected when phase transitions into re_examination — guarantees the charge
+# question fires without depending on Claude to remember it.
+_RE_EXAM_CHARGE_QUESTION = "What's the charge now, on a scale of 1 to 10?"
+
+
 def process_chat(session_id, user_id, user_message):
     """
     Handles a user message for a given session:
@@ -90,8 +95,9 @@ def process_chat(session_id, user_id, user_message):
     8.  Save assistant reply with full token data
     9.  Parse advancement signal
     10. Apply signal to phase engine (update DB phase)
-    11. Log signal transition
-    12. Return (assistant_text, transcript)
+    11. If phase just entered re_examination, inject exit-charge question
+    12. Log signal transition
+    13. Return (assistant_text, transcript)
     Raises ValueError on bad session.
     """
     session = db.get_session(session_id, user_id)
@@ -179,6 +185,16 @@ def process_chat(session_id, user_id, user_message):
         f"[chat_service] signal={signal} | phase: {old_phase} -> {new_phase}"
     )
     # --- END PHASE ENGINE ---
+
+    # --- EXIT CHARGE INJECTION ---
+    # When the phase first enters re_examination, inject the charge question
+    # directly as a backend message. This guarantees the question fires every
+    # time, without relying on Claude to remember it.
+    if new_phase == "re_examination" and old_phase != "re_examination":
+        db.save_message(session_id, "assistant", _RE_EXAM_CHARGE_QUESTION)
+        assistant_text = assistant_text.rstrip() + "\n\n" + _RE_EXAM_CHARGE_QUESTION
+        print(f"[chat_service] Exit charge question injected (session {session_id})")
+    # --- END EXIT CHARGE INJECTION ---
 
     transcript = db.get_session_messages(session_id)
     return assistant_text, transcript
