@@ -179,7 +179,11 @@ def create_session(user_id):
     conn.commit()
     cur.close()
     conn.close()
-    return dict(session)
+    session = dict(session)
+    import urllib.parse as _up
+    _u = _up.urlparse(os.environ.get("DATABASE_URL", ""))
+    print(f"[DEBUG create_session] committed session id={session['id']} user_id={user_id} db={_u.hostname}/{_u.path.lstrip('/')}", flush=True)
+    return session
 
 
 def get_session(session_id, user_id):
