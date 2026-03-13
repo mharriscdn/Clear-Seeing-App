@@ -111,6 +111,26 @@ def api_chat():
 
 
 # ---------------------------------------------------------------------------
+# TEMPORARY — one-shot capacity backfill (remove after use)
+# ---------------------------------------------------------------------------
+
+
+@app.route("/api/admin/backfill-capacity")
+@auth.require_auth
+def api_backfill_capacity():
+    conn = db.get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT id, email, capacity_remaining FROM users WHERE capacity_remaining = 0 AND capacity_reset_date IS NULL")
+    targets = [dict(r) for r in cur.fetchall()]
+    cur.execute("UPDATE users SET capacity_remaining = 4990 WHERE capacity_remaining = 0 AND capacity_reset_date IS NULL")
+    rows_updated = cur.rowcount
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"rows_updated": rows_updated, "affected": targets})
+
+
+# ---------------------------------------------------------------------------
 # API — Billing (Stripe)
 # ---------------------------------------------------------------------------
 
