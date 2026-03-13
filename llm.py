@@ -59,12 +59,16 @@ def _load(filename):
 
 def get_system_prompt(phase="mirror", signal_retry=False):
     """
-    Assembles system prompt from:
-      core.txt + phase module + signal_instruction.txt
+    Assembles system prompt as a list of Anthropic content blocks.
+    Each block carries cache_control so Anthropic can cache the prompt.
 
-    If signal_retry is True, appends the next phase module under a
-    '--- NEXT PHASE (for reference) ---' header so Claude has more context
-    after a signal parse failure.
+    Cached blocks (type ephemeral):
+      - core.txt
+      - current phase module
+      - signal_instruction.txt
+
+    Not cached:
+      - next phase module appended on signal_retry (conditional, variable)
 
     Falls back to core + signal only if phase is 'complete' or unrecognised.
     """
@@ -72,43 +76,77 @@ def get_system_prompt(phase="mirror", signal_retry=False):
     signal = _load("signal_instruction.txt")
 
     phase_file = PHASE_MODULE_MAP.get(phase)
+
     if phase_file:
         phase_module = _load(phase_file)
-        prompt = f"{core}\n\n{phase_module}\n\n{signal}"
+        blocks = [
+            {"type": "text", "text": core,         "cache_control": {"type": "ephemeral"}},
+            {"type": "text", "text": phase_module,  "cache_control": {"type": "ephemeral"}},
+            {"type": "text", "text": signal,        "cache_control": {"type": "ephemeral"}},
+        ]
 
         if signal_retry:
             next_phase = TRANSITION_MAP.get(phase)
             next_file = PHASE_MODULE_MAP.get(next_phase) if next_phase else None
             if next_file:
                 next_module = _load(next_file)
-                prompt += f"\n\n--- NEXT PHASE (for reference) ---\n\n{next_module}"
+                blocks.append({
+                    "type": "text",
+                    "text": f"--- NEXT PHASE (for reference) ---\n\n{next_module}",
+                })
 
-        return prompt
+        return blocks
 
     # Fallback — phase is 'complete' or unrecognised
-    return f"{core}\n\n{signal}"
+    return [
+        {"type": "text", "text": core,   "cache_control": {"type": "ephemeral"}},
+        {"type": "text", "text": signal, "cache_control": {"type": "ephemeral"}},
+    ]
 
 
 def call_claude(messages, session, signal_retry=False):
     """
-    Calls Claude with assembled modular system prompt and message history.
+    Calls Claude with an assembled modular system prompt (content blocks).
     messages: list of dicts with 'role' and 'content'
-    session: session dict — conversation_phase used to select phase module
+    session:  session dict — conversation_phase used to select phase module
     signal_retry: if True, next phase module is appended for context
-    Returns: (response_text, token_count, model_name)
+
+    Returns a dict:
+      {
+        "content":      <assistant message text>,
+        "input_tokens": int,
+        "output_tokens": int,
+        "cached_tokens": int,   # cache_read_input_tokens only
+        "model":        str,
+      }
+    cache_creation_input_tokens is logged but not returned (not billed to user).
     """
     client = _get_client()
     phase = session.get("conversation_phase", "mirror") if session else "mirror"
-    system_prompt = get_system_prompt(phase, signal_retry=signal_retry)
+    system_blocks = get_system_prompt(phase, signal_retry=signal_retry)
 
     response = client.messages.create(
         model=MODEL,
         max_tokens=4096,
-        system=system_prompt,
+        system=system_blocks,
         messages=messages,
     )
 
     response_text = response.content[0].text
-    token_count = response.usage.input_tokens + response.usage.output_tokens
+    input_tokens = response.usage.input_tokens
+    output_tokens = response.usage.output_tokens
+    cached_tokens = getattr(response.usage, "cache_read_input_tokens", 0) or 0
+    cache_creation = getattr(response.usage, "cache_creation_input_tokens", 0) or 0
 
-    return response_text, token_count, MODEL
+    print(
+        f"[llm] tokens — input={input_tokens} output={output_tokens} "
+        f"cached={cached_tokens} cache_creation={cache_creation}"
+    )
+
+    return {
+        "content":      response_text,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "cached_tokens": cached_tokens,
+        "model":        MODEL,
+    }

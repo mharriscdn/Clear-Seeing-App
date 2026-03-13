@@ -52,7 +52,8 @@ def run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses):
     mock_phase_db.increment_evasion_count.return_value = 0
     mock_db.get_session.side_effect = build_db_side_effect(len(user_messages))
     mock_llm.side_effect = [
-        (text, 100, "claude") for text in llm_responses
+        {"content": text, "input_tokens": 60, "output_tokens": 40, "cached_tokens": 0, "model": "claude"}
+        for text in llm_responses
     ]
     for msg in user_messages:
         process_chat(1, 1, msg)

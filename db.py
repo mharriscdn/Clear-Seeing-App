@@ -2,8 +2,18 @@ import os
 import psycopg2
 import psycopg2.extras
 from datetime import datetime
+from math import ceil
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
+
+# ---------------------------------------------------------------------------
+# Pricing constants for claude-sonnet-4-6
+# ---------------------------------------------------------------------------
+_INPUT_RATE       = 3.00  / 1_000_000   # $ per input token
+_OUTPUT_RATE      = 15.00 / 1_000_000   # $ per output token
+_CACHE_READ_RATE  = 0.30  / 1_000_000   # $ per cache-read token
+_MARGIN           = 4                    # 4x actual API cost charged to user
+_UNIT_COST        = 0.001               # 1 capacity unit = $0.001 actual cost
 
 
 def get_conn():
@@ -22,7 +32,8 @@ def init_db():
             email TEXT UNIQUE NOT NULL,
             created_at TIMESTAMP DEFAULT NOW(),
             subscription_status TEXT DEFAULT 'inactive',
-            tank_remaining INTEGER DEFAULT 0
+            capacity_remaining INTEGER DEFAULT 0,
+            capacity_reset_date DATE
         )
     """)
 
@@ -83,6 +94,28 @@ def init_db():
     )
     cur.execute(
         "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS signal_retry BOOLEAN DEFAULT FALSE"
+    )
+
+    # Billing columns — users
+    cur.execute(
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS capacity_remaining INTEGER DEFAULT 0"
+    )
+    cur.execute(
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS capacity_reset_date DATE"
+    )
+
+    # Billing columns — messages
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS input_tokens INTEGER"
+    )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS output_tokens INTEGER"
+    )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS cached_tokens INTEGER"
+    )
+    cur.execute(
+        "ALTER TABLE messages ADD COLUMN IF NOT EXISTS capacity_units_deducted INTEGER"
     )
 
     conn.commit()
@@ -171,12 +204,18 @@ def get_session_messages(session_id):
     return [dict(m) for m in messages]
 
 
-def save_message(session_id, role, content, token_count=None, model=None):
+def save_message(session_id, role, content, token_count=None, model=None,
+                 input_tokens=None, output_tokens=None, cached_tokens=None,
+                 capacity_units_deducted=None):
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO messages (session_id, role, content, token_count, model) VALUES (%s, %s, %s, %s, %s) RETURNING *",
-        (session_id, role, content, token_count, model))
+        """INSERT INTO messages
+               (session_id, role, content, token_count, model,
+                input_tokens, output_tokens, cached_tokens, capacity_units_deducted)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
+        (session_id, role, content, token_count, model,
+         input_tokens, output_tokens, cached_tokens, capacity_units_deducted))
     msg = cur.fetchone()
     cur.execute("UPDATE sessions SET updated_at = NOW() WHERE id = %s",
                 (session_id, ))
@@ -305,3 +344,93 @@ def log_signal_transition(message_id, phase_signal, old_phase, new_phase):
     conn.commit()
     cur.close()
     conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Capacity / billing
+# ---------------------------------------------------------------------------
+
+
+def deduct_capacity(user_id, input_tokens, output_tokens, cached_tokens):
+    """
+    Calculates the capacity units for one Claude turn and subtracts them
+    from users.capacity_remaining.
+
+    Pricing (claude-sonnet-4-6):
+      Input:       $3.00 / 1M tokens
+      Output:      $15.00 / 1M tokens
+      Cache reads: $0.30 / 1M tokens  (cache_read_input_tokens only)
+
+    4x margin applied; 1 unit = $0.001 actual cost.
+    Formula: ceil((actual_cost * 4) / 0.001)
+
+    Returns the integer number of capacity units deducted.
+    No floor enforcement — deduct and log; blocking is handled by can_start_session.
+    """
+    actual_cost = (
+        input_tokens  * _INPUT_RATE +
+        output_tokens * _OUTPUT_RATE +
+        cached_tokens * _CACHE_READ_RATE
+    )
+    charged_cost = actual_cost * _MARGIN
+    capacity_units = ceil(charged_cost / _UNIT_COST)
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET capacity_remaining = capacity_remaining - %s WHERE id = %s",
+        (capacity_units, user_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    print(
+        f"[db] deduct_capacity user={user_id} units={capacity_units} "
+        f"(in={input_tokens} out={output_tokens} cached={cached_tokens})"
+    )
+    return capacity_units
+
+
+def can_start_session(user_id):
+    """
+    Returns True if the user has capacity_remaining > 0.
+    Called only at session start (first user message in a new session).
+    Never called mid-session.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT capacity_remaining FROM users WHERE id = %s", (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    if row is None:
+        return False
+    return row["capacity_remaining"] > 0
+
+
+def add_capacity_by_email(email, units, set_reset_date=None):
+    """
+    Adds capacity_units to users.capacity_remaining.
+    If set_reset_date is provided, also updates capacity_reset_date.
+    Top-up calls pass set_reset_date=None so existing expiry is preserved.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    if set_reset_date is not None:
+        cur.execute(
+            """UPDATE users
+               SET capacity_remaining = capacity_remaining + %s,
+                   capacity_reset_date = %s
+               WHERE email = %s""",
+            (units, set_reset_date, email),
+        )
+    else:
+        cur.execute(
+            "UPDATE users SET capacity_remaining = capacity_remaining + %s WHERE email = %s",
+            (units, email),
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+    print(f"[db] add_capacity_by_email email={email} units=+{units} reset_date={set_reset_date}")
