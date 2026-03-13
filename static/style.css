@@ -236,6 +236,35 @@ html, body {
     cursor: not-allowed;
 }
 
+/* ─── CHAT HEADER (carried from session entry) ────────────── */
+
+#chat-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.6rem 0 0;
+    gap: 0.6rem;
+}
+
+#chat-header .session-logo {
+    font-size: 20px;
+    letter-spacing: 0.25em;
+}
+
+#chat-header .session-push {
+    font-size: 24px;
+}
+
+#chat-header .session-obvious {
+    font-size: 24px;
+    font-style: italic;
+}
+
+#chat-header .session-divider {
+    margin-top: 0.8rem;
+}
+
 /* ─── SITUATION ANCHOR ────────────────────────────────────── */
 
 #situation-anchor {
