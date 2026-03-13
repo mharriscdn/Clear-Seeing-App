@@ -114,9 +114,8 @@ def process_chat(session_id, user_id, user_message):
 
     # Session gate — checked only at session start, never mid-session
     if is_first_user_reply and not db.can_start_session(user_id):
-        return (
-            "Your capacity has run out. Visit your account to top up and continue.",
-            [],
+        raise ValueError(
+            "Your capacity has run out. Visit Manage Billing to top up and continue."
         )
 
     # Save user message

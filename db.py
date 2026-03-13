@@ -118,6 +118,15 @@ def init_db():
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS capacity_units_deducted INTEGER"
     )
 
+    # One-time backfill: give 4990 capacity to users who were created before
+    # the default was set, i.e. capacity_remaining=0 with no purchase history.
+    cur.execute("""
+        UPDATE users
+        SET capacity_remaining = 4990
+        WHERE capacity_remaining = 0
+          AND capacity_reset_date IS NULL
+    """)
+
     conn.commit()
     cur.close()
     conn.close()
