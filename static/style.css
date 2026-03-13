@@ -10,7 +10,7 @@
     --muted: #888888;
     --border: #555555;
     --chat-border: #2a2a2a;
-    --assistant-bg: #111111;
+    --assistant-bg: #1b1b1b;
     --user-bg: #0d0d0d;
 }
 
@@ -245,6 +245,7 @@ html, body {
     text-align: center;
     padding: 1.6rem 0 0;
     gap: 0.6rem;
+    margin-bottom: 36px;
 }
 
 #chat-header .session-logo {
@@ -295,7 +296,7 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    max-width: 680px;
+    max-width: 520px;
     margin: 0 auto;
     padding: 0 1.5rem;
 }
@@ -343,7 +344,7 @@ html, body {
     flex: 1;
     font-family: Georgia, serif;
     font-size: 0.95rem;
-    background: #0a0a0a;
+    background: #0f0f0f;
     border: 1px solid var(--border);
     color: var(--fg);
     padding: 0.6rem 0.8rem;
