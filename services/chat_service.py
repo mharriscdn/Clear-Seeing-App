@@ -81,6 +81,12 @@ def charge_delta_summary(entry_charge, exit_charge):
 # question fires without depending on Claude to remember it.
 _RE_EXAM_CHARGE_QUESTION = "What's the charge now, on a scale of 1 to 10?"
 
+# Strips the phase_signal JSON block (and surrounding whitespace) from Claude's
+# response before it is stored. Signal extraction still runs on the original text.
+_SIGNAL_STRIP_RE = re.compile(
+    r'\s*\{\s*"phase_signal"\s*:\s*"[^"]*"\s*\}\s*'
+)
+
 
 def process_chat(session_id, user_id, user_message):
     """
@@ -142,14 +148,17 @@ def process_chat(session_id, user_id, user_message):
     cached_tokens   = result["cached_tokens"]
     model_name      = result["model"]
 
+    # Strip phase_signal JSON before storing — signal extraction still uses original
+    clean_text = _SIGNAL_STRIP_RE.sub("", assistant_text).strip()
+
     # Deduct capacity — single computed value used for both deduction and logging
     capacity_units = db.deduct_capacity(user_id, input_tokens, output_tokens, cached_tokens)
 
-    # Save assistant reply with full token data
+    # Save assistant reply with full token data (signal-free text)
     saved_msg = db.save_message(
         session_id,
         "assistant",
-        assistant_text,
+        clean_text,
         token_count=input_tokens + output_tokens,
         model=model_name,
         input_tokens=input_tokens,
@@ -191,9 +200,9 @@ def process_chat(session_id, user_id, user_message):
     # time, without relying on Claude to remember it.
     if new_phase == "re_examination" and old_phase != "re_examination":
         db.save_message(session_id, "assistant", _RE_EXAM_CHARGE_QUESTION)
-        assistant_text = assistant_text.rstrip() + "\n\n" + _RE_EXAM_CHARGE_QUESTION
+        clean_text = clean_text.rstrip() + "\n\n" + _RE_EXAM_CHARGE_QUESTION
         print(f"[chat_service] Exit charge question injected (session {session_id})")
     # --- END EXIT CHARGE INJECTION ---
 
     transcript = db.get_session_messages(session_id)
-    return assistant_text, transcript
+    return clean_text, transcript

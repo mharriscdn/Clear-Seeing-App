@@ -54,4 +54,6 @@ def test_chat_advance_signal():
         )
 
         mock_phase_db.update_session_phase.assert_called_once_with(1, "examinability")
-        assert assistant_text == mock_llm_response
+        # Phase signal JSON must be stripped from the returned text before display
+        assert '{"phase_signal"' not in assistant_text
+        assert "Let's examine what happens when the reassurance question appears." in assistant_text

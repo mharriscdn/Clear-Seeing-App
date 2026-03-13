@@ -111,45 +111,6 @@ def api_chat():
 
 
 # ---------------------------------------------------------------------------
-# TEMPORARY — read-only billing check (remove after use)
-# ---------------------------------------------------------------------------
-
-
-@app.route("/api/admin/check-billing")
-@auth.require_auth
-def api_check_billing():
-    user = request.current_user
-    conn = db.get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT id, user_id, created_at, conversation_phase
-        FROM sessions ORDER BY created_at DESC LIMIT 3
-    """)
-    sessions = [dict(r) for r in cur.fetchall()]
-
-    recent_messages = []
-    if sessions:
-        cur.execute("""
-            SELECT id, role, created_at,
-                   input_tokens, output_tokens, cached_tokens, capacity_units_deducted
-            FROM messages WHERE session_id = %s ORDER BY created_at
-        """, (sessions[0]["id"],))
-        recent_messages = [dict(r) for r in cur.fetchall()]
-
-    cur.execute("SELECT capacity_remaining FROM users WHERE id = %s", (user["id"],))
-    cap = cur.fetchone()
-
-    cur.close()
-    conn.close()
-    return jsonify({
-        "your_capacity_remaining": cap["capacity_remaining"] if cap else None,
-        "last_3_sessions": [{**s, "created_at": str(s["created_at"])} for s in sessions],
-        "messages_in_most_recent_session": [{**m, "created_at": str(m["created_at"])} for m in recent_messages],
-    })
-
-
-# ---------------------------------------------------------------------------
 # API — Billing (Stripe)
 # ---------------------------------------------------------------------------
 

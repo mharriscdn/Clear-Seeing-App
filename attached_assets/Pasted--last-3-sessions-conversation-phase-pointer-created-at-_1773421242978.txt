@@ -1,0 +1,268 @@
+{
+  "last_3_sessions": [
+    {
+      "conversation_phase": "pointer",
+      "created_at": "2026-03-13 16:46:54.028088",
+      "id": 11,
+      "user_id": 1
+    },
+    {
+      "conversation_phase": "mirror",
+      "created_at": "2026-03-13 16:19:21.933502",
+      "id": 10,
+      "user_id": 1
+    },
+    {
+      "conversation_phase": "mirror",
+      "created_at": "2026-03-13 16:18:03.893540",
+      "id": 9,
+      "user_id": 1
+    }
+  ],
+  "messages_in_most_recent_session": [
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:46:54.345600",
+      "id": 165,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:47:35.921694",
+      "id": 166,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 0,
+      "capacity_units_deducted": 7,
+      "created_at": "2026-03-13 16:47:40.427209",
+      "id": 167,
+      "input_tokens": 49,
+      "output_tokens": 91,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:47:54.761114",
+      "id": 168,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4942,
+      "capacity_units_deducted": 16,
+      "created_at": "2026-03-13 16:48:01.036991",
+      "id": 169,
+      "input_tokens": 145,
+      "output_tokens": 126,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:48:56.541064",
+      "id": 170,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4942,
+      "capacity_units_deducted": 12,
+      "created_at": "2026-03-13 16:48:58.950557",
+      "id": 171,
+      "input_tokens": 316,
+      "output_tokens": 25,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:49:14.318972",
+      "id": 172,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 3970,
+      "capacity_units_deducted": 12,
+      "created_at": "2026-03-13 16:49:16.589976",
+      "id": 173,
+      "input_tokens": 349,
+      "output_tokens": 43,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:50:18.247640",
+      "id": 174,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4581,
+      "capacity_units_deducted": 13,
+      "created_at": "2026-03-13 16:50:21.548139",
+      "id": 175,
+      "input_tokens": 405,
+      "output_tokens": 41,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:50:43.980325",
+      "id": 176,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 3970,
+      "capacity_units_deducted": 14,
+      "created_at": "2026-03-13 16:50:47.140962",
+      "id": 177,
+      "input_tokens": 459,
+      "output_tokens": 58,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:51:17.067325",
+      "id": 178,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 3970,
+      "capacity_units_deducted": 18,
+      "created_at": "2026-03-13 16:51:26.333564",
+      "id": 179,
+      "input_tokens": 532,
+      "output_tokens": 100,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:52:10.826192",
+      "id": 180,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 3970,
+      "capacity_units_deducted": 14,
+      "created_at": "2026-03-13 16:52:12.994151",
+      "id": 181,
+      "input_tokens": 646,
+      "output_tokens": 21,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:52:30.331078",
+      "id": 182,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4887,
+      "capacity_units_deducted": 17,
+      "created_at": "2026-03-13 16:52:34.533944",
+      "id": 183,
+      "input_tokens": 676,
+      "output_tokens": 49,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:53:11.339901",
+      "id": 184,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4887,
+      "capacity_units_deducted": 20,
+      "created_at": "2026-03-13 16:53:16.236636",
+      "id": 185,
+      "input_tokens": 746,
+      "output_tokens": 78,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:53:30.479448",
+      "id": 186,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4887,
+      "capacity_units_deducted": 17,
+      "created_at": "2026-03-13 16:53:32.799791",
+      "id": 187,
+      "input_tokens": 828,
+      "output_tokens": 19,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:53:51.983572",
+      "id": 188,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4887,
+      "capacity_units_deducted": 20,
+      "created_at": "2026-03-13 16:53:55.178668",
+      "id": 189,
+      "input_tokens": 861,
+      "output_tokens": 51,
+      "role": "assistant"
+    },
+    {
+      "cached_tokens": null,
+      "capacity_units_deducted": null,
+      "created_at": "2026-03-13 16:54:36.588157",
+      "id": 190,
+      "input_tokens": null,
+      "output_tokens": null,
+      "role": "user"
+    },
+    {
+      "cached_tokens": 4887,
+      "capacity_units_deducted": 20,
+      "created_at": "2026-03-13 16:54:40.254100",
+      "id": 191,
+      "input_tokens": 934,
+      "output_tokens": 36,
+      "role": "assistant"
+    }
+  ],
+  "your_capacity_remaining": 4790
+}
