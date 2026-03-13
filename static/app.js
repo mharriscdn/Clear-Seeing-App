@@ -108,7 +108,7 @@ async function sendMessage() {
         const data = await res.json();
 
         if (!res.ok) {
-            renderMessage({ role: "assistant", content: "[Error: " + (data.error || "unknown") + "]" });
+            renderMessage({ role: "assistant", content: data.error || "Something went wrong. Please try again." });
         } else {
             renderTranscript(data.transcript);
         }
