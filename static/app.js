@@ -76,6 +76,7 @@ async function sendOrientationMessage() {
     document.getElementById("orientation-screen").style.display = "none";
     document.getElementById("chat-area").style.display = "flex";
 
+    showSituationAnchor(text);
     renderMessage({ role: "user", content: text });
 
     try {
@@ -102,6 +103,15 @@ async function sendOrientationMessage() {
         if (sendBtn) sendBtn.disabled = false;
         if (userInput) userInput.focus();
     }
+}
+
+function showSituationAnchor(text) {
+    const el = document.getElementById("situation-anchor");
+    if (!el) return;
+    el.innerHTML =
+        '<span class="anchor-label">SITUATION</span>' +
+        '<span class="anchor-text">\u201C' + text + '\u201D</span>';
+    el.style.display = "flex";
 }
 
 function stripSignal(content) {
