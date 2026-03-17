@@ -118,6 +118,26 @@ def init_db():
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS capacity_units_deducted INTEGER"
     )
 
+    # Magic link auth tokens
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS magic_link_tokens (
+            id SERIAL PRIMARY KEY,
+            email TEXT NOT NULL,
+            token_hash TEXT NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            used BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_magic_tokens_email
+        ON magic_link_tokens(email)
+    """)
+    cur.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_magic_token_unique
+        ON magic_link_tokens(email, token_hash)
+    """)
+
     conn.commit()
     cur.close()
     conn.close()
@@ -439,3 +459,54 @@ def add_capacity_by_email(email, units, set_reset_date=None):
     cur.close()
     conn.close()
     print(f"[db] add_capacity_by_email email={email} units=+{units} reset_date={set_reset_date}")
+
+
+# ---------------------------------------------------------------------------
+# Magic link token helpers
+# ---------------------------------------------------------------------------
+
+
+def create_magic_token(email, token_hash, expires_at):
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO magic_link_tokens (email, token_hash, expires_at)
+           VALUES (%s, %s, %s)
+           ON CONFLICT (email, token_hash) DO NOTHING""",
+        (email, token_hash, expires_at),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def get_and_use_token(token_hash):
+    """
+    Atomically finds a valid (unexpired, unused) token, marks it used,
+    and returns the record. Returns None if invalid.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE magic_link_tokens
+           SET used = TRUE
+           WHERE token_hash = %s
+             AND used = FALSE
+             AND expires_at > NOW()
+           RETURNING *""",
+        (token_hash,),
+    )
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return dict(row) if row else None
+
+
+def cleanup_expired_tokens():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM magic_link_tokens WHERE expires_at < NOW()")
+    conn.commit()
+    cur.close()
+    conn.close()
