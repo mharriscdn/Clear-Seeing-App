@@ -1,0 +1,67 @@
+Create two files in the docs/ folder:
+
+FILE 1: docs/prompt_manifest.json
+An ordered list defining the sequence of all prompt files.
+Order must match the phase spine exactly:
+
+[
+  "core.txt",
+  "signal_instruction.txt",
+  "phase_mirror.txt",
+  "phase_examinability.txt",
+  "phase_activation_check.txt",
+  "phase_recovery.txt",
+  "phase_orient.txt",
+  "phase_pointer.txt",
+  "phase_revolving_door.txt",
+  "phase_hold_both_forces.txt",
+  "phase_courage_gate.txt",
+  "phase_hittability.txt",
+  "phase_integration.txt",
+  "phase_gibraltar.txt",
+  "phase_re_examination.txt",
+  "phase_recurrence_normalization.txt"
+]
+
+FILE 2: docs/generate_prompt_master.py
+A script that:
+1. Reads docs/prompt_manifest.json
+2. Reads each file from services/prompts/ in manifest order
+3. Assigns numbers by position (1, 2, 3...) — not hardcoded
+4. Writes docs/prompt_master.md with:
+   - A header: "CLEAR SEEING GUIDE — Prompt Master Document"
+   - A note: "Auto-generated. Do not edit manually. Run generate_prompt_master.py to update."
+   - For each prompt, in order:
+     - ## #N — FILENAME (e.g. ## #3 — phase_mirror.txt)
+     - The brief explanation for that phase (see below)
+     - The full content of the prompt file
+     - A divider line
+
+Brief explanations to include for each number:
+
+1. core.txt — The always-on coaching brain. Every rule, failure mode, metaphor, and path definition. Loaded every session, every turn.
+2. signal_instruction.txt — The telemetry layer. Forces Claude to append a machine-readable JSON signal so the phase engine knows what to do next. Loaded every session, every turn.
+3. phase_mirror.txt — First contact. Reflects the user's situation back in their own words, gets the charge number, names the escape move, and shows why it doesn't work — it's just another hand on the revolving door.
+4. phase_examinability.txt — Checks if the user can observe the sensation without being consumed by the story. Gate before any investigation begins.
+5. phase_activation_check.txt — Confirms the sensation feels like protection or bracing. Rules out neutral or physical sensation before escalating.
+6. phase_recovery.txt — Conditional detour for dysregulation. Four sub-routes matched to four failure modes. Returns to main spine once examinability is restored.
+7. phase_orient.txt — Narrows the search space. Tells the user what they're looking for without telling them what they'll find. Evasion tracking starts here.
+8. phase_pointer.txt — The investigation tool. One of ten questions the user checks in the body, not the mind.
+9. phase_revolving_door.txt — Gets the user to feel the push itself — the urge to escape — before examining what they're running from.
+10. phase_hold_both_forces.txt — The fork. User holds both the urge to escape and what they're escaping from simultaneously. PATH A, B, or C determined here.
+11. phase_courage_gate.txt — PATH C only. Gives permission to remain at the edge. Hesitation here is not evasion.
+12. phase_hittability.txt — PATH C only. Physical verification. Where in the body would the damage land? Tests whether the predicted harm actually arrives.
+13. phase_integration.txt — PATH C only. Three beats acknowledging what just happened. No teaching. No explanation. Then stop.
+14. phase_gibraltar.txt — PATH B only. Charge dissolved before hittability could run. One settling sentence. Do not test what is no longer live.
+15. phase_re_examination.txt — The return. User looks at their original problem through whatever aperture the session produced. Charge delta reported here.
+16. phase_recurrence_normalization.txt — The close. One or two sentences matched to the path. No questions. Session ends here unconditionally.
+
+FILE 3: Add one line to .replit or app.py startup
+On every deploy, run: python docs/generate_prompt_master.py
+This keeps docs/prompt_master.md current with whatever is in services/prompts/.
+
+To add a new phase later: insert the filename in the correct 
+position in prompt_manifest.json. All numbers shift automatically 
+on next generate. Do not hardcode numbers anywhere.
+
+76 tests must still pass. No other files touched.
