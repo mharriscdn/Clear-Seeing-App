@@ -1,6 +1,6 @@
 """
 Reads docs/prompt_manifest.json and services/prompts/ to produce
-docs/prompt_master.md — the authoritative single-file view of every prompt.
+docs/prompt_master.docx — the authoritative single-file view of every prompt.
 
 Run directly:  python docs/generate_prompt_master.py
 Also called on every app startup (see app.py).
@@ -9,9 +9,13 @@ Also called on every app startup (see app.py).
 import json
 import os
 
+from docx import Document
+from docx.shared import Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+
 MANIFEST_PATH = os.path.join(os.path.dirname(__file__), "prompt_manifest.json")
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "..", "services", "prompts")
-OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "prompt_master.md")
+OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "prompt_master.docx")
 
 EXPLANATIONS = {
     "core.txt": (
@@ -81,43 +85,61 @@ EXPLANATIONS = {
     ),
 }
 
-DIVIDER = "\n\n---\n\n"
-
 
 def generate():
     with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
-    lines = [
-        "# CLEAR SEEING GUIDE — Prompt Master Document",
-        "",
-        "_Auto-generated. Do not edit manually. "
-        "Run generate_prompt_master.py to update._",
-        "",
-    ]
+    doc = Document()
+
+    # --- Document title ---
+    title = doc.add_heading("CLEAR SEEING GUIDE — Prompt Master Document", level=0)
+    title.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+    # --- Auto-generated note ---
+    note = doc.add_paragraph(
+        "Auto-generated. Do not edit manually. "
+        "Run generate_prompt_master.py to update."
+    )
+    note.runs[0].italic = True
+    note.runs[0].font.color.rgb = RGBColor(0x88, 0x88, 0x88)
+
+    doc.add_paragraph()
 
     for position, filename in enumerate(manifest, start=1):
         prompt_path = os.path.join(PROMPTS_DIR, filename)
         with open(prompt_path, "r", encoding="utf-8") as f:
-            content = f.read().rstrip()
+            content = f.read().strip()
 
         explanation = EXPLANATIONS.get(filename, "")
 
-        lines.append(f"## #{position} — {filename}")
-        lines.append("")
+        # --- Section heading ---
+        heading = doc.add_heading(f"#{position} — {filename}", level=1)
+        heading.runs[0].font.color.rgb = RGBColor(0x1A, 0x1A, 0x1A)
+
+        # --- Explanation line ---
         if explanation:
-            lines.append(f"_{explanation}_")
-            lines.append("")
-        lines.append(content)
-        lines.append(DIVIDER.strip())
-        lines.append("")
+            exp_para = doc.add_paragraph(explanation)
+            exp_para.runs[0].italic = True
+            exp_para.runs[0].font.size = Pt(10)
+            exp_para.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
 
-    output = "\n".join(lines).rstrip() + "\n"
+        # --- Prompt body (monospace, preserve line breaks) ---
+        body = doc.add_paragraph()
+        body.paragraph_format.space_before = Pt(6)
+        run = body.add_run(content)
+        run.font.name = "Courier New"
+        run.font.size = Pt(9)
 
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        f.write(output)
+        # --- Divider ---
+        div = doc.add_paragraph("—" * 60)
+        div.runs[0].font.color.rgb = RGBColor(0xCC, 0xCC, 0xCC)
+        div.runs[0].font.size = Pt(8)
 
-    print(f"prompt_master.md written — {len(manifest)} prompts.")
+        doc.add_paragraph()
+
+    doc.save(OUTPUT_PATH)
+    print(f"prompt_master.docx written — {len(manifest)} prompts.")
 
 
 if __name__ == "__main__":
