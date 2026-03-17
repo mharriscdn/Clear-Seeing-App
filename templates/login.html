@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Seeing — Log In</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-wrap {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: normal;
+            letter-spacing: 0.18em;
+            margin-bottom: 48px;
+        }
+
+        .login-heading {
+            font-size: 18px;
+            font-weight: normal;
+            margin-bottom: 32px;
+            color: #c8c8c8;
+        }
+
+        .sent-msg {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #f2f2f2;
+            margin-bottom: 32px;
+        }
+
+        .error-msg {
+            font-size: 14px;
+            color: #cc6666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 3px;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        input[type="email"]:focus {
+            border-color: #666;
+        }
+
+        input[type="email"]::placeholder {
+            color: #555;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid #f2f2f2;
+            border-radius: 3px;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 16px;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        button[type="submit"]:hover {
+            background: #f2f2f2;
+            color: #000;
+        }
+
+        .login-note {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-wrap">
+
+    <div class="logo">CLEAR SEEING</div>
+
+    {% if sent %}
+        <p class="sent-msg">Check your email for a login link.</p>
+        <p class="login-note">
+            The link expires in 15 minutes.<br>
+            You can close this tab.
+        </p>
+    {% else %}
+        <p class="login-heading">Enter your email to log in.</p>
+
+        {% if error %}
+            <p class="error-msg">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/auth/request-link">
+            <input
+                type="email"
+                name="email"
+                placeholder="your@email.com"
+                required
+                autofocus
+            />
+            <button type="submit">Send login link</button>
+        </form>
+
+        <p class="login-note">
+            No password. We email you a link.<br>
+            First time here? An account is created automatically.
+        </p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

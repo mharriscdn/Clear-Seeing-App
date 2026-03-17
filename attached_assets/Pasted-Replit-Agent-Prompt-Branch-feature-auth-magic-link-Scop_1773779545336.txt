@@ -1,0 +1,272 @@
+Replit Agent Prompt
+
+Branch: feature/auth-magic-link
+
+Scope limit:
+You may modify only:
+
+auth_magic_link.py (new file)
+db.py
+app.py (login/auth routes only)
+templates/login.html
+
+Do NOT modify:
+
+services/phase_engine.py
+services/chat_service.py
+services/prompts/*
+docs/*
+prompt files
+billing
+stripe
+tests
+
+Do not modify the prompt system or mechanism logic.
+
+TASK 1 — DATABASE
+
+Add a table for magic link tokens in db.py.
+
+SQL:
+
+CREATE TABLE IF NOT EXISTS magic_link_tokens (
+    id SERIAL PRIMARY KEY,
+    email TEXT NOT NULL,
+    token_hash TEXT NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_magic_tokens_email
+ON magic_link_tokens(email);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_magic_token_unique
+ON magic_link_tokens(email, token_hash);
+
+This table stores hashed login tokens.
+
+TASK 2 — NEW AUTH MODULE
+
+Create new file:
+
+auth_magic_link.py
+
+Imports required:
+
+os
+secrets
+hashlib
+datetime
+jwt
+requests
+flask
+
+Environment variables:
+
+RESEND_API_KEY
+EMAIL_FROM
+JWT_SECRET
+MAGIC_LINK_EXPIRY_MINUTES
+Route 1 — Request Login Link
+
+POST /auth/request-link
+
+Steps:
+
+Accept email from request form.
+
+Generate token:
+
+token = secrets.token_urlsafe(32)
+
+Hash token:
+
+token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+Insert into DB:
+
+email
+token_hash
+expires_at = NOW + MAGIC_LINK_EXPIRY_MINUTES
+used = false
+
+Send email via Resend API.
+
+Endpoint:
+
+POST https://api.resend.com/emails
+
+Headers:
+
+Authorization: Bearer RESEND_API_KEY
+Content-Type: application/json
+
+Payload:
+
+{
+  "from": EMAIL_FROM,
+  "to": [email],
+  "subject": "Your Clear Seeing login link",
+  "html": "<p>Click to log in:</p><p><a href='https://app.clearseeing.ca/auth/verify?token=<token>'>Login</a></p>"
+}
+
+Return success message:
+
+Check your email for a login link.
+Route 2 — Verify Login
+
+GET /auth/verify
+
+Steps:
+
+Read token from query param.
+
+Hash token.
+
+Query DB for matching token_hash.
+
+Verify:
+
+not expired
+not used
+
+If invalid:
+
+Return friendly error page.
+
+If valid:
+
+Mark token as used = true.
+
+Cleanup expired tokens:
+
+DELETE FROM magic_link_tokens
+WHERE expires_at < NOW();
+
+Get or create user by email.
+
+Issue JWT session cookie.
+
+Payload:
+
+{
+user_id
+email
+exp: now + 24 hours
+}
+
+Encode with:
+
+jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+
+Set cookie:
+
+HttpOnly
+Secure
+SameSite=Lax
+Path=/
+
+Then redirect to:
+
+/
+TASK 3 — AUTH DECORATOR
+
+Create require_auth() decorator.
+
+Behavior:
+
+Read session cookie.
+
+Decode JWT with JWT_SECRET.
+
+If valid:
+
+attach user to request.current_user
+
+If missing or invalid:
+
+Redirect to /login.
+
+Replace existing Replit auth usage with this decorator.
+
+Do not modify route behavior beyond auth replacement.
+
+TASK 4 — LOGIN PAGE
+
+Create or replace:
+
+templates/login.html
+
+Design:
+
+Match app aesthetic:
+
+black background
+Georgia serif
+centered form
+
+Form:
+
+Email input
+Send login link button
+POST /auth/request-link
+
+After submission display:
+
+Check your email for a login link.
+TASK 5 — ENVIRONMENT VARIABLES
+
+Ensure the code reads these from environment variables:
+
+RESEND_API_KEY
+EMAIL_FROM
+JWT_SECRET
+MAGIC_LINK_EXPIRY_MINUTES
+
+Do not hardcode them.
+
+SUCCESS CRITERIA
+
+All of the following must work:
+
+User visits /login
+
+Enters email
+
+Receives login link
+
+Clicks link
+
+JWT cookie created
+
+User redirected into app
+
+Expired tokens rejected
+
+Used tokens rejected
+
+Expired tokens cleaned up automatically
+
+Existing system behavior unchanged
+
+Also confirm:
+
+76 tests still pass
+DO NOT CHANGE
+
+The following systems must remain untouched:
+
+phase engine
+prompt modules
+billing
+stripe
+capacity system
+chat service
+prompt manifest
+
+When finished, commit to branch:
+
+feature/auth-magic-link
+
+Do not merge to main.
