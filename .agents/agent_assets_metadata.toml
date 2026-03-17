@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "SJXVd3ACsCB0FKQJrAYJY"
+uri = "file://docs/prompt_master.docx"
+type = "word_document"
+title = "Clear Seeing Guide — Prompt Master Document"
