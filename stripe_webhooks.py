@@ -6,12 +6,23 @@ from datetime import datetime, timedelta
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-# Capacity granted per plan (in cents → capacity units)
-_CHECKOUT_AMOUNT_MAP = {
-    499:  {"units": 4990, "set_reset": True},   # month one  ($4.99)
-    999:  {"units": 9990, "set_reset": True},   # subscription ($9.99)
-    500:  {"units": 5000, "set_reset": False},  # top-up ($5.00) — no expiry change
-}
+
+def _get_price_plan(price_id):
+    """
+    Return plan config for the given Stripe Price ID, or None if unrecognised.
+    Price IDs come from environment variables so no code change is needed when
+    prices are updated in Stripe.
+    """
+    if not price_id:
+        return None
+    price_map = {
+        os.environ.get("STRIPE_PRICE_MONTH_ONE"):    {"units": 5000,  "set_reset": True},
+        os.environ.get("STRIPE_PRICE_SUBSCRIPTION"): {"units": 10000, "set_reset": True},
+        os.environ.get("STRIPE_PRICE_TOPUP"):        {"units": 5000,  "set_reset": False},
+    }
+    # Drop entries where the env var is not set (key would be None)
+    price_map = {k: v for k, v in price_map.items() if k}
+    return price_map.get(price_id)
 
 
 def handle_webhook(payload, sig_header):
@@ -40,9 +51,21 @@ def handle_webhook(payload, sig_header):
 
     elif event_type == "checkout.session.completed":
         customer_id = data.get("customer")
-        amount_total = data.get("amount_total")
+        session_id = data.get("id")
 
-        plan = _CHECKOUT_AMOUNT_MAP.get(amount_total)
+        # Retrieve the session with line_items expanded to read the Price ID
+        price_id = None
+        try:
+            expanded = stripe.checkout.Session.retrieve(
+                session_id, expand=["line_items"]
+            )
+            items = expanded.line_items.data if expanded.line_items else []
+            if items:
+                price_id = items[0].price.id
+        except Exception as e:
+            print(f"[stripe_webhooks] Failed to expand session {session_id}: {e}")
+
+        plan = _get_price_plan(price_id)
         if plan:
             reset_date = (
                 (datetime.utcnow() + timedelta(days=30)).date()
@@ -52,7 +75,7 @@ def handle_webhook(payload, sig_header):
             _update_user_by_customer(customer_id, "active")
         else:
             print(
-                f"[stripe_webhooks] Unknown amount_total={amount_total} on "
+                f"[stripe_webhooks] Unknown price_id={price_id!r} on "
                 f"checkout.session.completed — no capacity change made"
             )
             _update_user_by_customer(customer_id, "active")
@@ -68,7 +91,6 @@ def _update_user_by_customer(customer_id, status):
         if email:
             db.update_user_subscription(email, status)
     except Exception as e:
-        # Log but don't crash — webhook must return 200
         print(f"[stripe_webhooks] Failed to update user for customer {customer_id}: {e}")
 
 
@@ -102,7 +124,6 @@ def create_checkout_session(user_email, price_id, success_url, cancel_url):
 
 def create_portal_session(user_email, return_url):
     """Creates a Stripe Customer Portal session for managing billing."""
-    # Find customer by email
     customers = stripe.Customer.list(email=user_email, limit=1)
     if not customers.data:
         return None
