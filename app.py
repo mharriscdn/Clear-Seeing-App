@@ -23,6 +23,13 @@ try:
 except Exception as e:
     print("DB init failed:", e)
 
+# Keep prompt master doc current on every deploy
+try:
+    import subprocess, sys
+    subprocess.run([sys.executable, "docs/generate_prompt_master.py"], check=True)
+except Exception as e:
+    print("Prompt master generation failed:", e)
+
 
 @app.route("/health")
 def health():
