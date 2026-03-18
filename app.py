@@ -1,9 +1,8 @@
 import os
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from flask import Flask, request, jsonify, render_template, redirect
 from werkzeug.middleware.proxy_fix import ProxyFix
 import db
-import auth
-from replit_auth import make_replit_blueprint, init_login_manager, require_login
+import auth_magic_link
 from services import chat_service, session_service, billing_service
 import stripe_webhooks
 
@@ -13,9 +12,8 @@ app.secret_key = os.environ.get("SESSION_SECRET")
 # ProxyFix is required so url_for() generates https:// URLs correctly behind Replit's proxy
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Register Replit OIDC auth blueprint at /auth prefix
-app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
-init_login_manager(app)
+# Register magic link auth blueprint at /auth prefix
+app.register_blueprint(auth_magic_link.bp, url_prefix="/auth")
 
 # Initialize database tables on startup
 try:
@@ -36,11 +34,6 @@ def health():
     return "OK", 200
 
 
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-
-
 # ---------------------------------------------------------------------------
 # Frontend
 # ---------------------------------------------------------------------------
@@ -51,13 +44,18 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
 # ---------------------------------------------------------------------------
 # API — Auth / User
 # ---------------------------------------------------------------------------
 
 
 @app.route("/api/me")
-@auth.require_auth
+@auth_magic_link.require_auth
 def api_me():
     user = request.current_user
     return jsonify({
@@ -73,7 +71,7 @@ def api_me():
 
 
 @app.route("/api/session/new", methods=["POST"])
-@auth.require_auth
+@auth_magic_link.require_auth
 def api_new_session():
     user = request.current_user
     s = session_service.new_session(user["id"])
@@ -86,7 +84,7 @@ def api_new_session():
 
 
 @app.route("/api/chat", methods=["POST"])
-@auth.require_auth
+@auth_magic_link.require_auth
 def api_chat():
     user = request.current_user
     data = request.get_json()
@@ -94,8 +92,7 @@ def api_chat():
     user_message = data.get("user_message", "").strip()
 
     if not session_id or not user_message:
-        return jsonify({"error":
-                        "session_id and user_message are required"}), 400
+        return jsonify({"error": "session_id and user_message are required"}), 400
 
     try:
         assistant_text, transcript = chat_service.process_chat(
@@ -107,8 +104,7 @@ def api_chat():
         return jsonify({"error": "Failed to get response from Claude"}), 500
 
     return jsonify({
-        "assistant_text":
-        assistant_text,
+        "assistant_text": assistant_text,
         "transcript": [{
             "role": m["role"],
             "content": m["content"],
@@ -123,7 +119,7 @@ def api_chat():
 
 
 @app.route("/api/billing/checkout", methods=["POST"])
-@auth.require_auth
+@auth_magic_link.require_auth
 def api_checkout():
     user = request.current_user
     data = request.get_json()
@@ -146,7 +142,7 @@ def api_checkout():
 
 
 @app.route("/api/billing/portal", methods=["POST"])
-@auth.require_auth
+@auth_magic_link.require_auth
 def api_portal():
     user = request.current_user
     base_url = request.host_url.rstrip("/")
@@ -159,8 +155,7 @@ def api_portal():
         return jsonify({"error": "Failed to create portal session"}), 500
 
     if not portal_url:
-        return jsonify({"error":
-                        "No Stripe customer found for this account"}), 404
+        return jsonify({"error": "No Stripe customer found for this account"}), 404
 
     return jsonify({"url": portal_url})
 
