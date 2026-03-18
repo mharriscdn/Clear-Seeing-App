@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Seeing — Subscribe</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .paywall-wrap {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: normal;
+            letter-spacing: 0.18em;
+            margin-bottom: 56px;
+        }
+
+        .trial-ended {
+            font-size: 20px;
+            font-weight: normal;
+            margin-bottom: 12px;
+            color: #f2f2f2;
+        }
+
+        .continue-text {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .price-block {
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: 0.02em;
+        }
+
+        .price-period {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .cancel-note {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 36px;
+        }
+
+        form {
+            margin-bottom: 0;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            background: #f2f2f2;
+            border: none;
+            border-radius: 3px;
+            color: #000;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 17px;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        button[type="submit"]:hover {
+            opacity: 0.88;
+        }
+
+        .logout-link {
+            display: block;
+            margin-top: 32px;
+            font-size: 13px;
+            color: #444;
+            text-decoration: none;
+        }
+
+        .logout-link:hover {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="paywall-wrap">
+
+    <div class="logo">CLEAR SEEING</div>
+
+    <p class="trial-ended">Your free trial has ended.</p>
+    <p class="continue-text">Continue with unlimited sessions.</p>
+
+    <div class="price-block">
+        <span class="price">$9.99</span>
+        <span class="price-period">&nbsp;/ month</span>
+    </div>
+    <p class="cancel-note">Cancel anytime.</p>
+
+    <form method="POST" action="/create-checkout-session">
+        <button type="submit">Start subscription</button>
+    </form>
+
+    <a class="logout-link" href="/auth/logout">Log out</a>
+
+</div>
+
+</body>
+</html>
