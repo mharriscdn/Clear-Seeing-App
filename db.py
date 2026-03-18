@@ -480,6 +480,31 @@ def add_capacity_by_email(email, units, set_reset_date=None):
 
 
 # ---------------------------------------------------------------------------
+# Trial helpers
+# ---------------------------------------------------------------------------
+
+
+def start_trial(user_id):
+    """
+    Sets trial_ends_at = NOW() + 7 days and subscription_status = 'trial'
+    for a user whose trial_ends_at is currently NULL.
+    Safe to call repeatedly — the WHERE clause makes it a no-op if already set.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE users
+           SET trial_ends_at = NOW() + INTERVAL '7 days',
+               subscription_status = 'trial'
+           WHERE id = %s AND trial_ends_at IS NULL""",
+        (user_id,),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+# ---------------------------------------------------------------------------
 # Stripe / subscription helpers
 # ---------------------------------------------------------------------------
 
