@@ -8,7 +8,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 import db
 import auth_magic_link
 import stripe_webhooks
-from services import chat_service, session_service, billing_service
+from services import chat_service, session_service, billing_service, session_email
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
@@ -229,6 +229,19 @@ def api_chat():
     except Exception as e:
         print(f"[api_chat] Error: {e}")
         return jsonify({"error": "Failed to get response from Claude"}), 500
+
+    # Fire reflection email when session reaches recurrence_normalization.
+    # Wrapped in its own try/except — email failure must never break the chat.
+    try:
+        session_state = db.get_session(session_id, user["id"])
+        if (
+            session_state
+            and session_state.get("conversation_phase") == "recurrence_normalization"
+            and not session_state.get("reflection_email_sent")
+        ):
+            session_email.send_session_email(session_id)
+    except Exception as e:
+        print(f"[api_chat] Reflection email trigger error (non-fatal): {e}")
 
     return jsonify({
         "assistant_text": assistant_text,
