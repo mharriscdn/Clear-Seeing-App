@@ -5,7 +5,7 @@ async function init() {
     try {
         const res = await fetch("/api/me");
         if (res.status === 401) {
-            window.location.href = "/auth/replit_auth";
+            window.location.href = "/login";
             return;
         }
         if (!res.ok) return;
@@ -28,7 +28,7 @@ async function startSession() {
         const res = await fetch("/api/session/new", { method: "POST" });
 
         if (res.status === 401) {
-            window.location.href = "/auth/replit_auth";
+            window.location.href = "/login";
             return;
         }
 
