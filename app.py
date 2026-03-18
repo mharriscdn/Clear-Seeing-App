@@ -1,10 +1,14 @@
 import os
+from datetime import datetime
+
+import jwt as pyjwt
 from flask import Flask, request, jsonify, render_template, redirect
 from werkzeug.middleware.proxy_fix import ProxyFix
+
 import db
 import auth_magic_link
-from services import chat_service, session_service, billing_service
 import stripe_webhooks
+from services import chat_service, session_service, billing_service
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
@@ -29,24 +33,147 @@ except Exception as e:
     print("Prompt master generation failed:", e)
 
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+def _get_user_from_cookie():
+    """
+    Decodes the JWT session cookie and returns the DB user dict, or None.
+    Used for routes that need the user but aren't wrapped in require_auth.
+    """
+    token = request.cookies.get("cs_session")
+    if not token:
+        return None
+    try:
+        payload = pyjwt.decode(
+            token, os.environ.get("JWT_SECRET", ""), algorithms=["HS256"]
+        )
+        return db.get_user_by_id(payload.get("user_id"))
+    except Exception:
+        return None
+
+
+def _check_access(user):
+    """
+    Returns True if the user may access the main app.
+
+    Rules:
+    - Active subscription → allow.
+    - trial_ends_at is NULL → trial not yet started; initialize it now and allow.
+    - trial_ends_at is set and in the future → allow.
+    - trial_ends_at is set and in the past → deny (redirect to paywall).
+    """
+    if user.get("subscription_status") == "active":
+        return True
+
+    trial_ends = user.get("trial_ends_at")
+
+    if trial_ends is None:
+        # Trial never initialized (pre-existing user or race condition).
+        # Start it now — safe to call repeatedly; DB only updates if still NULL.
+        db.start_trial(user["id"])
+        return True
+
+    # trial_ends_at is set — check whether it's still valid.
+    if isinstance(trial_ends, str):
+        trial_ends = datetime.fromisoformat(trial_ends)
+    if datetime.utcnow() < trial_ends.replace(tzinfo=None):
+        return True
+
+    return False
+
+
+# ---------------------------------------------------------------------------
+# Health
+# ---------------------------------------------------------------------------
+
+
 @app.route("/health")
 def health():
     return "OK", 200
 
 
+# TEMPORARY — remove after use
+@app.route("/api/admin/fix-developer-account", methods=["POST"])
+@auth_magic_link.require_auth
+def admin_fix_developer_account():
+    import psycopg2, psycopg2.extras
+    conn = psycopg2.connect(os.environ["DATABASE_URL"],
+                            cursor_factory=psycopg2.extras.RealDictCursor)
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE users
+        SET subscription_status = 'active', trial_ends_at = NULL
+        WHERE email = 'mharriscdn@gmail.com'
+    """)
+    rows_updated = cur.rowcount
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True, "rows_updated": rows_updated,
+                    "email": "mharriscdn@gmail.com",
+                    "subscription_status": "active"})
+
+
 # ---------------------------------------------------------------------------
-# Frontend
+# Frontend — access-gated
 # ---------------------------------------------------------------------------
 
 
 @app.route("/")
 def index():
+    user = _get_user_from_cookie()
+    if user is None:
+        return redirect("/login")
+    if not _check_access(user):
+        return redirect("/paywall")
     return render_template("index.html")
 
 
 @app.route("/login")
 def login():
     return render_template("login.html")
+
+
+@app.route("/paywall")
+def paywall():
+    user = _get_user_from_cookie()
+    if user is None:
+        return redirect("/login")
+    # If they now have access (e.g. webhook already fired), send them home
+    if _check_access(user):
+        return redirect("/")
+    return render_template("paywall.html")
+
+
+# ---------------------------------------------------------------------------
+# Stripe — subscription checkout from paywall
+# ---------------------------------------------------------------------------
+
+
+@app.route("/create-checkout-session", methods=["POST"])
+def create_checkout_session():
+    user = _get_user_from_cookie()
+    if user is None:
+        return redirect("/login")
+
+    price_id = os.environ.get("STRIPE_PRICE_ID_STANDARD")
+    if not price_id:
+        return "Subscription price not configured.", 500
+
+    success_url = "https://app.clearseeing.ca"
+    cancel_url = "https://app.clearseeing.ca/paywall"
+
+    try:
+        session = stripe_webhooks.create_paywall_checkout(
+            user, price_id, success_url, cancel_url
+        )
+        return redirect(session.url, code=303)
+    except Exception as e:
+        print(f"[create_checkout_session] Stripe error: {e}")
+        return "Failed to start checkout. Please try again.", 500
 
 
 # ---------------------------------------------------------------------------

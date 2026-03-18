@@ -118,6 +118,21 @@ def init_db():
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS capacity_units_deducted INTEGER"
     )
 
+    # Trial + Stripe subscription columns
+    cur.execute(
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP"
+    )
+    cur.execute(
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT"
+    )
+    cur.execute(
+        "ALTER TABLE users ALTER COLUMN subscription_status SET DEFAULT 'trial'"
+    )
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_users_stripe_customer
+        ON users(stripe_customer_id)
+    """)
+
     # Magic link auth tokens
     cur.execute("""
         CREATE TABLE IF NOT EXISTS magic_link_tokens (
@@ -150,7 +165,10 @@ def get_or_create_user(email):
     user = cur.fetchone()
     if not user:
         cur.execute(
-            "INSERT INTO users (email, capacity_remaining) VALUES (%s, 4990) RETURNING *",
+            """INSERT INTO users
+                   (email, capacity_remaining, subscription_status, trial_ends_at)
+               VALUES (%s, 4990, 'trial', NOW() + INTERVAL '7 days')
+               RETURNING *""",
             (email, ))
         user = cur.fetchone()
         conn.commit()
@@ -459,6 +477,72 @@ def add_capacity_by_email(email, units, set_reset_date=None):
     cur.close()
     conn.close()
     print(f"[db] add_capacity_by_email email={email} units=+{units} reset_date={set_reset_date}")
+
+
+# ---------------------------------------------------------------------------
+# Trial helpers
+# ---------------------------------------------------------------------------
+
+
+def start_trial(user_id):
+    """
+    Sets trial_ends_at = NOW() + 7 days and subscription_status = 'trial'
+    for a user whose trial_ends_at is currently NULL.
+    Safe to call repeatedly — the WHERE clause makes it a no-op if already set.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE users
+           SET trial_ends_at = NOW() + INTERVAL '7 days',
+               subscription_status = 'trial'
+           WHERE id = %s AND trial_ends_at IS NULL""",
+        (user_id,),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Stripe / subscription helpers
+# ---------------------------------------------------------------------------
+
+
+def get_user_by_stripe_customer_id(stripe_customer_id):
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE stripe_customer_id = %s", (stripe_customer_id,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+    return dict(user) if user else None
+
+
+def update_stripe_customer_id(user_id, stripe_customer_id):
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET stripe_customer_id = %s WHERE id = %s",
+        (stripe_customer_id, user_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def update_subscription_by_stripe_customer(stripe_customer_id, status):
+    """Updates subscription_status for a user matched by stripe_customer_id."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET subscription_status = %s WHERE stripe_customer_id = %s",
+        (status, stripe_customer_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    print(f"[db] subscription={status} for stripe_customer={stripe_customer_id}")
 
 
 # ---------------------------------------------------------------------------

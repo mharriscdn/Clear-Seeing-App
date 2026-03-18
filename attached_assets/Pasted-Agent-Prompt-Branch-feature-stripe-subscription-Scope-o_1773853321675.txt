@@ -1,0 +1,191 @@
+Agent Prompt
+
+Branch
+
+feature/stripe-subscription
+
+Scope — only modify these files
+
+app.py
+db.py
+stripe_webhooks.py
+templates/
+
+Do NOT modify
+
+prompt files
+phase engine
+chat service
+services/
+
+Do not change any prompt logic or session engine behavior.
+
+GOAL
+
+Implement a 7-day free trial → $9.99/month Stripe subscription paywall.
+
+Users should experience:
+
+login via magic link
+↓
+use app during 7-day trial
+↓
+after trial expires → see paywall
+↓
+subscribe through Stripe
+↓
+webhook activates subscription
+
+Important:
+
+Do NOT implement credits
+Do NOT implement top-ups
+Do NOT implement capacity units
+
+This is a simple trial + subscription model.
+
+TASK 1 — SAFE DATABASE MIGRATION
+
+Update the users table to support trial + Stripe.
+
+Before running any migrations:
+
+Inspect the current users table schema.
+
+Only apply changes if columns are missing.
+
+The migration must be idempotent and safe to run multiple times.
+
+Add the following columns only if they do not exist:
+
+trial_ends_at TIMESTAMP
+stripe_customer_id TEXT
+
+Use PostgreSQL syntax:
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
+
+The column subscription_status already exists.
+
+Do NOT recreate it.
+
+Optionally ensure it has a default value:
+
+ALTER TABLE users
+ALTER COLUMN subscription_status SET DEFAULT 'trial';
+
+This must not modify existing rows.
+
+Add an index to support fast Stripe webhook lookups:
+
+CREATE INDEX IF NOT EXISTS idx_users_stripe_customer
+ON users(stripe_customer_id);
+
+Place migration logic in db.py so it runs safely during DB initialization.
+
+TASK 2 — START TRIAL ON FIRST LOGIN
+
+When a new user is created during the magic-link login flow:
+
+If trial_ends_at is NULL:
+
+trial_ends_at = now + 7 days
+subscription_status = 'trial'
+
+Save these values to the database.
+
+Existing users should remain unchanged.
+
+TASK 3 — ACCESS GATE
+
+Before loading the main app screen, check subscription status.
+
+Logic:
+
+if subscription_status == 'active'
+    allow access
+
+elif trial_ends_at > now
+    allow access
+
+else
+    redirect('/paywall')
+
+Users with expired trials and no active subscription must see the paywall.
+
+TASK 4 — PAYWALL PAGE
+
+Create a new template:
+
+templates/paywall.html
+
+Design requirements:
+
+black background
+Georgia serif font
+match existing app aesthetic
+
+Page content:
+
+CLEAR SEEING
+
+Your free trial has ended.
+
+Continue with unlimited sessions.
+
+$9.99 / month
+Cancel anytime.
+
+[Start subscription]
+
+The button should call:
+
+POST /create-checkout-session
+TASK 5 — STRIPE CHECKOUT SESSION
+
+Add a new route in app.py:
+
+POST /create-checkout-session
+
+Logic:
+
+If the user does not have a Stripe customer:
+
+stripe.Customer.create(email=user.email)
+
+Store the returned stripe_customer_id in the users table.
+
+Then create the Stripe checkout session:
+
+stripe.checkout.Session.create(
+  customer=user.stripe_customer_id,
+  payment_method_types=['card'],
+  mode='subscription',
+  line_items=[{
+      'price': STRIPE_PRICE_MONTHLY,
+      'quantity': 1
+  }],
+  success_url='https://app.clearseeing.ca',
+  cancel_url='https://app.clearseeing.ca/paywall'
+)
+
+Redirect the user to the Stripe checkout page.
+
+TASK 6 — STRIPE WEBHOOK
+
+Update stripe_webhooks.py.
+
+Handle these events.
+
+invoice.paid
+find user by stripe_customer_id
+subscription_status = 'active'
+save to database
+customer.subscription.deleted
+find user by stripe_customer_id
+subscription_status = 'canceled'
+save to database
