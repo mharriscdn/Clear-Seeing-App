@@ -95,6 +95,28 @@ def health():
     return "OK", 200
 
 
+# TEMPORARY — remove after use
+@app.route("/api/admin/fix-developer-account", methods=["POST"])
+@auth_magic_link.require_auth
+def admin_fix_developer_account():
+    import psycopg2, psycopg2.extras
+    conn = psycopg2.connect(os.environ["DATABASE_URL"],
+                            cursor_factory=psycopg2.extras.RealDictCursor)
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE users
+        SET subscription_status = 'active', trial_ends_at = NULL
+        WHERE email = 'mharriscdn@gmail.com'
+    """)
+    rows_updated = cur.rowcount
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True, "rows_updated": rows_updated,
+                    "email": "mharriscdn@gmail.com",
+                    "subscription_status": "active"})
+
+
 # ---------------------------------------------------------------------------
 # Frontend — access-gated
 # ---------------------------------------------------------------------------
