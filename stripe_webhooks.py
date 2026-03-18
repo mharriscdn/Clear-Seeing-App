@@ -16,9 +16,8 @@ def _get_price_plan(price_id):
     if not price_id:
         return None
     price_map = {
-        os.environ.get("STRIPE_PRICE_MONTH_ONE"):    {"units": 5000,  "set_reset": True},
-        os.environ.get("STRIPE_PRICE_SUBSCRIPTION"): {"units": 10000, "set_reset": True},
-        os.environ.get("STRIPE_PRICE_TOPUP"):        {"units": 5000,  "set_reset": False},
+        os.environ.get("STRIPE_PRICE_ID_INTRO"):    {"units": 5000,  "set_reset": True},
+        os.environ.get("STRIPE_PRICE_ID_STANDARD"): {"units": 10000, "set_reset": True},
     }
     # Drop entries where the env var is not set (key would be None)
     price_map = {k: v for k, v in price_map.items() if k}

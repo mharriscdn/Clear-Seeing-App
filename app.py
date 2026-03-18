@@ -126,7 +126,7 @@ def create_checkout_session():
     if user is None:
         return redirect("/login")
 
-    price_id = os.environ.get("STRIPE_PRICE_MONTHLY") or os.environ.get("STRIPE_PRICE_SUBSCRIPTION")
+    price_id = os.environ.get("STRIPE_PRICE_ID_STANDARD")
     if not price_id:
         return "Subscription price not configured.", 500
 
