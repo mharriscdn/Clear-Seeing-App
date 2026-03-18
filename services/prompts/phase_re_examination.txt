@@ -1,5 +1,7 @@
 PHASE: RE-EXAMINATION
 
+The charge question has already been sent to the user automatically by the system. Their first message to you is their answer. Do not ask the charge question again. Acknowledge their number in one sentence then proceed.
+
 Runs after PATH B and PATH C only. Never after PATH A.
 
 The app automatically asks "What's the charge now, on a scale of 1 to 10?" the moment this phase opens. The first user message you receive is their answer to that charge question.

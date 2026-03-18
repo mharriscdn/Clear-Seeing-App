@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Seeing</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: normal;
+            letter-spacing: 0.18em;
+            margin-bottom: 40px;
+        }
+
+        .body-text {
+            font-size: 12px;
+            line-height: 1.75;
+            color: #c8c8c8;
+            margin-bottom: 28px;
+        }
+
+        .body-text ul {
+            margin: 12px 0 0 18px;
+        }
+
+        .body-text li {
+            margin-bottom: 4px;
+        }
+
+        .legal {
+            font-size: 10px;
+            line-height: 1.7;
+            color: #777;
+            margin-bottom: 36px;
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .check-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #c8c8c8;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .check-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #f2f2f2;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        button#continue-btn {
+            padding: 12px 28px;
+            background: transparent;
+            border: 1px solid #f2f2f2;
+            border-radius: 3px;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, opacity 0.15s;
+        }
+
+        button#continue-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        button#continue-btn:not(:disabled):hover {
+            background: #f2f2f2;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+
+    <div class="logo">CLEAR SEEING</div>
+
+    <div class="body-text">
+        <p>Clear Seeing is a perception tool.</p>
+        <br>
+        <p>When something is live — charged, unresolved, sitting in your chest — the mind narrows. You see through a keyhole instead of the room. Every strategy, every analysis, every attempt to fix it is just another hand on the revolving door.</p>
+        <br>
+        <p>Clear Seeing removes the distortion. Same situation. More of it visible. The next move becomes obvious.</p>
+        <br>
+        <p>It works best for:</p>
+        <ul>
+            <li>Executives and high performers stuck in a pattern they can't think their way out of</li>
+            <li>Seekers who understand the mechanism but still feel the grip</li>
+            <li>Anyone who knows something is distorted but can't see past it yet</li>
+        </ul>
+    </div>
+
+    <div class="legal">
+        By continuing you acknowledge this is a perception tool, not therapy, and not appropriate for people in active mental health crisis. Use at own risk. If you are in crisis: 988 (Canada/US) · findahelpline.com
+    </div>
+
+    <form method="POST" action="/disclaimer/acknowledge">
+        <div class="action-row">
+            <label class="check-label">
+                <input type="checkbox" id="understand-check" />
+                I understand
+            </label>
+            <button type="submit" id="continue-btn" disabled>CONTINUE</button>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    document.getElementById("understand-check").addEventListener("change", function () {
+        document.getElementById("continue-btn").disabled = !this.checked;
+    });
+</script>
+
+</body>
+</html>

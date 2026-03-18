@@ -1,0 +1,156 @@
+Branch: feature/ux-improvements
+Scope: services/prompts/phase_hold_both_forces.txt, 
+services/prompts/phase_re_examination.txt, 
+static/app.js, app.py, db.py, templates/
+Do not touch any other prompt files, phase engine, or auth.
+
+TASK 1 — DISCLAIMER SCREEN
+
+Add column to users table:
+ALTER TABLE users ADD COLUMN IF NOT EXISTS 
+disclaimer_acknowledged BOOLEAN DEFAULT FALSE;
+
+Create templates/disclaimer.html (black background, Georgia serif, 
+matching app aesthetic):
+
+Display this exact content:
+
+CLEAR SEEING
+
+[12px font:]
+Clear Seeing is a perception tool.
+
+When something is live — charged, unresolved, sitting in your 
+chest — the mind narrows. You see through a keyhole instead of 
+the room. Every strategy, every analysis, every attempt to fix 
+it is just another hand on the revolving door.
+
+Clear Seeing removes the distortion. Same situation. More of it 
+visible. The next move becomes obvious.
+
+It works best for:
+- Executives and high performers stuck in a pattern they can't 
+  think their way out of
+- Seekers who understand the mechanism but still feel the grip
+- Anyone who knows something is distorted but can't see past it yet
+
+[10px font:]
+By continuing you acknowledge this is a perception tool, not 
+therapy, and not appropriate for people in active mental health 
+crisis. Use at own risk. If you are in crisis: 988 (Canada/US) · 
+findahelpline.com
+
+[ ] I understand    [CONTINUE button]
+
+Add route POST /disclaimer/acknowledge:
+- Sets disclaimer_acknowledged = TRUE for current user
+- Redirects to /
+
+In app.py, after auth check on every request:
+If user is authenticated AND disclaimer_acknowledged = FALSE:
+Redirect to /disclaimer
+Exception: /disclaimer route itself, /auth/* routes, /static/*
+
+TASK 2 — EXIT CHARGE CODE FIX
+
+In app.py or chat_service.py:
+When session phase transitions TO re_examination:
+Automatically inject this message into the chat as an 
+assistant message:
+"What's the charge now, on a scale of 1 to 10?"
+
+Store it in messages table as role='assistant'.
+Display it in the UI as a Claude message.
+This replaces Claude asking the question — Claude never asks it,
+the system always sends it.
+
+Update phase_re_examination.txt:
+Add as first line:
+"The charge question has already been sent to the user 
+automatically by the system. Their first message to you is 
+their answer. Do not ask the charge question again. 
+Acknowledge their number in one sentence then proceed."
+
+TASK 3 — HOLD BOTH FORCES TIMER AND TITRATION
+
+In static/app.js:
+After Claude sends a message in the hold_both_forces phase:
+Start a 10 second timer.
+If user starts typing, reset the timer (clearTimeout on keydown).
+If timer fires with no input: automatically send the message 
+"__checkin__" to the backend.
+
+In app.py chat route:
+If message is "__checkin__" and current phase is hold_both_forces:
+Return this exact Claude message (do not call Claude API):
+"How is the charge right now — manageable, or feeling like 
+too much? Type A or B."
+
+Handle user responses A and B:
+If A: Return "Good. Stay with both again. Give it 60-120 seconds 
+or more. Type 'continue' when ready."
+If B: Return the titration intro + menu (see below).
+If 'continue': signal advance, proceed normally.
+
+TITRATION INTRO (exact text when user types B):
+"The charge is high. That's the system doing its job — 
+protecting against something it predicts will be dangerous.
+
+This is how capacity builds: not through insight, but through 
+contact. Each round, the nervous system learns it survived. 
+That's titration.
+
+First contact — the system braces.
+Second contact — it starts to recognize it didn't get damaged.
+Third contact — the grip begins to loosen.
+
+You don't need to push through. You just need to make contact, 
+again and again.
+
+Which of these feels right? Type A, B, C, or D:
+
+A) Touch just the edge — stay at the boundary, not the center
+B) Anchor outward — keep the feeling, add something external 
+   (a sound, the vast space around the charge, a pink filter)
+C) Let it fill you completely for 10 seconds, then check
+D) Break state — go for a walk, splash cold water, change rooms. 
+   Come back when the intensity drops — not when it's gone, 
+   just more manageable."
+
+After user picks A, B, C, or D:
+Claude guides them through that option (call Claude API normally,
+phase stays at hold_both_forces).
+
+After each titration cycle completes, send:
+"Each round builds capacity. This is exactly how it works.
+How is the charge now — ready to continue, another round of 
+the same, or a different option? Type A, B, or C.
+A) Continue — back to holding both forces
+B) Another round of the same
+C) Different option"
+
+Track titration cycle count in session (add column 
+titration_cycles INTEGER DEFAULT 0 to sessions table).
+Increment on each cycle.
+After 3 cycles, regardless of response, send:
+"You've done three rounds. That's real work. The system is 
+building capacity right now whether it feels like it or not.
+Two options:
+A) Stay with both forces again
+B) Close the session and come back when something is live"
+
+Update phase_hold_both_forces.txt:
+Add section describing the check-in flow, titration options,
+and three cycle cap so Claude understands the context if it 
+sees these messages in the conversation history.
+
+SUCCESS CRITERIA
+- Disclaimer shows once per user, never again after acknowledged
+- Exit charge question always fires as system message at 
+  re_examination, never from Claude
+- 10 second timer fires check-in at hold_both_forces if no input
+- Timer resets on keydown
+- Titration menu appears when user types B
+- Three cycle cap enforced
+- 76 tests still pass
+- No changes to other prompt files or phase engine logic

@@ -19,6 +19,25 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Register magic link auth blueprint at /auth prefix
 app.register_blueprint(auth_magic_link.bp, url_prefix="/auth")
 
+# Disclaimer gate — runs before every request
+_DISCLAIMER_EXEMPT_PREFIXES = ("/auth/", "/static/", "/api/")
+_DISCLAIMER_EXEMPT_EXACT   = {"/disclaimer", "/disclaimer/acknowledge",
+                               "/health", "/login", "/paywall"}
+
+
+@app.before_request
+def _disclaimer_gate():
+    path = request.path
+    if (
+        any(path.startswith(p) for p in _DISCLAIMER_EXEMPT_PREFIXES)
+        or path in _DISCLAIMER_EXEMPT_EXACT
+    ):
+        return None
+    user = _get_user_from_cookie()
+    if user and not user.get("disclaimer_acknowledged"):
+        return redirect("/disclaimer")
+
+
 # Initialize database tables on startup
 try:
     db.init_db()
@@ -95,28 +114,6 @@ def health():
     return "OK", 200
 
 
-# TEMPORARY — remove after use
-@app.route("/api/admin/fix-developer-account", methods=["POST"])
-@auth_magic_link.require_auth
-def admin_fix_developer_account():
-    import psycopg2, psycopg2.extras
-    conn = psycopg2.connect(os.environ["DATABASE_URL"],
-                            cursor_factory=psycopg2.extras.RealDictCursor)
-    cur = conn.cursor()
-    cur.execute("""
-        UPDATE users
-        SET subscription_status = 'active', trial_ends_at = NULL
-        WHERE email = 'mharriscdn@gmail.com'
-    """)
-    rows_updated = cur.rowcount
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify({"ok": True, "rows_updated": rows_updated,
-                    "email": "mharriscdn@gmail.com",
-                    "subscription_status": "active"})
-
-
 # ---------------------------------------------------------------------------
 # Frontend — access-gated
 # ---------------------------------------------------------------------------
@@ -142,10 +139,28 @@ def paywall():
     user = _get_user_from_cookie()
     if user is None:
         return redirect("/login")
-    # If they now have access (e.g. webhook already fired), send them home
     if _check_access(user):
         return redirect("/")
     return render_template("paywall.html")
+
+
+@app.route("/disclaimer")
+def disclaimer():
+    user = _get_user_from_cookie()
+    if user is None:
+        return redirect("/login")
+    if user.get("disclaimer_acknowledged"):
+        return redirect("/")
+    return render_template("disclaimer.html")
+
+
+@app.route("/disclaimer/acknowledge", methods=["POST"])
+def disclaimer_acknowledge():
+    user = _get_user_from_cookie()
+    if user is None:
+        return redirect("/login")
+    db.acknowledge_disclaimer(user["id"])
+    return redirect("/")
 
 
 # ---------------------------------------------------------------------------
@@ -206,6 +221,119 @@ def api_new_session():
 
 
 # ---------------------------------------------------------------------------
+# Hold-both-forces check-in / titration helpers
+# ---------------------------------------------------------------------------
+
+_CHECKIN_Q = (
+    "How is the charge right now \u2014 manageable, or feeling like too much? "
+    "Type A or B."
+)
+_STAY_MSG = (
+    "Good. Stay with both again. Give it 60\u2013120 seconds or more. "
+    "Type \u2018continue\u2019 when ready."
+)
+_TITRATION = (
+    "The charge is high. That\u2019s the system doing its job \u2014 protecting "
+    "against something it predicts will be dangerous.\n\n"
+    "This is how capacity builds: not through insight, but through contact. "
+    "Each round, the nervous system learns it survived. That\u2019s titration.\n\n"
+    "First contact \u2014 the system braces.\n"
+    "Second contact \u2014 it starts to recognize it didn\u2019t get damaged.\n"
+    "Third contact \u2014 the grip begins to loosen.\n\n"
+    "You don\u2019t need to push through. You just need to make contact, "
+    "again and again.\n\n"
+    "Which of these feels right? Type A, B, C, or D:\n\n"
+    "A) Touch just the edge \u2014 stay at the boundary, not the center\n"
+    "B) Anchor outward \u2014 keep the feeling, add something external "
+    "(a sound, the vast space around the charge, a pink filter)\n"
+    "C) Let it fill you completely for 10 seconds, then check\n"
+    "D) Break state \u2014 go for a walk, splash cold water, change rooms. "
+    "Come back when the intensity drops \u2014 not when it\u2019s gone, "
+    "just more manageable."
+)
+_AFTER_CYCLE = (
+    "Each round builds capacity. This is exactly how it works.\n"
+    "How is the charge now \u2014 ready to continue, another round of "
+    "the same, or a different option? Type A, B, or C.\n"
+    "A) Continue \u2014 back to holding both forces\n"
+    "B) Another round of the same\n"
+    "C) Different option"
+)
+_THREE_CYCLES = (
+    "You\u2019ve done three rounds. That\u2019s real work. The system is "
+    "building capacity right now whether it feels like it or not.\n"
+    "Two options:\n"
+    "A) Stay with both forces again\n"
+    "B) Close the session and come back when something is live"
+)
+
+
+def _make_transcript(messages):
+    return [
+        {"role": m["role"], "content": m["content"], "created_at": str(m["created_at"])}
+        for m in messages
+    ]
+
+
+def _system_reply(session_id, user_msg_to_save, assistant_text):
+    """
+    Saves an optional user message then the assistant text, and returns a
+    full JSON response. Phase stays hold_both_forces (no Claude call made).
+    """
+    if user_msg_to_save is not None:
+        db.save_message(session_id, "user", user_msg_to_save)
+    db.save_message(session_id, "assistant", assistant_text)
+    transcript = db.get_session_messages(session_id)
+    return jsonify({
+        "assistant_text": assistant_text,
+        "current_phase": "hold_both_forces",
+        "transcript": _make_transcript(transcript),
+    })
+
+
+def _handle_hold_both_forces(session_id, session_state, user_message):
+    """
+    Intercepts check-in and titration messages in hold_both_forces phase.
+    Returns a Flask response if intercepted, None to fall through to Claude.
+    """
+    if session_state.get("conversation_phase") != "hold_both_forces":
+        return None
+
+    msg       = user_message.strip()
+    msg_lower = msg.lower()
+    cycles    = session_state.get("titration_cycles") or 0
+
+    messages  = db.get_session_messages(session_id)
+    last_asst = next(
+        (m["content"] for m in reversed(messages) if m["role"] == "assistant"), ""
+    ).strip()
+
+    # Invisible system heartbeat — no user message saved
+    if msg == "__checkin__":
+        return _system_reply(session_id, None, _CHECKIN_Q)
+
+    # Response to the charge check-in "Type A or B"
+    if last_asst == _CHECKIN_Q:
+        if msg_lower == "a":
+            return _system_reply(session_id, msg, _STAY_MSG)
+        if msg_lower == "b":
+            new_cycles = db.increment_titration_cycles(session_id)
+            reply = _THREE_CYCLES if new_cycles >= 3 else _TITRATION
+            return _system_reply(session_id, msg, reply)
+        # Any other reply: fall through to Claude
+
+    # Response to after-cycle menu "Type A, B, or C"
+    if last_asst.startswith("Each round builds capacity"):
+        if msg_lower == "b":
+            return _system_reply(session_id, msg, _TITRATION)
+        if msg_lower == "c":
+            return _system_reply(session_id, msg, _TITRATION)
+        # A or anything else: fall through to Claude
+
+    return None  # normal Claude flow
+
+
+# ---------------------------------------------------------------------------
 # API — Chat
 # ---------------------------------------------------------------------------
 
@@ -221,6 +349,17 @@ def api_chat():
     if not session_id or not user_message:
         return jsonify({"error": "session_id and user_message are required"}), 400
 
+    # Load session state up front — needed for hold_both_forces intercept
+    session_state = db.get_session(session_id, user["id"])
+    if not session_state:
+        return jsonify({"error": "Session not found"}), 403
+
+    # Hold_both_forces intercept — check-in / titration (no Claude call)
+    intercept = _handle_hold_both_forces(session_id, session_state, user_message)
+    if intercept is not None:
+        return intercept
+
+    # Normal path: call Claude
     try:
         assistant_text, transcript = chat_service.process_chat(
             session_id, user["id"], user_message)
@@ -230,8 +369,7 @@ def api_chat():
         print(f"[api_chat] Error: {e}")
         return jsonify({"error": "Failed to get response from Claude"}), 500
 
-    # Fire reflection email when session reaches recurrence_normalization.
-    # Wrapped in its own try/except — email failure must never break the chat.
+    # Reload session state (phase may have changed after process_chat)
     try:
         session_state = db.get_session(session_id, user["id"])
         if (
@@ -243,13 +381,12 @@ def api_chat():
     except Exception as e:
         print(f"[api_chat] Reflection email trigger error (non-fatal): {e}")
 
+    current_phase = session_state.get("conversation_phase") if session_state else None
+
     return jsonify({
         "assistant_text": assistant_text,
-        "transcript": [{
-            "role": m["role"],
-            "content": m["content"],
-            "created_at": str(m["created_at"])
-        } for m in transcript],
+        "current_phase": current_phase,
+        "transcript": _make_transcript(transcript),
     })
 
 
