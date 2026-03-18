@@ -1,0 +1,93 @@
+Branch: feature/session-email
+Scope: services/session_email.py (new), app.py, db.py only.
+Do not touch prompt files, phase engine, chat service, or auth.
+
+TASK 1 — SESSION EMAIL SERVICE (services/session_email.py)
+
+Create a new service that generates and sends a post-session 
+reflection email when a session reaches recurrence_normalization.
+
+The email is generated in two steps:
+1. Pull structured data from the DB for that session
+2. Call Claude with a tight prompt to generate the reflection text
+3. Send via Resend
+
+DATA TO PULL FROM DB:
+- opening_problem (sessions table)
+- entry_charge, exit_charge (sessions table)
+- ending_type — path_a, path_b, or path_c (session_outcomes table)
+- The mirror turn — first assistant message after user's opening 
+  (to extract escape pattern)
+- The hold_both_forces turn — assistant message at that phase 
+  (to extract the two forces)
+- User email (users table)
+
+CLAUDE PROMPT FOR SUMMARY GENERATION:
+Use claude-sonnet-4-6 with max_tokens=500.
+System: "You are generating a post-session reflection email for 
+a user of the Clear Seeing app. Be brief, observational, and 
+match this tone: direct, no therapy language, no praise, 
+no interpretation. Use the user's own words where possible."
+
+User prompt:
+"Generate a reflection email using this session data:
+Opening problem: {opening_problem}
+Escape pattern observed: {escape_pattern}
+Two forces held: {two_forces}
+Entry charge: {entry_charge}/10
+Exit charge: {exit_charge}/10 (null if PATH A)
+Session outcome: {ending_type}
+
+Structure the email with these exact sections:
+1. What you brought — one sentence using their words
+2. What the mind was doing — one sentence naming the escape pattern
+3. The two forces — one sentence describing what was held
+4. What shifted — one or two sentences using charge numbers.
+   PATH A: 'The pattern was seen clearly. That is real work.'
+   PATH B: 'You came in at {entry}. You left at {exit}. Same situation — wider field.'
+   PATH C: 'The prediction was tested and failed to land.'
+5. Why coming back matters — use this exact text:
+   'The patterns that fired today did not form overnight. They formed 
+   through repetition — thousands of small moments where the nervous 
+   system learned to brace against something it predicted would be 
+   dangerous. Clear Seeing works the same way, in reverse. Each time 
+   both forces are held and the charge releases, the nervous system 
+   updates its prediction. The grip loosens. Not through insight. 
+   Through repetition. Use it when you are not seeing clearly. That 
+   is the right moment.'
+6. Feedback ask — use this exact text:
+   'How was this session? Reply to this email — I read every one.'
+
+Return only the email body text. No subject line. No preamble."
+
+EMAIL SEND:
+Subject: Your Clear Seeing session — {date}
+From: EMAIL_FROM env var
+Reply-To: mharriscdn@gmail.com
+To: user email
+Send via Resend API (same pattern as magic link emails)
+
+TASK 2 — TRIGGER
+In app.py or chat_service.py:
+When a session reaches recurrence_normalization phase AND 
+the session has not already had an email sent:
+Call session_email.send_session_email(session_id)
+
+Add boolean column to sessions table:
+reflection_email_sent BOOLEAN DEFAULT FALSE
+
+Set to TRUE after email sends successfully.
+Never send twice for the same session.
+
+TASK 3 — ERROR HANDLING
+If email fails: log the error, do not crash the session.
+Session completion must not depend on email success.
+
+SUCCESS CRITERIA
+- Email sends at end of every completed session
+- Email never sends twice for the same session
+- Session does not break if email fails
+- Email contains all 6 sections in correct order
+- Reply-to goes to mharriscdn@gmail.com
+- 76 tests still pass
+- No changes to prompt files, phase engine, or auth

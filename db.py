@@ -118,6 +118,11 @@ def init_db():
         "ALTER TABLE messages ADD COLUMN IF NOT EXISTS capacity_units_deducted INTEGER"
     )
 
+    # Session email column
+    cur.execute(
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS reflection_email_sent BOOLEAN DEFAULT FALSE"
+    )
+
     # Trial + Stripe subscription columns
     cur.execute(
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP"
@@ -477,6 +482,53 @@ def add_capacity_by_email(email, units, set_reset_date=None):
     cur.close()
     conn.close()
     print(f"[db] add_capacity_by_email email={email} units=+{units} reset_date={set_reset_date}")
+
+
+# ---------------------------------------------------------------------------
+# Session email helpers
+# ---------------------------------------------------------------------------
+
+
+def get_session_email_data(session_id):
+    """
+    Returns the structured data needed to generate a post-session reflection email.
+    Pulls from sessions, session_outcomes, and users in a single query.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            s.opening_problem,
+            s.entry_charge,
+            s.exit_charge,
+            s.reflection_email_sent,
+            so.ending_type,
+            u.email AS user_email
+        FROM sessions s
+        JOIN users u ON s.user_id = u.id
+        LEFT JOIN session_outcomes so ON so.session_id = s.id
+        WHERE s.id = %s
+        """,
+        (session_id,),
+    )
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return dict(row) if row else None
+
+
+def mark_reflection_email_sent(session_id):
+    """Marks reflection_email_sent = TRUE for a session. Idempotent."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE sessions SET reflection_email_sent = TRUE WHERE id = %s",
+        (session_id,),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 # ---------------------------------------------------------------------------
