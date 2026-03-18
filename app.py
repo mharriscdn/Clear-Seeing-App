@@ -58,19 +58,30 @@ def _get_user_from_cookie():
 def _check_access(user):
     """
     Returns True if the user may access the main app.
-    Active subscription → allow.
-    Trial still valid → allow.
-    Otherwise → deny.
+
+    Rules:
+    - Active subscription → allow.
+    - trial_ends_at is NULL → trial not yet started; initialize it now and allow.
+    - trial_ends_at is set and in the future → allow.
+    - trial_ends_at is set and in the past → deny (redirect to paywall).
     """
     if user.get("subscription_status") == "active":
         return True
+
     trial_ends = user.get("trial_ends_at")
-    if trial_ends:
-        # trial_ends_at comes back as a datetime from psycopg2
-        if isinstance(trial_ends, str):
-            trial_ends = datetime.fromisoformat(trial_ends)
-        if datetime.utcnow() < trial_ends.replace(tzinfo=None):
-            return True
+
+    if trial_ends is None:
+        # Trial never initialized (pre-existing user or race condition).
+        # Start it now — safe to call repeatedly; DB only updates if still NULL.
+        db.start_trial(user["id"])
+        return True
+
+    # trial_ends_at is set — check whether it's still valid.
+    if isinstance(trial_ends, str):
+        trial_ends = datetime.fromisoformat(trial_ends)
+    if datetime.utcnow() < trial_ends.replace(tzinfo=None):
+        return True
+
     return False
 
 
