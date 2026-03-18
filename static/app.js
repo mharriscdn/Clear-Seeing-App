@@ -1,6 +1,55 @@
 let currentSessionId = null;
+let currentPhase = null;
+let holdTimerId = null;
 
-// Load user info on page load
+// ---------------------------------------------------------------------------
+// Hold-both-forces timer
+// ---------------------------------------------------------------------------
+
+function startHoldTimer() {
+    clearHoldTimer();
+    holdTimerId = setTimeout(sendCheckin, 10000);
+}
+
+function clearHoldTimer() {
+    if (holdTimerId !== null) {
+        clearTimeout(holdTimerId);
+        holdTimerId = null;
+    }
+}
+
+function afterAssistantMessage() {
+    if (currentPhase === "hold_both_forces") {
+        startHoldTimer();
+    } else {
+        clearHoldTimer();
+    }
+}
+
+async function sendCheckin() {
+    holdTimerId = null;
+    if (!currentSessionId) return;
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_id: currentSessionId, user_message: "__checkin__" }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+            if (data.current_phase) currentPhase = data.current_phase;
+            renderTranscript(data.transcript);
+            afterAssistantMessage();
+        }
+    } catch (e) {
+        console.error("sendCheckin error:", e);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Init / user info
+// ---------------------------------------------------------------------------
+
 async function init() {
     try {
         const res = await fetch("/api/me");
@@ -12,12 +61,16 @@ async function init() {
         const me = await res.json();
         const tankEl = document.getElementById("tank-value");
         if (tankEl) {
-            tankEl.textContent = me.capacity_remaining != null ? me.capacity_remaining : "—";
+            tankEl.textContent = me.capacity_remaining != null ? me.capacity_remaining : "\u2014";
         }
     } catch (e) {
         console.error("Failed to load user info", e);
     }
 }
+
+// ---------------------------------------------------------------------------
+// Session start
+// ---------------------------------------------------------------------------
 
 async function startSession() {
     const btn = document.getElementById("start-btn");
@@ -42,6 +95,7 @@ async function startSession() {
         }
 
         currentSessionId = data.session_id;
+        currentPhase = "mirror";
 
         document.getElementById("landing-screen").style.display = "none";
         document.getElementById("orientation-screen").style.display = "flex";
@@ -54,6 +108,10 @@ async function startSession() {
         btn.textContent = "BEGIN SESSION";
     }
 }
+
+// ---------------------------------------------------------------------------
+// Orientation / first message
+// ---------------------------------------------------------------------------
 
 function handleOrientationKey(e) {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -72,7 +130,6 @@ async function sendOrientationMessage() {
     input.disabled = true;
     btn.disabled = true;
 
-    // Switch to chat view immediately so user sees their message appear
     document.getElementById("orientation-screen").style.display = "none";
     document.getElementById("chat-area").style.display = "flex";
 
@@ -91,7 +148,9 @@ async function sendOrientationMessage() {
         if (!res.ok) {
             renderMessage({ role: "assistant", content: data.error || "Something went wrong. Please try again." });
         } else {
+            if (data.current_phase) currentPhase = data.current_phase;
             renderTranscript(data.transcript);
+            afterAssistantMessage();
         }
     } catch (e) {
         console.error("sendOrientationMessage error:", e);
@@ -104,6 +163,10 @@ async function sendOrientationMessage() {
         if (userInput) userInput.focus();
     }
 }
+
+// ---------------------------------------------------------------------------
+// Rendering helpers
+// ---------------------------------------------------------------------------
 
 function showSituationAnchor(text) {
     const el = document.getElementById("situation-anchor");
@@ -135,10 +198,18 @@ function renderTranscript(messages) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Chat input
+// ---------------------------------------------------------------------------
+
 function handleKey(e) {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
+    }
+    // Reset hold-both-forces timer on any keydown
+    if (currentPhase === "hold_both_forces") {
+        clearHoldTimer();
     }
 }
 
@@ -148,6 +219,8 @@ async function sendMessage() {
     const text = input.value.trim();
 
     if (!text || !currentSessionId) return;
+
+    clearHoldTimer();
 
     input.value = "";
     input.disabled = true;
@@ -167,7 +240,9 @@ async function sendMessage() {
         if (!res.ok) {
             renderMessage({ role: "assistant", content: data.error || "Something went wrong. Please try again." });
         } else {
+            if (data.current_phase) currentPhase = data.current_phase;
             renderTranscript(data.transcript);
+            afterAssistantMessage();
         }
     } catch (e) {
         console.error("sendMessage error:", e);
@@ -178,6 +253,10 @@ async function sendMessage() {
         input.focus();
     }
 }
+
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
 
 async function manageBilling(e) {
     e.preventDefault();

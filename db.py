@@ -123,6 +123,16 @@ def init_db():
         "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS reflection_email_sent BOOLEAN DEFAULT FALSE"
     )
 
+    # Disclaimer
+    cur.execute(
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS disclaimer_acknowledged BOOLEAN DEFAULT FALSE"
+    )
+
+    # Titration cycle counter
+    cur.execute(
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS titration_cycles INTEGER DEFAULT 0"
+    )
+
     # Trial + Stripe subscription columns
     cur.execute(
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP"
@@ -482,6 +492,49 @@ def add_capacity_by_email(email, units, set_reset_date=None):
     cur.close()
     conn.close()
     print(f"[db] add_capacity_by_email email={email} units=+{units} reset_date={set_reset_date}")
+
+
+# ---------------------------------------------------------------------------
+# Disclaimer helpers
+# ---------------------------------------------------------------------------
+
+
+def acknowledge_disclaimer(user_id):
+    """Marks disclaimer_acknowledged = TRUE for a user. Idempotent."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET disclaimer_acknowledged = TRUE WHERE id = %s",
+        (user_id,),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Titration helpers
+# ---------------------------------------------------------------------------
+
+
+def increment_titration_cycles(session_id):
+    """
+    Increments titration_cycles by 1 and returns the new count.
+    """
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE sessions
+           SET titration_cycles = COALESCE(titration_cycles, 0) + 1
+           WHERE id = %s
+           RETURNING titration_cycles""",
+        (session_id,),
+    )
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return row["titration_cycles"] if row else 1
 
 
 # ---------------------------------------------------------------------------
