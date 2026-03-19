@@ -6,3 +6,9 @@ id = "SJXVd3ACsCB0FKQJrAYJY"
 uri = "file://docs/prompt_master.docx"
 type = "word_document"
 title = "Clear Seeing Guide — Prompt Master Document"
+
+[[outputs]]
+id = "SkHy5nhA-yIMuFzLOenI6"
+uri = "file://docs/db_safety.docx"
+type = "word_document"
+title = "DB Safety Workflow"
