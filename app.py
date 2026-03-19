@@ -1,6 +1,11 @@
 import os
 from datetime import datetime
 
+from dotenv import load_dotenv
+load_dotenv()
+
+print("[startup] DATABASE_URL:", os.environ.get("DATABASE_URL", "")[:50])
+
 import jwt as pyjwt
 from flask import Flask, request, jsonify, render_template, redirect, send_file
 from werkzeug.middleware.proxy_fix import ProxyFix
