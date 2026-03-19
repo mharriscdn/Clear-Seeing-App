@@ -19,25 +19,6 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Register magic link auth blueprint at /auth prefix
 app.register_blueprint(auth_magic_link.bp, url_prefix="/auth")
 
-# Disclaimer gate — runs before every request
-_DISCLAIMER_EXEMPT_PREFIXES = ("/auth/", "/static/", "/api/")
-_DISCLAIMER_EXEMPT_EXACT   = {"/disclaimer", "/disclaimer/acknowledge",
-                               "/health", "/login", "/paywall"}
-
-
-@app.before_request
-def _disclaimer_gate():
-    path = request.path
-    if (
-        any(path.startswith(p) for p in _DISCLAIMER_EXEMPT_PREFIXES)
-        or path in _DISCLAIMER_EXEMPT_EXACT
-    ):
-        return None
-    user = _get_user_from_cookie()
-    if user and not user.get("disclaimer_acknowledged"):
-        return redirect("/disclaimer")
-
-
 # Initialize database tables on startup
 try:
     db.init_db()
@@ -142,25 +123,6 @@ def paywall():
     if _check_access(user):
         return redirect("/")
     return render_template("paywall.html")
-
-
-@app.route("/disclaimer")
-def disclaimer():
-    user = _get_user_from_cookie()
-    if user is None:
-        return redirect("/login")
-    if user.get("disclaimer_acknowledged"):
-        return redirect("/")
-    return render_template("disclaimer.html")
-
-
-@app.route("/disclaimer/acknowledge", methods=["POST"])
-def disclaimer_acknowledge():
-    user = _get_user_from_cookie()
-    if user is None:
-        return redirect("/login")
-    db.acknowledge_disclaimer(user["id"])
-    return redirect("/")
 
 
 # ---------------------------------------------------------------------------
