@@ -407,5 +407,52 @@ def api_stripe_webhook():
     return jsonify(result), status
 
 
+# ---------------------------------------------------------------------------
+# TEMPORARY DIAGNOSTIC — remove after production inspection
+# ---------------------------------------------------------------------------
+
+@app.route("/admin/session-detail")
+def admin_session_detail():
+    user = _get_user_from_cookie()
+    if user is None:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    conn = db.get_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT id, user_id, conversation_phase,
+                   entry_charge, exit_charge,
+                   reflection_email_sent,
+                   created_at::text
+            FROM sessions
+            ORDER BY created_at DESC
+            LIMIT 5
+        """)
+        cols = [d[0] for d in cur.description]
+        sessions = [dict(zip(cols, row)) for row in cur.fetchall()]
+
+        for s in sessions:
+            cur.execute("""
+                SELECT id, role,
+                       LEFT(content, 300) AS content,
+                       created_at::text
+                FROM messages
+                WHERE session_id = %s
+                ORDER BY created_at ASC, id ASC
+            """, (s["id"],))
+            mcols = [d[0] for d in cur.description]
+            s["messages"] = [dict(zip(mcols, row)) for row in cur.fetchall()]
+    finally:
+        cur.close()
+        conn.close()
+
+    return jsonify({"sessions": sessions})
+
+# ---------------------------------------------------------------------------
+# END TEMPORARY DIAGNOSTIC
+# ---------------------------------------------------------------------------
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, threaded=True)
