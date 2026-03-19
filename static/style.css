@@ -330,25 +330,32 @@ html, body {
 }
 
 .message {
-    max-width: 90%;
-    padding: 0.8rem 1rem;
+    max-width: 70%;
+    padding: 12px 14px;
     font-size: 0.95rem;
     line-height: 1.65;
     white-space: pre-wrap;
+    border-radius: 6px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .message.assistant {
-    background: var(--assistant-bg);
-    border: 1px solid var(--chat-border);
+    background: #0f0f0f;
+    border-left: 2px solid #444;
+    color: #ffffff;
     align-self: flex-start;
-    color: var(--fg);
+    margin-right: auto;
+    margin-left: 0;
 }
 
 .message.user {
-    background: var(--user-bg);
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #cccccc;
     align-self: flex-end;
-    border: 1px solid var(--border);
-    color: var(--fg);
+    margin-left: auto;
+    margin-right: 0;
 }
 
 #input-row {
