@@ -429,8 +429,7 @@ def admin_session_detail():
             ORDER BY created_at DESC
             LIMIT 5
         """)
-        cols = [d[0] for d in cur.description]
-        sessions = [dict(zip(cols, row)) for row in cur.fetchall()]
+        sessions = [dict(row) for row in cur.fetchall()]
 
         for s in sessions:
             cur.execute("""
@@ -441,8 +440,7 @@ def admin_session_detail():
                 WHERE session_id = %s
                 ORDER BY created_at ASC, id ASC
             """, (s["id"],))
-            mcols = [d[0] for d in cur.description]
-            s["messages"] = [dict(zip(mcols, row)) for row in cur.fetchall()]
+            s["messages"] = [dict(row) for row in cur.fetchall()]
     finally:
         cur.close()
         conn.close()
