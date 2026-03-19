@@ -4,6 +4,11 @@ from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
+# Replit runtime injects its own DATABASE_URL (helium). If NEON_DATABASE_URL
+# is set, it takes precedence — this lets us point at Neon from the workspace.
+if os.environ.get("NEON_DATABASE_URL"):
+    os.environ["DATABASE_URL"] = os.environ["NEON_DATABASE_URL"]
+
 print("[startup] DATABASE_URL:", os.environ.get("DATABASE_URL", "")[:50])
 
 import jwt as pyjwt
