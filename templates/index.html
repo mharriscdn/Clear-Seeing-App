@@ -39,12 +39,6 @@
             <div class="landing-rule"></div>
 
             <button id="start-btn" onclick="startSession()">BEGIN SESSION</button>
-
-            <p class="landing-footer">
-                credits: <span id="tank-value">—</span>
-                &nbsp;&middot;&nbsp;
-                <a href="#" onclick="manageBilling(event)">manage billing</a>
-            </p>
         </div>
     </div>
 
@@ -53,10 +47,6 @@
         <div class="orientation-inner">
             <div class="session-header">
                 <div class="session-logo">CLEAR SEEING</div>
-                <div class="session-headline">
-                    <div class="session-push">Stop Pushing.</div>
-                    <div class="session-obvious">The Next Move Is Obvious.</div>
-                </div>
             </div>
             <div class="session-divider"></div>
             <p class="session-prompt">What&rsquo;s in your central view right now?</p>
@@ -73,10 +63,6 @@
     <div id="chat-area" style="display:none;">
         <div id="chat-header">
             <div class="session-logo">CLEAR SEEING</div>
-            <div class="session-headline">
-                <div class="session-push">Stop Pushing.</div>
-                <div class="session-obvious">The Next Move Is Obvious.</div>
-            </div>
             <div class="session-divider"></div>
         </div>
         <div id="situation-anchor" style="display:none;"></div>
@@ -86,6 +72,13 @@
             <button id="send-btn" onclick="sendMessage()">Send</button>
         </div>
     </div>
+
+    <!-- PERSISTENT FOOTER — visible on landing and during session -->
+    <p class="session-footer">
+        credits: <span id="tank-value">—</span>
+        &nbsp;&middot;&nbsp;
+        <a href="#" onclick="manageBilling(event)">manage billing</a>
+    </p>
 
 </div>
 
