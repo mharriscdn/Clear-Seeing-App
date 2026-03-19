@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 import jwt as pyjwt
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, send_file
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 import db
@@ -406,6 +406,22 @@ def api_stripe_webhook():
     result, status = stripe_webhooks.handle_webhook(payload, sig_header)
     return jsonify(result), status
 
+
+# ---------------------------------------------------------------------------
+# TEMPORARY FILE DOWNLOAD — remove after use
+# ---------------------------------------------------------------------------
+
+@app.route("/admin/download/db-safety")
+def admin_download_db_safety():
+    user = _get_user_from_cookie()
+    if user is None:
+        return jsonify({"error": "Unauthorized"}), 401
+    return send_file(
+        "docs/db_safety.docx",
+        as_attachment=True,
+        download_name="clear_seeing_db_safety_v1.docx",
+        mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
 
 # ---------------------------------------------------------------------------
 # TEMPORARY DIAGNOSTIC — remove after production inspection
