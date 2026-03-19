@@ -70,7 +70,7 @@ def _build_prompt(data, mirror_text, forces_text):
     """Assembles the user-facing prompt string for Claude."""
     ending_type = data.get("ending_type") or "path_b"
     entry = data.get("entry_charge")
-    exit_charge = data.get("exit_charge")
+    exit_charge = data.get("exit_charge") or 0
 
     if ending_type == "path_a":
         what_shifted = "PATH A: 'The pattern was seen clearly. That is real work.'"

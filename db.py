@@ -389,6 +389,19 @@ def set_signal_retry(session_id, value):
     conn.close()
 
 
+def tag_message_old_phase(message_id, phase):
+    """Always stamp the phase a message was generated in, regardless of signal detection."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE messages SET old_phase = %s WHERE id = %s",
+        (phase, message_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 def log_signal_transition(message_id, phase_signal, old_phase, new_phase):
     """Records the signal and phase transition for every assistant message."""
     conn = get_conn()

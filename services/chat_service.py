@@ -173,6 +173,8 @@ def process_chat(session_id, user_id, user_message):
     session = db.get_session(session_id, user_id)
     old_phase = session["conversation_phase"]
 
+    db.tag_message_old_phase(message_id, old_phase)
+
     new_phase, signal_found, signal = phase_engine.process_signal(
         session, assistant_text, message_id
     )
