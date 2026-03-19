@@ -15,7 +15,6 @@
 }
 
 html, body {
-    height: 100%;
     font-family: Georgia, serif;
     background: var(--bg);
     color: var(--fg);
@@ -24,7 +23,6 @@ html, body {
 }
 
 #app {
-    height: 100%;
 }
 
 /* ─── LANDING ─────────────────────────────────────────────── */
@@ -316,16 +314,19 @@ html, body {
 /* ─── CHAT AREA ───────────────────────────────────────────── */
 
 #chat-area {
-    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 20px;
 }
 
 #transcript {
-    padding: 1.5rem 0;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    padding: 1rem 0;
 }
 
 .message {
@@ -412,10 +413,12 @@ html, body {
 /* ─── PERSISTENT SESSION FOOTER ───────────────────────────── */
 
 .session-footer {
-    font-size: 0.8rem;
+    font-size: 14px;
     color: var(--muted);
     text-align: center;
-    padding: 24px 0 32px;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    opacity: 0.8;
 }
 
 .session-footer a {
