@@ -65,46 +65,26 @@ _BUTTON_STYLE = (
 
 def _send_welcome_email(to_email, verify_url, expiry):
     html = f"""
-<html><body style="background:#000;color:#fff;font-family:Georgia,serif;padding:40px 32px;max-width:560px;">
+<html><body style="background:#fff;color:#000;font-family:Georgia,serif;padding:40px 32px;max-width:560px;margin:0 auto;text-align:center;">
 
-<p style="font-size:12px;line-height:1.7;margin:0 0 20px;">
-Clear Seeing is a perception tool.
+<p style="font-size:12px;line-height:1.7;margin:0 0 28px;">
+Clear Seeing works best for people who are stuck. Not broken.
 </p>
 
-<p style="font-size:12px;line-height:1.7;margin:0 0 20px;">
-When something is live — charged, unresolved, sitting in your chest — the mind narrows.
-You see through a keyhole instead of the room. Every strategy, every analysis, every
-attempt to fix it is just another hand on the revolving door.
+<p style="margin:0 0 28px;">
+  <a href="{verify_url}" style="{_BUTTON_STYLE}">Enter Clear Seeing &rarr;</a>
 </p>
 
-<p style="font-size:12px;line-height:1.7;margin:0 0 20px;">
-Clear Seeing removes the distortion. Same situation. More of it visible.
-The next move becomes obvious.
-</p>
-
-<p style="font-size:12px;line-height:1.7;margin:0 0 8px;">It works best for:</p>
-<ul style="font-size:12px;line-height:1.7;margin:0 0 32px;padding-left:20px;">
-  <li>Executives and high performers stuck in a pattern they can&rsquo;t think their way out of</li>
-  <li>Seekers who understand the mechanism but still feel the grip</li>
-  <li>Anyone who knows something is distorted but can&rsquo;t see past it yet</li>
-</ul>
-
-<p style="margin:0 0 40px;">
-  <a href="{verify_url}" style="{_BUTTON_STYLE}">Enter Clear Seeing</a>
-</p>
-
-<p style="font-size:10px;line-height:1.6;color:#888;margin:0;">
+<p style="font-size:10px;font-style:italic;line-height:1.6;color:#555;margin:0;">
 By clicking this link you acknowledge this is a perception tool, not therapy, and not
 appropriate for people in active mental health crisis. Use at own risk.<br>
 If you are in crisis: 988 (Canada/US) &middot;
-<a href="https://findahelpline.com" style="color:#888;">findahelpline.com</a>
+<a href="https://findahelpline.com" style="color:#555;">findahelpline.com</a>
 </p>
-
-<p style="font-size:10px;color:#555;margin:16px 0 0;">This link expires in {expiry} minutes.</p>
 
 </body></html>
 """
-    _post_email(to_email, "Welcome to Clear Seeing", html)
+    _post_email(to_email, "Your Clear Seeing login link", html)
 
 
 def _send_login_email(to_email, verify_url, expiry):
