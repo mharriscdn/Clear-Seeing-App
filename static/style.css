@@ -330,32 +330,35 @@ html, body {
 }
 
 .message {
-    max-width: 70%;
     padding: 12px 14px;
     font-size: 0.95rem;
-    line-height: 1.65;
+    line-height: 1.5;
     white-space: pre-wrap;
     border-radius: 6px;
-    margin-top: 12px;
-    margin-bottom: 12px;
 }
 
 .message.assistant {
-    background: #0f0f0f;
-    border-left: 2px solid #444;
+    background: #0d0d0d;
+    border-left: 2px solid #555;
     color: #ffffff;
     align-self: flex-start;
     margin-right: auto;
     margin-left: 0;
+    max-width: 75%;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .message.user {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
+    background: #222222;
+    border: 1px solid #333;
     color: #cccccc;
     align-self: flex-end;
     margin-left: auto;
     margin-right: 0;
+    max-width: 65%;
+    margin-top: 14px;
+    margin-bottom: 14px;
 }
 
 #input-row {
