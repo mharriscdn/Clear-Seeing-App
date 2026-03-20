@@ -4,7 +4,7 @@ import psycopg2.extras
 from datetime import datetime
 from math import ceil
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+CLEAR_SEEING_DB = os.environ.get("CLEAR_SEEING_DB")
 
 # ---------------------------------------------------------------------------
 # Pricing constants for claude-sonnet-4-6
@@ -17,7 +17,7 @@ _UNIT_COST        = 0.001               # 1 capacity unit = $0.001 actual cost
 
 
 def get_conn():
-    conn = psycopg2.connect(DATABASE_URL,
+    conn = psycopg2.connect(CLEAR_SEEING_DB,
                             cursor_factory=psycopg2.extras.RealDictCursor)
     return conn
 
@@ -234,7 +234,7 @@ def create_session(user_id):
     conn.close()
     session = dict(session)
     import urllib.parse as _up
-    _u = _up.urlparse(os.environ.get("DATABASE_URL", ""))
+    _u = _up.urlparse(os.environ.get("CLEAR_SEEING_DB", ""))
     print(f"[DEBUG create_session] committed session id={session['id']} user_id={user_id} db={_u.hostname}/{_u.path.lstrip('/')}", flush=True)
     return session
 

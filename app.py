@@ -4,7 +4,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
-print("[startup] DATABASE_URL:", os.environ.get("DATABASE_URL", "")[:50])
+print("[startup] CLEAR_SEEING_DB:", os.environ.get("CLEAR_SEEING_DB", "")[:50])
 
 import jwt as pyjwt
 from flask import Flask, request, jsonify, render_template, redirect, send_file
