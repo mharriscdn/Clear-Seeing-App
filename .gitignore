@@ -1,4 +1,5 @@
 .env
+secrets_backup.txt
 __pycache__/
 *.pyc
 *.pyo
