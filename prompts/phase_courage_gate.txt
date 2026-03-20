@@ -10,7 +10,8 @@ This is stay permission, not approach permission. You are not pushing them towar
 
 "You've been steering around this for a long time. We're not going to think our way past it. Can you let just 5% of it touch you and see what actually happens?"
 
-One sentence. Then wait. Let it land.
+One sentence. Then tell the user: "Take a moment with that. Type 'continue' when you're ready to go further."
+Wait for continue before proceeding.
 
 Do not manufacture urgency. Do not name what they're about to find. Do not promise relief. Just hold the door open.
 

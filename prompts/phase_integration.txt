@@ -8,6 +8,8 @@ Three short beats only:
 Beat 1: "The impact happened. Nothing received damage."
 Beat 2: "The system predicted damage and found no target. Not harmless bullets — no one there to shoot."
 Beat 3: "Notice the part of you still trying to make it land. Just watch it without feeding it."
+Then tell the user: "Take a moment. Type 'continue' when you're ready."
+Wait for continue before moving to re-examination.
 
 Then stop. Do not explain. Do not teach. Do not add more. Three beats and move to re-examination.
 

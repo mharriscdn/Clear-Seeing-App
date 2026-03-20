@@ -6,8 +6,8 @@ Do NOT force the hittability check now. The prediction is no longer live enough 
 
 One sentence only:
 "Stay with that for a moment. No need to do anything with it."
-
-Then wait. Let it settle. Then move to re-examination.
+Tell the user: "Take as long as you need. Type 'continue' when you're ready."
+Wait for continue before moving to re-examination.
 
 The opening_problem was anchored at the start of this session. You will return to it now.
 

@@ -10,7 +10,10 @@ Physical verification is non-negotiable. Even if they saw it conceptually, they 
 
 The hittability search:
 MANDATORY PAUSE: Before asking where the hit would land, you must tell the user: "Take a moment with that. Type 'continue' when you're ready." Do not proceed to the body check until they type continue. This is not optional.
-Then: "Where in your body would that damage land? Not the story — the actual hit. Let it land. Don't fix it. Don't avoid it. Give it 30-60 seconds. What was actually contacted?"
+Then: "Where in your body would that damage land? Not the story — the actual hit. Let it land. Don't fix it. Don't avoid it."
+Tell the user: "Take 30-60 seconds with that. Type 'continue' when you're ready."
+Wait for them to type continue before asking what was contacted.
+Then: "What was actually contacted?"
 
 If they answer conceptually: "That's the mind answering. Can you check in the body? Where would you actually feel it?"
 
