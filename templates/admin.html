@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Seeing — Admin</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #f2f2f2;
+            font-family: Georgia, 'Times New Roman', serif;
+            padding: 40px 32px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 11px;
+            font-weight: normal;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 12px;
+            margin-top: 48px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead th {
+            text-align: left;
+            font-weight: normal;
+            letter-spacing: 0.08em;
+            color: #555;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 8px 12px 8px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #111;
+        }
+
+        tbody tr:hover {
+            background: #0a0a0a;
+        }
+
+        tbody td {
+            padding: 10px 12px 10px 0;
+            vertical-align: top;
+            color: #ccc;
+            max-width: 360px;
+        }
+
+        .phase {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 0.05em;
+        }
+
+        .phase.complete      { color: #4a9; }
+        .phase.hold_both     { color: #8af; }
+        .phase.recurrence    { color: #fa8; }
+        .phase.mirror        { color: #888; }
+
+        .charge {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .status-trial  { color: #fa8; }
+        .status-active { color: #4a9; }
+        .status-inactive { color: #555; }
+
+        .count {
+            color: #888;
+            text-align: right;
+            padding-right: 0;
+        }
+
+        .ts {
+            font-size: 11px;
+            color: #444;
+            white-space: nowrap;
+        }
+
+        .summary {
+            font-size: 12px;
+            color: #555;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Clear Seeing — Admin</h1>
+
+<p class="summary">
+    {{ users|length }} users &nbsp;&middot;&nbsp; {{ sessions|length }} sessions shown (last 50)
+</p>
+
+<h2>Users</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th>Trial ends</th>
+            <th style="text-align:right">Sessions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.email }}</td>
+            <td class="ts">{{ u.created_at.strftime('%b %d %H:%M') if u.created_at else '—' }}</td>
+            <td class="status-{{ u.subscription_status }}">{{ u.subscription_status or '—' }}</td>
+            <td class="ts">{{ u.trial_ends_at.strftime('%b %d') if u.trial_ends_at else '—' }}</td>
+            <td class="count">{{ u.session_count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Sessions (most recent 50)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Started</th>
+            <th>Opening problem</th>
+            <th>In</th>
+            <th>Out</th>
+            <th>Phase</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in sessions %}
+        <tr>
+            <td class="ts">{{ s.id }}</td>
+            <td>{{ s.email }}</td>
+            <td class="ts">{{ s.created_at.strftime('%b %d %H:%M') if s.created_at else '—' }}</td>
+            <td>{{ s.opening_problem or '—' }}</td>
+            <td class="charge">{{ s.entry_charge if s.entry_charge is not none else '—' }}</td>
+            <td class="charge">{{ s.exit_charge if s.exit_charge is not none else '—' }}</td>
+            <td>
+                {% set p = s.conversation_phase or '' %}
+                <span class="phase {% if p == 'complete' %}complete{% elif p == 'hold_both_forces' %}hold_both{% elif p == 'recurrence_normalization' %}recurrence{% elif p == 'mirror' %}mirror{% endif %}">
+                    {{ p or '—' }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

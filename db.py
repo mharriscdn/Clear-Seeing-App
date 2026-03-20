@@ -555,6 +555,47 @@ def increment_titration_cycles(session_id):
 # ---------------------------------------------------------------------------
 
 
+def get_admin_data():
+    """Returns users (with session counts) and recent sessions for the admin dashboard."""
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            u.id,
+            u.email,
+            u.created_at,
+            u.subscription_status,
+            u.trial_ends_at,
+            COUNT(s.id) AS session_count
+        FROM users u
+        LEFT JOIN sessions s ON s.user_id = u.id
+        GROUP BY u.id
+        ORDER BY u.created_at DESC
+    """)
+    users = [dict(r) for r in cur.fetchall()]
+
+    cur.execute("""
+        SELECT
+            s.id,
+            u.email,
+            s.created_at,
+            s.opening_problem,
+            s.entry_charge,
+            s.exit_charge,
+            s.conversation_phase
+        FROM sessions s
+        JOIN users u ON s.user_id = u.id
+        ORDER BY s.created_at DESC
+        LIMIT 50
+    """)
+    sessions = [dict(r) for r in cur.fetchall()]
+
+    cur.close()
+    conn.close()
+    return users, sessions
+
+
 def get_session_email_data(session_id):
     """
     Returns the structured data needed to generate a post-session reflection email.

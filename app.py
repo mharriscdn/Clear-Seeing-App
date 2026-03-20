@@ -413,6 +413,21 @@ def api_stripe_webhook():
 
 
 # ---------------------------------------------------------------------------
+# Admin dashboard
+# ---------------------------------------------------------------------------
+
+_ADMIN_EMAIL = "mharriscdn@gmail.com"
+
+@app.route("/admin")
+@auth_magic_link.require_auth
+def admin():
+    if request.current_user["email"] != _ADMIN_EMAIL:
+        return "Forbidden", 403
+    users, sessions = db.get_admin_data()
+    return render_template("admin.html", users=users, sessions=sessions)
+
+
+# ---------------------------------------------------------------------------
 # TEMPORARY FILE DOWNLOAD — remove after use
 # ---------------------------------------------------------------------------
 
