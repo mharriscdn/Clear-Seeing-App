@@ -6,7 +6,7 @@ TODO Phase 2: session outcome detection, phase transitions.
 """
 import db
 
-OPENING_MESSAGE = "What's in your central view right now?"
+OPENING_MESSAGE = "What are you not seeing clearly right now?"
 
 
 def new_session(user_id):
