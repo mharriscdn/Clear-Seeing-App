@@ -4,7 +4,7 @@ import psycopg2.extras
 from datetime import datetime
 from math import ceil
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get("NEON_DATABASE_URL") or os.environ.get("DATABASE_URL")
 
 # ---------------------------------------------------------------------------
 # Pricing constants for claude-sonnet-4-6
