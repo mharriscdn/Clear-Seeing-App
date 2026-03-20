@@ -11,164 +11,342 @@
             background: #000;
             color: #f2f2f2;
             font-family: Georgia, 'Times New Roman', serif;
-            padding: 40px 32px;
-            min-height: 100vh;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        h1 {
-            font-size: 14px;
-            font-weight: normal;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 40px;
+        header {
+            padding: 20px 28px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            flex-shrink: 0;
         }
 
-        h2 {
+        header h1 {
             font-size: 11px;
             font-weight: normal;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             color: #555;
-            margin-bottom: 12px;
-            margin-top: 48px;
+        }
+
+        header .stats {
+            font-size: 12px;
+            color: #444;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #1a1a1a;
+            flex-shrink: 0;
+        }
+
+        .tab {
+            padding: 10px 24px;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #444;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .tab.active {
+            color: #ccc;
+            border-bottom-color: #ccc;
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ---- LEFT PANEL ---- */
+        .left {
+            flex: 1;
+            overflow-y: auto;
+            border-right: 1px solid #1a1a1a;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         thead th {
+            position: sticky;
+            top: 0;
+            background: #050505;
             text-align: left;
             font-weight: normal;
-            letter-spacing: 0.08em;
-            color: #555;
-            font-size: 11px;
+            letter-spacing: 0.1em;
+            color: #444;
+            font-size: 10px;
             text-transform: uppercase;
-            padding: 8px 12px 8px 0;
-            border-bottom: 1px solid #222;
+            padding: 10px 12px 10px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            z-index: 1;
         }
 
         tbody tr {
-            border-bottom: 1px solid #111;
+            border-bottom: 1px solid #0d0d0d;
+            cursor: pointer;
+            transition: background 0.1s;
         }
 
-        tbody tr:hover {
-            background: #0a0a0a;
-        }
+        tbody tr:hover { background: #0c0c0c; }
+        tbody tr.selected { background: #111; }
 
         tbody td {
-            padding: 10px 12px 10px 0;
+            padding: 9px 12px 9px 16px;
             vertical-align: top;
-            color: #ccc;
-            max-width: 360px;
+            color: #aaa;
         }
+
+        .email-cell { color: #ddd; }
+        .ts { font-size: 11px; color: #444; white-space: nowrap; }
+        .problem { color: #888; max-width: 260px; }
+        .charge { color: #666; text-align: center; }
 
         .phase {
-            font-size: 11px;
-            color: #666;
-            letter-spacing: 0.05em;
-        }
-
-        .phase.complete      { color: #4a9; }
-        .phase.hold_both     { color: #8af; }
-        .phase.recurrence    { color: #fa8; }
-        .phase.mirror        { color: #888; }
-
-        .charge {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .status-trial  { color: #fa8; }
-        .status-active { color: #4a9; }
-        .status-inactive { color: #555; }
-
-        .count {
-            color: #888;
-            text-align: right;
-            padding-right: 0;
-        }
-
-        .ts {
-            font-size: 11px;
-            color: #444;
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            padding: 2px 6px;
+            border-radius: 2px;
             white-space: nowrap;
         }
+        .phase-complete            { color: #4a9; }
+        .phase-mirror              { color: #555; }
+        .phase-hold_both_forces    { color: #7af; }
+        .phase-recurrence_normalization { color: #fa8; }
+        .phase-pointer             { color: #a7f; }
+        .phase-activation_check    { color: #f88; }
 
-        .summary {
-            font-size: 12px;
-            color: #555;
-            margin-top: 8px;
+        .status-trial    { color: #fa8; }
+        .status-active   { color: #4a9; }
+        .status-inactive { color: #444; }
+
+        /* ---- RIGHT PANEL ---- */
+        .right {
+            width: 420px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
+
+        .convo-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 11px;
+            color: #444;
+            letter-spacing: 0.08em;
+            flex-shrink: 0;
+            min-height: 45px;
+        }
+
+        .convo-header span { color: #888; }
+
+        .convo-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .empty-state {
+            color: #2a2a2a;
+            font-size: 13px;
+            margin: auto;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .msg {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .msg-role {
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #333;
+        }
+
+        .msg.user .msg-role  { color: #555; }
+        .msg.assistant .msg-role { color: #4a9; }
+
+        .msg-text {
+            font-size: 13px;
+            line-height: 1.65;
+            color: #bbb;
+            white-space: pre-wrap;
+        }
+
+        .msg.user .msg-text { color: #888; }
+
+        .loading {
+            color: #333;
+            font-size: 12px;
+            margin: auto;
+        }
+
+        /* Tab panels */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* Users table wrapper */
+        #users-panel { overflow-y: auto; height: 100%; }
     </style>
 </head>
 <body>
 
-<h1>Clear Seeing — Admin</h1>
+<header>
+    <h1>Clear Seeing — Admin</h1>
+    <span class="stats">{{ users|length }} users &nbsp;&middot;&nbsp; {{ sessions|length }} sessions</span>
+</header>
 
-<p class="summary">
-    {{ users|length }} users &nbsp;&middot;&nbsp; {{ sessions|length }} sessions shown (last 50)
-</p>
+<div class="tabs">
+    <div class="tab active" onclick="showTab('sessions')">Sessions</div>
+    <div class="tab" onclick="showTab('users')">Users</div>
+</div>
 
-<h2>Users</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Joined</th>
-            <th>Status</th>
-            <th>Trial ends</th>
-            <th style="text-align:right">Sessions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for u in users %}
-        <tr>
-            <td>{{ u.email }}</td>
-            <td class="ts">{{ u.created_at.strftime('%b %d %H:%M') if u.created_at else '—' }}</td>
-            <td class="status-{{ u.subscription_status }}">{{ u.subscription_status or '—' }}</td>
-            <td class="ts">{{ u.trial_ends_at.strftime('%b %d') if u.trial_ends_at else '—' }}</td>
-            <td class="count">{{ u.session_count }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="main">
+    <div class="left" id="left-panel">
 
-<h2>Sessions (most recent 50)</h2>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Started</th>
-            <th>Opening problem</th>
-            <th>In</th>
-            <th>Out</th>
-            <th>Phase</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for s in sessions %}
-        <tr>
-            <td class="ts">{{ s.id }}</td>
-            <td>{{ s.email }}</td>
-            <td class="ts">{{ s.created_at.strftime('%b %d %H:%M') if s.created_at else '—' }}</td>
-            <td>{{ s.opening_problem or '—' }}</td>
-            <td class="charge">{{ s.entry_charge if s.entry_charge is not none else '—' }}</td>
-            <td class="charge">{{ s.exit_charge if s.exit_charge is not none else '—' }}</td>
-            <td>
-                {% set p = s.conversation_phase or '' %}
-                <span class="phase {% if p == 'complete' %}complete{% elif p == 'hold_both_forces' %}hold_both{% elif p == 'recurrence_normalization' %}recurrence{% elif p == 'mirror' %}mirror{% endif %}">
-                    {{ p or '—' }}
-                </span>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <!-- SESSIONS TAB -->
+        <div id="sessions-panel" class="panel active">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Email</th>
+                        <th>Date</th>
+                        <th>Opening problem</th>
+                        <th style="text-align:center">In</th>
+                        <th style="text-align:center">Out</th>
+                        <th>Phase</th>
+                    </tr>
+                </thead>
+                <tbody id="sessions-tbody">
+                    {% for s in sessions %}
+                    <tr onclick="loadConvo({{ s.id }}, '{{ s.email }}', '{{ s.opening_problem|replace("'", "\\'") if s.opening_problem else '' }}')" data-id="{{ s.id }}">
+                        <td class="ts">{{ s.id }}</td>
+                        <td class="email-cell">{{ s.email }}</td>
+                        <td class="ts">{{ s.created_at.strftime('%b %d %H:%M') if s.created_at else '—' }}</td>
+                        <td class="problem">{{ s.opening_problem or '—' }}</td>
+                        <td class="charge">{{ s.entry_charge if s.entry_charge is not none else '—' }}</td>
+                        <td class="charge">{{ s.exit_charge if s.exit_charge is not none else '—' }}</td>
+                        <td>
+                            {% set p = s.conversation_phase or '' %}
+                            <span class="phase phase-{{ p }}">{{ p or '—' }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- USERS TAB -->
+        <div id="users-panel" class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Trial ends</th>
+                        <th style="text-align:right;padding-right:16px">Sessions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr style="cursor:default">
+                        <td class="email-cell">{{ u.email }}</td>
+                        <td class="ts">{{ u.created_at.strftime('%b %d %H:%M') if u.created_at else '—' }}</td>
+                        <td class="status-{{ u.subscription_status }}">{{ u.subscription_status or '—' }}</td>
+                        <td class="ts">{{ u.trial_ends_at.strftime('%b %d') if u.trial_ends_at else '—' }}</td>
+                        <td style="text-align:right;padding-right:16px;color:#666">{{ u.session_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- RIGHT: CONVERSATION PANEL -->
+    <div class="right" id="right-panel">
+        <div class="convo-header" id="convo-header">Click a session to read the conversation</div>
+        <div class="convo-body" id="convo-body">
+            <div class="empty-state">← select a session</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', ['sessions','users'][i] === name);
+    });
+    document.getElementById('sessions-panel').classList.toggle('active', name === 'sessions');
+    document.getElementById('users-panel').classList.toggle('active', name === 'users');
+}
+
+let activeId = null;
+
+async function loadConvo(sessionId, email, problem) {
+    if (activeId === sessionId) return;
+    activeId = sessionId;
+
+    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+    const row = document.querySelector(`tr[data-id="${sessionId}"]`);
+    if (row) row.classList.add('selected');
+
+    const header = document.getElementById('convo-header');
+    const body = document.getElementById('convo-body');
+
+    header.innerHTML = `<span>#${sessionId} &nbsp;·&nbsp; ${email}</span>${problem ? '<br><span style="color:#333;font-size:11px">' + escHtml(problem) + '</span>' : ''}`;
+    body.innerHTML = '<div class="loading">Loading…</div>';
+
+    try {
+        const resp = await fetch(`/admin/session/${sessionId}/messages`);
+        const msgs = await resp.json();
+
+        if (!msgs.length) {
+            body.innerHTML = '<div class="empty-state">No messages in this session.</div>';
+            return;
+        }
+
+        body.innerHTML = msgs.map(m => `
+            <div class="msg ${m.role}">
+                <div class="msg-role">${m.role}</div>
+                <div class="msg-text">${escHtml(m.content)}</div>
+            </div>
+        `).join('');
+
+        body.scrollTop = 0;
+    } catch(e) {
+        body.innerHTML = '<div class="empty-state">Failed to load messages.</div>';
+    }
+}
+
+function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
 
 </body>
 </html>

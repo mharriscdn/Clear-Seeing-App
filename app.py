@@ -427,6 +427,19 @@ def admin():
     return render_template("admin.html", users=users, sessions=sessions)
 
 
+@app.route("/admin/session/<int:session_id>/messages")
+@auth_magic_link.require_auth
+def admin_session_messages(session_id):
+    if request.current_user["email"] != _ADMIN_EMAIL:
+        return jsonify({"error": "Forbidden"}), 403
+    messages = db.get_session_messages(session_id)
+    return jsonify([
+        {"role": m["role"], "content": m["content"],
+         "created_at": str(m["created_at"])}
+        for m in messages
+    ])
+
+
 # ---------------------------------------------------------------------------
 # TEMPORARY FILE DOWNLOAD — remove after use
 # ---------------------------------------------------------------------------
