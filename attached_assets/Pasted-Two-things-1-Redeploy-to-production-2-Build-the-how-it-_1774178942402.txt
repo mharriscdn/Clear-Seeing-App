@@ -1,0 +1,64 @@
+Two things:
+
+1. Redeploy to production.
+
+2. Build the /how-it-works page. Match the existing site style 
+exactly — same dark background, same font, same width.
+
+Add a simple "← Back" link at the top left of the page that 
+goes back using history.back(), or to / if there is no history.
+
+Content (exact, do not edit):
+
+Why charged inquiry works when neutral inquiry doesn't.
+
+Inquiry in a neutral state follows a weak signal. You're looking 
+for a self that isn't currently defending anything. The search 
+comes up empty — but the nervous system doesn't update, because 
+there was no real test. No threat, no activation, nothing at stake. 
+You can't discover whether you're bulletproof when no one is shooting.
+
+When the existential alarm is ringing — job gone, relationship over, 
+identity on the line — the signal is loud and direct. The nervous 
+system is fully committed to protecting something specific. That's 
+when the test is real.
+
+Follow the bullets inward. Find the self that's about to be 
+destroyed. Discover there's nothing there to receive the hit.
+
+Not blanks. No target.
+
+Run that enough times and no-self stops being a concept the mind 
+holds and becomes a confirmed fact the nervous system has tested. 
+The update happens at the level where the alarm originates — not 
+in the understanding, in the prediction system itself.
+
+That's what the app does. It doesn't create the insight. It waits 
+until something is actually charged, removes the routes you'd 
+normally take to avoid it, and walks the attention back to what's 
+being protected. Direct contact, not understanding. The shift 
+happens in the system that was predicting danger — not in the mind 
+that was trying to figure it out.
+
+Same discovery. Stronger signal. Repeated until the ground holds.
+
+The app doesn't give you answers. It removes escape long enough 
+for what's true to be seen.
+
+After the final paragraph add one small muted line:
+
+"Want to go deeper? Read the full guide."
+
+The words "full guide" should be a hyperlink to:
+https://drive.google.com/file/d/1s5WpWP9Aw9kSAO0h4dgNrTvXiK6hNlDU/view?usp=sharing
+
+Opens in a new tab. Same small muted style as the rest of the 
+subtle text on this page. No raw URL visible anywhere.
+
+Then below that a BEGIN SESSION button that takes the user 
+to / or /login if not authenticated.
+
+No nav. No header. Just the back link, the text, the guide 
+link, and the button.
+
+Show me the page before writing.

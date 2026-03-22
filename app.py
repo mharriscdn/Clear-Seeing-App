@@ -120,6 +120,11 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/how-it-works")
+def how_it_works():
+    return render_template("how_it_works.html")
+
+
 @app.route("/paywall")
 def paywall():
     user = _get_user_from_cookie()
