@@ -82,6 +82,10 @@ If you are in crisis: 988 (Canada/US) &middot;
 <a href="https://findahelpline.com" style="color:#555;">findahelpline.com</a>
 </p>
 
+<p style="font-size:10px;line-height:1.6;color:#888;margin:16px 0 0;font-family:Georgia,serif;">
+New to Clear Seeing? Read the <a href="https://drive.google.com/file/d/18yjK9q3SY5sY4HA--8jeQR_j1r30-DrE/view?usp=sharing" target="_blank" style="color:#888;">full guide</a> before your first session.
+</p>
+
 </body></html>
 """
     _post_email(to_email, "Your Clear Seeing login link", html)
