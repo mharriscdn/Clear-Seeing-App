@@ -226,6 +226,30 @@ html, body {
     color: var(--fg);
 }
 
+.session-preamble {
+    font-size: 17px;
+    font-style: italic;
+    color: #777;
+    text-align: center;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.session-how-link {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 18px;
+}
+
+.session-how-link a {
+    color: #555;
+    text-decoration: none;
+}
+
+.session-how-link a:hover {
+    color: #888;
+}
+
 .orientation-input-wrap {
     width: 100%;
 }
