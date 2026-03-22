@@ -224,21 +224,22 @@ html, body {
 .session-prompt {
     font-size: 20px;
     color: var(--fg);
+    margin: 8px 0;
 }
 
 .session-preamble {
-    font-size: 17px;
+    font-size: 15px;
     font-style: italic;
     color: #777;
     text-align: center;
-    margin-bottom: 18px;
+    margin-bottom: 10px;
     line-height: 1.6;
 }
 
 .session-how-link {
     font-size: 15px;
     text-align: center;
-    margin-top: 18px;
+    margin-top: 10px;
 }
 
 .session-how-link a {
