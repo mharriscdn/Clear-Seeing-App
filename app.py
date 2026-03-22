@@ -124,6 +124,10 @@ def login():
 def how_it_works():
     return render_template("how_it_works.html")
 
+@app.route("/user-manual")
+def user_manual():
+    return render_template("user_manual.html")
+
 
 @app.route("/paywall")
 def paywall():
