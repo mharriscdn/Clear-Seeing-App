@@ -127,6 +127,7 @@ async function sendOrientationMessage() {
 
     if (!text || !currentSessionId) return;
 
+    document.body.classList.add('session-started');
     input.disabled = true;
     btn.disabled = true;
 

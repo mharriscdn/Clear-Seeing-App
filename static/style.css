@@ -250,6 +250,10 @@ html, body {
     color: #888;
 }
 
+body.session-started .session-preamble {
+    display: none;
+}
+
 .orientation-input-wrap {
     width: 100%;
 }
