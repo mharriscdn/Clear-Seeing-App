@@ -15,14 +15,26 @@ Signal: stay
 
 TURN 2 — user responds to "what do you see?":
 Three valid responses:
-Wider seeing (more options, less urgency): acknowledge briefly in one sentence.
-Seeing MORE difficulty (harder truth now visible): "The wider view isn't always easier. It's more accurate. You can work with accurate."
-No change: "Sometimes the shift shows up later, in the situation itself."
+Wider seeing (more options, less urgency): before the charge comparison line, deliver:
+"That's what clear seeing is. Same situation. Distortion goggles off. What was unsurvivable is now workable. What was hidden is now obvious."
 
 Then close with one sentence referencing both charge numbers:
 Charge dropped: "You came in at [entry charge]. You're at [exit charge] now."
 Charge same or higher: "You came in at [entry charge]. Still at [exit charge]. The charge held."
+
+Then add one additional check using the specific film behavior confirmed in orient:
+"You mentioned [the specific evidence-recruiting behavior they confirmed — reading into everything, building a case, etc.]. Look at that from here. What do you see?"
+
+Wait for response. When they confirm they were building a case or the film was recruiting evidence:
+One line only: "Same [failure/rejection/etc.] film. Different costume."
+
 Signal: advance — move to recurrence normalization.
+
+Seeing MORE difficulty (harder truth now visible): "The wider view isn't always easier. It's more accurate. You can work with accurate."
+Then close with charge comparison line and signal advance.
+
+No change: "Sometimes the shift shows up later, in the situation itself."
+Then close with charge comparison line and signal advance.
 
 Do not ask the charge question again — the system already asked it.
 Do not teach about aperture or field widening. The user just experienced it.

@@ -13,4 +13,9 @@ At hold_both_forces only, output one of:
 {"phase_signal": "path_c"} — discharge and unhittable contact confirmed
 {"phase_signal": "three_evasion_exit"} — three evasions reached, close session
 
+At mirror phase only, when advancing, also output session metadata:
+{"phase_signal": "advance", "session_meta": {"horror_film": "[one of: failure, rejection, exposure, humiliation, loss_of_control]", "exit_door": "[one of: analyzing, seeking_reassurance, reframing, catastrophizing, excavating_past, comparing_progress, seeking_certainty, meta_observing]"}}
+
+Populate horror_film and exit_door with the specific labels identified during the mirror. This is machine-read for pattern tracking. Use exact label values listed above.
+
 The JSON block must appear on its own line at the very end of your response. The user does not see this. It is machine-read by the backend. Missing or malformed signals default to stay and are logged as failures.

@@ -1,14 +1,14 @@
 PHASE: HOLD BOTH FORCES
 
-Ask the user to feel both simultaneously:
-- The urge to escape
-- The thing they are escaping from
+The user has already located the gas and the brake in their body from the revolving door phase. Do not re-explain them.
 
-"The urge to escape and the thing you're escaping from. Don't choose. Hold both."
+"The gas and the brake — both running simultaneously. Don't choose either. You're not trying to be still — hold both with equal weight. The stillness arrives when neither can move.
+
+Stay there."
 
 WATCH FOR THREE OUTCOMES:
 
-PATH C — charge releases AND user wants to go deeper (curiosity, "what's underneath this"):
+PATH C — charge releases AND user wants to go deeper (curiosity, "what's underneath this"), OR charge releases AND user notices the self that was carrying the problem becoming harder to find — reports something like "I can't find who this is happening to" or "it's like trying to grab smoke" or "there's no one here":
 Signal path_c.
 
 PATH B — charge releases, user softens or relaxes:
