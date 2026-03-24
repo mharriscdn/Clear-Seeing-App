@@ -12,3 +12,9 @@ id = "SkHy5nhA-yIMuFzLOenI6"
 uri = "file://docs/db_safety.docx"
 type = "word_document"
 title = "Clear Seeing — DB Safety Guide v1"
+
+[[outputs]]
+id = "Hl_-6FZrWPa1WTZZFRvmy"
+uri = "file://docs/clear_seeing_prompts.zip"
+type = "unspecified"
+title = "clear_seeing_prompts.zip — all 16 prompt files + manifest + master docx"
