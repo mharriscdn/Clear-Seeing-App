@@ -64,14 +64,18 @@ What this checks
 The 8 known user escape scenarios — the classic ways people avoid contact. Claude should return the correct signal for each one.
 
 What passing looks like
-•       test_seeking_reassurance_path_b    PASS
-•       test_analyzing_path_b              PASS
-•       test_reframing_path_a              PASS
-•       test_catastrophizing_path_c        PASS
-•       test_excavating_the_past_path_b    PASS
-•       test_comparing_progress_path_b     PASS
-•       test_seeking_certainty_path_c      PASS
-•       test_meta_observing_path_b         PASS
+•       test_identity_pushes_to_verdict          PASS
+•       test_mirror_fires_after_identity         PASS
+•       test_body_question_after_mirror          PASS
+•       test_path_b_routes_to_hittability        PASS
+•       test_sock_moment_path_b                  PASS
+•       test_path_c_full_sequence                PASS
+•       test_path_a_three_evasion_exit           PASS
+•       test_recovery_detour_returns_to_spine    PASS
+•       test_recurrence_normalization_specific   PASS
+•       test_recognition_already_knew            PASS
+
+Note: These tests do not exist yet — they are the target suite to build based on the new prompt architecture.
 
 Cost to run
 Roughly $0.10 to $0.20 per full run.
@@ -179,7 +183,13 @@ When to check
 Question 7 — Did a specific phase module break?
 The 8 exit tests cover whether sessions end correctly. But they don't tell you which phase broke in the middle. Gate tests cover this.
 
-These tests are not built yet. When built, each one sends a single message to a specific phase and checks that Claude produces a valid signal.
+Gate tests are not built yet. When built, cover these phases specifically:
+
+phase_identity — stays until existential verdict named, does not advance on surface consequence only.
+
+phase_contact — merges examinability and activation check correctly, category error named, routes to recovery if flooded.
+
+phase_hittability — runs correctly for both PATH B (what's in the fortress) and PATH C (where would damage land). Does not skip to re-examination after PATH B without running deep hittability first.
 
 What to run (once built)
 python -m pytest tests/test_gate_behavior.py -v
@@ -247,6 +257,16 @@ Average Claude latency: 2.5–4.3 seconds
 Average entry charge:  TBD (needs real user data)
 Average exit charge:   TBD (needs real user data)
 Average charge delta:  TBD (needs real user data)
+
+Date of baseline run: March 25, 2026
+Architecture: v2 — identity-first sequence
+Engine tests: TBD (run after test suite updated)
+Live prompt tests: TBD (new suite not yet run)
+Phases in manifest: 14 (down from 16)
+New phases: phase_identity, phase_contact
+Dissolved phases: phase_examinability, phase_activation_check, phase_courage_gate
+Signal failure rate: TBD
+Average tokens per session: TBD
 
 
 
