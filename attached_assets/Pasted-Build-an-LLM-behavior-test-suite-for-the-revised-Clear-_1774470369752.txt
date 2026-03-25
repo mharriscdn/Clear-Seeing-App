@@ -1,0 +1,135 @@
+Build an LLM behavior test suite for the 
+revised Clear Seeing prompts.
+
+These tests check whether the LLM is actually 
+following the prompt instructions — not just 
+whether the phase signals fire correctly.
+
+TEST 1 — Identity phase stays until verdict
+Input: User gives surface situation only.
+"I have a difficult meeting tomorrow."
+
+Expected: LLM asks what's at stake, does NOT 
+mirror, does NOT name a film, does NOT go to 
+body. Pushes at least once more toward 
+existential layer before advancing.
+
+Fail condition: LLM mirrors or names film 
+before user has given identity verdict.
+
+TEST 2 — Mirror runs after identity not before
+Input: User gives surface situation, then 
+existential verdict when pushed.
+
+Expected: Mirror only fires AFTER verdict is 
+named. Film and exit door named using the 
+verdict words. Charge question at end of mirror 
+not before.
+
+Fail condition: LLM asks charge question before 
+mirror lands. LLM mirrors before identity is named.
+
+TEST 3 — Body question after mirror not before
+Input: Full identity + mirror sequence completes.
+
+Expected: Body question ("where do you feel that 
+right now") only appears after mirror has landed 
+and charge confirmed high.
+
+Fail condition: LLM asks for body sensation 
+before mirror runs.
+
+TEST 4 — Orient makes it existential and names 
+film recruiting evidence
+Input: User locates sensation in body.
+
+Expected: Orient names the verdict, names the 
+film recruiting evidence in specific terms 
+matching the user's situation, asks "does that 
+sound familiar."
+
+Fail condition: Orient is generic, doesn't use 
+the specific verdict, doesn't name evidence 
+recruitment.
+
+TEST 5 — Revolving door names one tension 
+not two body locations
+Input: User has located sensation, ready for 
+revolving door.
+
+Expected: LLM names one tension — both pulls 
+simultaneously — not "where does the gas live 
+in your body" and "where does the brake live 
+in your body" as separate questions.
+
+Fail condition: LLM asks for two separate 
+body locations.
+
+TEST 6 — Deep hittability runs after PATH B
+Input: Hold both forces produces PATH B 
+discharge — charge drops, user softens.
+
+Expected: Gibraltar one sentence. Then deep 
+hittability — "what's actually in there, 
+what was all that protecting" before 
+re-examination.
+
+Fail condition: LLM goes directly to 
+re-examination after Gibraltar without 
+running deep hittability.
+
+TEST 7 — Recognition 1 fires from user's own history
+Input: Mirror sequence with user who has been 
+using exit door for a while.
+
+Expected: "Has the charge dropped?" — user 
+confirms it hasn't. LLM names it as the exit 
+door leading back to the same room. Does NOT 
+explain why. Just names it.
+
+Fail condition: LLM explains the mechanism 
+instead of letting the user confirm it.
+
+TEST 8 — Recognition 7 sock moment
+Input: After PATH B deep hittability — user 
+finds just uncomfortable sensation, survivable.
+
+Expected: LLM stays with it. "Of course it's 
+uncomfortable. You've been avoiding it for a 
+long time. Can you stay with it? Is it actually 
+dangerous or just uncomfortable?"
+
+Fail condition: LLM moves to re-examination 
+without staying with what's in the fortress.
+
+TEST 9 — Recurrence normalization names 
+specific film
+Input: Session completes PATH B.
+
+Expected: Recurrence normalization names the 
+specific film — "the failure film will try to 
+run again" — and predicts a specific next move 
+that fits the user's actual situation. Not 
+generic "the pattern will return."
+
+Fail condition: Generic close without naming 
+the specific film or predicting specific 
+next move.
+
+TEST 10 — Recognition 4 conditional
+Input: Re-examination where user says 
+"I already knew what to do."
+
+Expected: LLM responds with exactly:
+"The charge was what was making it invisible."
+Before charge comparison line.
+
+Fail condition: LLM skips this line or 
+delivers it when user did NOT generate 
+the "already knew" recognition.
+
+Run all 10 tests and return:
+- Pass or fail for each
+- The actual LLM output for any failure
+- Whether the failure is prompt compliance 
+or prompt ambiguity
