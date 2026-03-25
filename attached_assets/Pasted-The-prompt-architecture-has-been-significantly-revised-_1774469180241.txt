@@ -1,0 +1,63 @@
+The prompt architecture has been significantly 
+revised. The old regression tests are based on 
+the previous sequence and are no longer valid.
+
+Build a new regression test suite based on the 
+current prompt sequence:
+
+phase_identity → phase_mirror → phase_contact → 
+phase_recovery → phase_orient → phase_revolving_door → 
+phase_hold_both_forces → phase_hittability → 
+phase_integration → phase_gibraltar → 
+phase_re_examination → phase_recurrence_normalization
+
+Build test scenarios that cover:
+
+SCENARIO 1 — Full PATH B session
+User arrives with a charged situation (7+).
+Identity phase pushes to existential verdict.
+Mirror names film and exit door correctly.
+Contact phase locates sensation.
+Orient makes it existential, film recruits evidence confirmed.
+Revolving door feels tension of both pulls.
+Hold both forces — charge drops, PATH B.
+Gibraltar — one sentence, stay.
+Deep hittability — finds just uncomfortable sensation, survivable.
+Re-examination — situation workable, charge dropped.
+Recurrence normalization — film named, next move predicted, 
+return invitation.
+
+SCENARIO 2 — Full PATH C session
+Same as above but hold both forces produces 
+self-dissolving response. Routes to PATH C.
+Deep hittability — nothing there to receive the hit.
+Integration — three beats.
+Re-examination and recurrence normalization.
+
+SCENARIO 3 — PATH A exit (evasion)
+User arrives with charge but evades three times.
+Three evasion exit fires correctly.
+Recurrence normalization PATH A version.
+
+SCENARIO 4 — Low charge entry
+User arrives with charge 1-3.
+Identity phase runs but charge confirms low after mirror.
+Correct low charge response — come back when live.
+
+SCENARIO 5 — Recovery detour
+User becomes flooded after contact phase.
+Recovery routes correctly, returns to spine.
+
+SCENARIO 6 — Identity phase multiple turns
+User stays at surface consequence level.
+Identity phase pushes correctly to existential verdict
+before advancing.
+
+For each scenario confirm:
+- Correct phase sequence fires
+- Correct signals emitted at each phase
+- Correct path routing
+- Correct close
+
+Return pass/fail for each scenario with 
+details on any failures.

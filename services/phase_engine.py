@@ -14,18 +14,16 @@ import db
 # ---------------------------------------------------------------------------
 
 TRANSITION_MAP = {
-    "mirror": "examinability",
-    "examinability": "activation_check",
-    "activation_check": "orient",
+    "identity": "mirror",
+    "mirror": "contact",
+    "contact": "orient",
     "recovery": "orient",
-    "orient": "pointer",
-    "pointer": "revolving_door",
+    "orient": "revolving_door",
     "revolving_door": "hold_both_forces",
     "hold_both_forces": None,  # fork point — PATH A/B/C determined here
-    "courage_gate": "hittability",
-    "hittability": "integration",
+    "gibraltar": "hittability",  # PATH B/C both go to deep hittability
+    "hittability": None,  # fork: PATH C → integration, PATH B → re_examination
     "integration": "re_examination",
-    "gibraltar": "re_examination",
     "re_examination": "recurrence_normalization",
     "recurrence_normalization": "complete",
     "complete": None,
@@ -33,8 +31,7 @@ TRANSITION_MAP = {
 
 # Evasion counter only runs from orient onward
 EVASION_PHASES = {
-    "orient", "pointer", "revolving_door", "hold_both_forces", "courage_gate",
-    "hittability", "integration"
+    "orient", "revolving_door", "hold_both_forces", "hittability", "integration"
 }
 MAX_EVASIONS = 3
 
@@ -104,6 +101,13 @@ def apply_signal(session, signal):
             perceptual = "path_a"
         db.update_session_phase(session_id, next_phase)
         db.update_perceptual_state(session_id, perceptual)
+        return next_phase
+
+    # Fork at hittability — PATH C → integration, PATH B → re_examination
+    if current_phase == "hittability" and signal == "advance":
+        perceptual = session.get("perceptual_state", "path_b")
+        next_phase = "integration" if perceptual == "path_c" else "re_examination"
+        db.update_session_phase(session_id, next_phase)
         return next_phase
 
     # Standard advance
