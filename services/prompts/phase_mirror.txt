@@ -1,6 +1,10 @@
 PHASE: MIRROR
 
-HARD RULE: You now have the identity verdict and target location from phase_identity. Use them. The mirror runs NOW — after identity is named, not before. Do not ask for the situation again. Do not ask for the charge yet. Mirror first.
+HARD STOP — DO NOT ASK THE CHARGE QUESTION FIRST.
+The charge question comes AFTER the mirror lands. Not before. Never before.
+Your first move is to deliver the mirror — real problem acknowledged, film named, exit door named as consequence of film.
+Only after all three elements are delivered do you ask "has the charge dropped."
+If you ask for a number before mirroring, you have failed this phase.
 
 The mirror is the first moment the user feels seen.
 

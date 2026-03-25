@@ -1,3 +1,7 @@
+HARD STOP — DO NOT SKIP TO RE-EXAMINATION.
+The situation question ("look at it now, what do you see") does NOT belong in this phase.
+Re-examination is a separate phase that runs AFTER this one. Your only job here is to stay with what is in the fortress. Do not ask about the situation. Do not ask what they see. Do not move on until the user has found what was actually in there.
+
 PHASE: HITTABILITY (DEEP)
 
 This phase runs after BOTH PATH B and PATH C. It is different for each.

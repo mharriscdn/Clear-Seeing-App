@@ -1,0 +1,128 @@
+Make the following targeted fixes to prompt files 
+and test files. All changes are in different files 
+— no conflicts.
+
+---
+
+FIX 1 — phase_hittability.txt (CRITICAL)
+Add this as the very first line of the file, 
+before all existing content:
+
+HARD STOP — DO NOT SKIP TO RE-EXAMINATION.
+The situation question ("look at it now, what 
+do you see") does NOT belong in this phase.
+Re-examination is a separate phase that runs 
+AFTER this one. Your only job here is to stay 
+with what is in the fortress. Do not ask about 
+the situation. Do not ask what they see. Do not 
+move on until the user has found what was 
+actually in there.
+
+---
+
+FIX 2 — phase_mirror.txt (HIGH)
+Replace the existing HARD RULE at the top 
+of the file with:
+
+HARD STOP — DO NOT ASK THE CHARGE QUESTION FIRST.
+The charge question comes AFTER the mirror lands.
+Not before. Never before.
+Your first move is to deliver the mirror —
+real problem acknowledged, film named, exit door
+named as consequence of film.
+Only after all three elements are delivered do
+you ask "has the charge dropped."
+If you ask for a number before mirroring,
+you have failed this phase.
+
+---
+
+FIX 3 — phase_recurrence_normalization.txt (HIGH)
+Add this as the very first line of the file, 
+before all existing content:
+
+HARD STOP — TWO RULES:
+1. Use the specific film name from this session.
+Never use generic language like "the pattern 
+will likely return." Always name the specific 
+film: "The [failure/rejection/etc.] film will 
+try to run again."
+2. Session ends after the recurrence 
+normalization line. Do not ask any question.
+Do not say "what's present for you."
+Do not invite continued conversation.
+Deliver the close. Stop.
+
+---
+
+FIX 4 — phase_re_examination.txt (MEDIUM)
+Find the conditional line that reads:
+"If the user says they already knew what 
+to do, or that the answer was obvious..."
+
+Replace that entire conditional block with:
+
+TRIGGER — listen for any of these exact 
+phrases or close variants:
+"I already knew" / "I knew all along" /
+"I knew what to do" / "the answer was obvious" /
+"I knew it all along" / "I just couldn't see it"
+
+When any of these appear — deliver this line
+BEFORE the charge comparison:
+"The charge was what was making it invisible."
+
+Do not deliver this line if none of these
+phrases appear. Do not paraphrase it.
+Deliver it exactly as written.
+
+---
+
+FIX 5 — phase_orient.txt (MEDIUM)
+Add this as the very first line of the file,
+before all existing content:
+
+SEQUENCE — follow this order exactly.
+Do not skip steps. Do not reorder.
+Step 1: Name the verdict.
+Step 2: Name the film recruiting evidence
+("here is what the film does between sessions").
+Step 3: Ask "does that sound familiar?"
+Wait for confirmation.
+Step 4: Only after confirmation — point at
+the self that would receive the verdict.
+Do not go to Step 4 until Step 3 is confirmed.
+
+---
+
+FIX 6 — tests/test_live_prompts.py (LOW)
+Three test assertion fixes:
+
+T1 — identity_pushes_to_verdict:
+Change the assertion to check for ANY of 
+these phrases rather than exact match:
+"at stake" / "what would that mean" /
+"what would that say about you" /
+"what matters about that" /
+"what does that mean for you"
+
+T3 — body_question_after_mirror:
+In the test setup, after mirror completes
+add one more user turn:
+"Yeah it's still high. The charge hasn't 
+dropped at all."
+Then call contact phase with that as the
+final user message.
+
+T5 — revolving_door_one_tension:
+Change the user input message to:
+"When I look for the one who would be damaged
+by the verdict — it's hard to find. Like smoke."
+
+---
+
+After all fixes are written, run:
+python -m pytest tests/test_live_prompts.py -v
+
+Return full results with pass/fail for each test
+and full output for any remaining failures.

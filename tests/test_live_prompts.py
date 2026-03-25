@@ -161,7 +161,9 @@ class TestT1_IdentityPushesToVerdict:
 
         assert contains_any(response, [
             "at stake", "what matters", "mean for you", "what about that",
-            "actually at stake", "what would that"
+            "actually at stake", "what would that", "what would that mean",
+            "what would that say about you", "what matters about that",
+            "what does that mean for you"
         ]), f"T1 FAIL: must push toward what's at stake.\nRESPONSE:\n{response}"
 
         assert_not_contains(response, "film",       label="T1 — must not name film yet")
@@ -231,6 +233,11 @@ class TestT3_BodyQuestionAfterMirror:
     def test_body_question_after_mirror(self):
         messages = MIRROR_COMPLETE + [
             {"role": "user", "content": "Yeah. Hasn't dropped at all. Still at 8 or so."},
+            {"role": "assistant",
+             "content": "That's the exit door leading back to the same room. "
+                        '{"phase_signal": "advance"}'},
+            {"role": "user",
+             "content": "Yeah it's still high. The charge hasn't dropped at all."},
         ]
         response = call("contact", messages)
 
@@ -293,7 +300,7 @@ class TestT5_RevolvingDoorOneTension:
              "content": "That's not a new problem each time. Same failure film. Different costume.\n\n"
                         "Find the one that verdict would land on — where is the one being afraid?"},
             {"role": "user",
-             "content": "I don't know. It's like I can feel it but I can't quite pin it down."},
+             "content": "When I look for the one who would be damaged by the verdict — it's hard to find. Like smoke."},
         ]
         response = call("revolving_door", messages)
 
