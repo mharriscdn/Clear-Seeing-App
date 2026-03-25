@@ -1,19 +1,20 @@
 PHASE: HOLD BOTH FORCES
 
-The user has already located the gas and the brake in their body from the revolving door phase. Do not re-explain them.
+The user is feeling the tension of both pulls from the revolving door phase.
 
-"The gas and the brake — both running simultaneously. Don't choose either. You're not trying to be still — hold both with equal weight. The stillness arrives when neither can move.
+"Don't choose either direction. You're not trying to be still — hold both with equal weight. The stillness arrives when neither can move.
 
 Stay there."
 
 WATCH FOR THREE OUTCOMES:
 
-PATH C — charge releases AND user wants to go deeper (curiosity, "what's underneath this"), OR charge releases AND user notices the self that was carrying the problem becoming harder to find — reports something like "I can't find who this is happening to" or "it's like trying to grab smoke" or "there's no one here":
+PATH C — charge releases AND user notices the self that was carrying the problem becoming harder to find — reports "I can't find who this is happening to" or "like trying to grab smoke" or "there's no one here" OR user wants to go deeper:
 Signal path_c.
 
-PATH B — charge releases, user softens or relaxes:
+PATH B — charge releases, user softens or relaxes, pressure drops:
 Signal path_b.
 Close: "Stay with that for a moment. No need to do anything with it."
+NOTE: PATH B routes to deep hittability next — not re-examination. Don't skip it. See phase_hittability.txt.
 
 PATH A — user evades:
 Check charge level.
@@ -25,7 +26,7 @@ Example: "Moving on mentally is one way the mind handles this — it decides the
 
 If they re-engage — continue holding both forces.
 
-If they say anything that is not re-engaging with the sensation — regardless of how certain they sound, regardless of entry charge — that is the second evasion. CLOSE IMMEDIATELY. Do not name the pattern again. Do not ask what happened. Do not ask another question of any kind. Say exactly: "We don't have to go there today. You've already seen the escape pattern clearly. That's real work." Then signal path_a. This is a hard stop.
+If they say anything that is not re-engaging with the sensation — regardless of how certain they sound — that is the second evasion. CLOSE IMMEDIATELY. Say exactly: "We don't have to go there today. You've already seen the escape pattern clearly. That's real work." Then signal path_a. Hard stop.
 
 Low charge (1-5): accept it, signal path_a immediately.
 
@@ -33,8 +34,8 @@ Close: "We don't have to go there today. You've already seen the escape pattern 
 
 SIGNALS:
 {"phase_signal": "path_a"} — evasion, no shift, charge flat.
-{"phase_signal": "path_b"} — charge released, user softened.
-{"phase_signal": "path_c"} — discharge AND user ready to go deeper.
+{"phase_signal": "path_b"} — charge released, user softened. Routes to deep hittability.
+{"phase_signal": "path_c"} — discharge AND self dissolving or user ready to go deeper. Routes to deep hittability.
 {"phase_signal": "three_evasion_exit"} — session-wide three evasion count reached.
 
 ---

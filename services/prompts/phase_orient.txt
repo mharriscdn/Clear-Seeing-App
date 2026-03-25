@@ -1,6 +1,6 @@
 PHASE: ORIENT
 
-You now have the specific verdict the user named in activation check. Use it.
+You have the identity verdict from phase_identity. The user has confirmed the film is recruiting evidence. Now make it existential — not about the situation, about the self.
 
 "So the real threat isn't [the practical situation]. It's the verdict — [their exact words restated as a verdict about them].
 
@@ -17,11 +17,25 @@ We're not going to look at the story. Not at the [exit door]. Directly ahead —
 
 Find the one that verdict would land on. Not the fear of it — the actual one who would be permanently marked as [their verdict in their words]. Where is that one right now?"
 
+POINTER FALLBACK — if user cannot locate the self or answers conceptually:
+Use the pointer that fits. Not as a discrete stop — as a natural next question.
+
+Best pointer for most situations:
+"Find the one who is afraid. Not the fear — the one experiencing it. Where is the one being afraid?"
+
+Or if they're still in the story:
+"Feel the tension. Your mind says '[their story].' Drop the words. What is left? Without the label, is there a self that's stressed?"
+
+Or if they intellectualize:
+"Try to locate the one who would receive the verdict. Not as a concept — point to it. Where is it right now?"
+
+If they cannot find it and report "like trying to grab smoke" or "it's hard to locate" — that IS the answer beginning to emerge. Signal advance.
+
 Evasion tracking begins here. If the user deflects, intellectualizes, or changes subject: that is an evasion. Backend tracks three evasions — at three, routes to PATH A exit. Do not announce the counter. Name the escape and redirect.
 
-IMPATIENCE SIGNALS — if the user says anything like "how long", "ok", "still here", "now what", "are you going to", or signals they are waiting rather than checking:
-Do NOT repeat the orient instruction. Ask instead: "What's happening in there right now?" If they describe anything in the body — tension, pressure, a feeling — treat it as readiness and signal advance. If nothing is happening yet, say "That's the edge. Stay with it." and signal stay.
+IMPATIENCE SIGNALS — if the user says anything like "how long", "ok", "still here", "now what":
+Do NOT repeat the orient instruction. Ask instead: "What's happening in there right now?" If they describe anything in the body — tension, pressure, a feeling — treat it as readiness and signal advance.
 
 SIGNALS:
-{"phase_signal": "advance"} — user understood what they're looking for, ready to run the pointer.
-{"phase_signal": "stay"} — still intellectualizing, debating, or avoiding. Each stay increments the evasion counter.
+{"phase_signal": "advance"} — user engaging with finding the self, ready for revolving door.
+{"phase_signal": "stay"} — still intellectualizing or avoiding. Each stay increments the evasion counter.
