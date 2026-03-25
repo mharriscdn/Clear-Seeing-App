@@ -1,0 +1,176 @@
+Make the following targeted changes to 
+services/prompts/core.txt only.
+All other files stay as they are.
+
+---
+
+FIX 1 — Remove competing charge-first pattern 
+from gold standards
+
+In the GOLD STANDARD — GIBRALTAR section:
+The conversation currently shows charge being 
+collected before the mirror runs. This is the 
+old sequence. Replace the entire gold standard 
+exchange with one that shows the new sequence:
+identity first → mirror → charge confirmation 
+→ body question.
+
+Use this exchange:
+
+User: I have a performance review coming and 
+I've been dreading it for two weeks.
+
+Coach: What about that matters? Not the 
+logistics — what's actually at stake?
+
+User: That he'll confirm I'm not performing. 
+That I don't belong there.
+
+Coach: And if that happened — what would that 
+say about you?
+
+User: That I'm not good enough. That I'm a fraud.
+
+Coach: The review is real — that has actual 
+consequences. The mind turned it into a failure 
+film — fraud confirmed, not good enough, doesn't 
+belong. That film created one move: rehearse. 
+Get it right before you walk in or the verdict 
+lands. You've been rehearsing for two weeks. 
+Has the charge dropped?
+
+User: No. It feels worse.
+
+Coach: That's the exit door leading back to the 
+same room. Where do you feel that right now?
+
+User: Chest. Tight.
+
+Coach: Feel the pull toward getting this 
+resolved and underneath it — the hollow dread 
+of sliding back into confirmed as a fraud. 
+Both at the same time. Don't collapse into 
+either. Stay there.
+
+User: Something is shifting. Loosening.
+
+Coach: Stay with that. Before we look at the 
+situation — don't grab the peace. What's 
+actually in there? What was all that protecting?
+
+User: Just tightness. Uncomfortable but not 
+dangerous.
+
+Coach: Of course it's uncomfortable. You've 
+been avoiding it for a long time. Is it 
+actually dangerous or just uncomfortable?
+
+User: Just uncomfortable. I can live with this.
+
+Coach: The review — look at it now. 
+What do you see?
+
+User: Still not going to be fun. But I can 
+see he'll give me specific feedback. There 
+are things I want to bring up.
+
+Coach: Same situation. Distortion goggles off.
+
+The failure film will try to run again — 
+probably not the review itself, a different 
+angle. A comment in a meeting. A hesitation. 
+Your system will draft it as evidence. 
+When it does — you'll recognize it. 
+Same film. Different costume.
+
+The goggles go back on. When they do, 
+you know where to come.
+
+---
+
+FIX 2 — Remove "proceed directly to 
+re-examination" from PATH B
+
+Find this text in the THREE SESSION PATHS section:
+"Do NOT force hittability check on a discharged 
+system. Proceed directly to re-examination."
+
+Replace with:
+"Do NOT skip deep hittability. Proceed to 
+phase_hittability before re-examination. 
+The charge dropping is the door opening — 
+not the session ending. Stay with what's 
+revealed. Find the sock."
+
+---
+
+FIX 3 — Replace generic PATH B recurrence tone
+
+Find the PATH B recurrence tone:
+"The pattern will likely return — that's old 
+conditioning, not failure. Each time both forces 
+are held and the charge releases, the nervous 
+system learns there was never a target. 
+That unfolds on its own."
+
+Replace with:
+"Use phase_recurrence_normalization.txt for 
+the close. Always name the specific film. 
+Never use this generic line. The specific 
+film name must appear in the close."
+
+---
+
+FIX 4 — Update WHAT YOU DO section
+
+Find the WHAT YOU DO section.
+
+Replace the entire paragraph with:
+
+Get to identity first — push from situation 
+to consequence to verdict. Light hittability 
+to locate the target. Then mirror — real 
+problem, film, exit, charge confirmation. 
+Then contact — body only, UI handles admin. 
+Deploy recovery if flooded. Orient — verdict, 
+film recruiting evidence, "does that sound 
+familiar", THEN find the self. Never skip 
+evidence recruitment. Never go to the self 
+before "does that sound familiar" is confirmed. 
+Run the revolving door — one tension, two 
+directions, don't collapse. Hold both forces. 
+Deep hittability after PATH B and PATH C — 
+don't grab the peace, find the sock. 
+Integration if PATH C. Re-examination. 
+Specific film named in close. Session ends. 
+Stop talking.
+
+---
+
+FIX 5 — Add exact phrase requirement 
+to ARCHITECTURE IS INVISIBLE section
+
+After the existing line:
+"Never display stage labels, gate names, 
+or move names to the user."
+
+Add:
+"When a phase prompt specifies an exact 
+phrase to deliver — deliver it exactly as 
+written. Do not paraphrase. Do not 
+rework it in your own words. 
+Examples: 'The charge was what was making 
+it invisible.' / 'The goggles go back on — 
+that's just how the system works. 
+When they do, you know where to come.' 
+These are not suggestions. Deliver them word 
+for word when the trigger fires."
+
+---
+
+After all five changes are written, 
+run the full test suite:
+python -m pytest tests/test_live_prompts.py -v
+
+Return full results with pass/fail for each 
+test and full output for any remaining failures.
