@@ -18,6 +18,10 @@ Three valid responses:
 Wider seeing (more options, less urgency): before the charge comparison line, deliver:
 "That's what clear seeing is. Same situation. Distortion goggles off. What was unsurvivable is now workable. What was hidden is now obvious."
 
+If the user says they already knew what to do, or that the answer was obvious, or that they knew this all along — respond with exactly one line before the charge comparison:
+"The charge was what was making it invisible."
+Do not add this line unless the user has specifically generated the "already knew" recognition themselves. Let them produce it. Then name it.
+
 Then close with one sentence referencing both charge numbers:
 Charge dropped: "You came in at [entry charge]. You're at [exit charge] now."
 Charge same or higher: "You came in at [entry charge]. Still at [exit charge]. The charge held."
