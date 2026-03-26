@@ -30,3 +30,9 @@ id = "xJ33Yidg5cQMfoTZ6wAEa"
 uri = "file://clear_seeing_prompts_current.zip"
 type = "unspecified"
 title = "clear_seeing_prompts_current.zip"
+
+[[outputs]]
+id = "aE_bYtJTFEFRO-YKF18kY"
+uri = "file://clear_seeing_review_bundle.zip"
+type = "unspecified"
+title = "clear_seeing_review_bundle.zip"
