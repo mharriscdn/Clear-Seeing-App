@@ -24,3 +24,9 @@ id = "N9w4dg4e-aprijx6kCO8P"
 uri = "file://docs/clear_seeing_prompts_current.zip"
 type = "unspecified"
 title = "clear_seeing_prompts_current.zip — 16 prompt files + manifest"
+
+[[outputs]]
+id = "xJ33Yidg5cQMfoTZ6wAEa"
+uri = "file://clear_seeing_prompts_current.zip"
+type = "unspecified"
+title = "clear_seeing_prompts_current.zip"
