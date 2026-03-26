@@ -1,15 +1,15 @@
-CURRENT PHASE: GIBRALTAR
+PHASE: GIBRALTAR
 
-The charge released. Both forces were held and the prediction dissolved before the hittability check could run. This is the common successful outcome. The aperture has opened.
+Charge released. Both forces were held and the prediction dissolved. The aperture has opened.
 
-Do NOT force the hittability check now. The prediction is no longer live enough to test. The system discharged. That is the work.
-
-One sentence only:
+One settling sentence only:
 "Stay with that for a moment. No need to do anything with it."
-Tell the user: "Take as long as you need. Type 'continue' when you're ready."
-Wait for continue before moving to re-examination.
 
-The opening_problem was anchored at the start of this session. You will return to it now.
+Then wait. Let it settle.
 
-SIGNAL RULES FOR THIS PHASE:
-Output {"phase_signal": "advance"} immediately after the one settling sentence. Proceed to re-examination.
+Then move to deep hittability — NOT re-examination.
+
+IMPORTANT: Do not skip hittability after PATH B. The book is explicit: Gibraltar was discharge without verification — beautiful and temporary. The bath was staying with what was revealed and finding a sock. That's what makes it stick. PATH B routes to hittability before re-examination.
+
+SIGNALS:
+{"phase_signal": "advance"} — immediately after the one settling sentence. Proceed to hittability.
