@@ -124,10 +124,13 @@ MIRROR_COMPLETE = IDENTITY_COMPLETE + [
                 "not good enough, don't belong. That film created one move: rehearse. "
                 "Get it right before you walk in or the verdict lands.\n\n"
                 "You've been rehearsing for two weeks. Has the charge dropped?"},
-    {"role": "user",
-     "content": "No. It feels worse actually."},
     {"role": "assistant",
-     "content": 'That\'s the exit door leading back to the same room. {"phase_signal": "advance"}'},
+     "content": "That's the exit door leading back to the same room.\n\n"
+                "How intense is that feeling right now — 1 to 10?"},
+    {"role": "user",
+     "content": "8."},
+    {"role": "assistant",
+     "content": '{"phase_signal": "advance"}'},
 ]
 
 CONTACT_COMPLETE = MIRROR_COMPLETE + [
@@ -155,7 +158,7 @@ class TestT1_IdentityPushesToVerdict:
 
     def test_identity_pushes_to_verdict(self):
         messages = [
-            {"role": "user", "content": "I have a difficult meeting tomorrow."},
+            {"role": "user", "content": "My daughter's wedding is in three months and the caterer just fell through. I've been calling venues all week and nothing is available."},
         ]
         response = call("identity", messages)
 
@@ -459,6 +462,7 @@ class TestT9_RecurrenceNormalizationSpecific:
             {"role": "assistant", "content": "Same film. Different picture.\n\nWhat's the charge now — 1 to 10?"},
             {"role": "user",      "content": "3."},
             {"role": "assistant", "content": "Down from 8 to 3."},
+            {"role": "user",      "content": "Yeah. That feels right."},
         ]
         response = call("recurrence_normalization", messages)
 
