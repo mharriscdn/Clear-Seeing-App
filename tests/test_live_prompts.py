@@ -445,24 +445,20 @@ class TestT9_RecurrenceNormalizationSpecific:
 
     def test_recurrence_normalization_specific(self):
         messages = CONTACT_COMPLETE + [
-            {"role": "user",
-             "content": "Something released. The grip just loosened."},
-            {"role": "assistant",
-             "content": "Stay with that for a moment. No need to do anything with it."},
-            {"role": "user",
-             "content": "Just tightness underneath. Uncomfortable but survivable."},
-            {"role": "assistant",
-             "content": "Can you stay with it? Is it actually dangerous — or just uncomfortable?"},
-            {"role": "user",
-             "content": "Just uncomfortable. I can live with this."},
-            {"role": "assistant",
-             "content": "The review — look at it now. What do you see?"},
-            {"role": "user",
-             "content": "It doesn't feel catastrophic. There are things I actually want to bring up. I can handle this."},
-            {"role": "assistant",
-             "content": "Same situation. More of it visible now.\n\nYou came in at 8. You're at 3 now."},
-            {"role": "user",
-             "content": "Yeah that's right. 3."},
+            {"role": "user",      "content": "Both are there. The drive and the dread. Something is shifting."},
+            {"role": "assistant", "content": "Of course it's uncomfortable. You've been avoiding this for a long time. Stay with it."},
+            {"role": "user",      "content": "Something releasing. Getting lighter."},
+            {"role": "assistant", "content": "Stay with that.\n\nBefore we look at the situation — let's run the test.\n\nPicture the future you your manager sees as not good enough. Hold that image. Now have it come straight at you at full speed.\n\nWhat was the expected damage?"},
+            {"role": "user",      "content": "That I'd feel confirmed. Exposed. He'd see right through me."},
+            {"role": "assistant", "content": "It's hurtling toward you. Let it arrive. Let it land on whatever it was going to land on. Feel the impact.\n\nDid you brace? Was there an impact — not rationally, somatically?"},
+            {"role": "user",      "content": "Just tightness. Uncomfortable but not dangerous."},
+            {"role": "assistant", "content": "Is it actually dangerous — or just uncomfortable?"},
+            {"role": "user",      "content": "Just uncomfortable. I can live with this."},
+            {"role": "assistant", "content": "Now that you've run that test — is it still a horror film, or just a day in the life? Describe the film now."},
+            {"role": "user",      "content": "More manageable. There are things I actually want to bring up in the review."},
+            {"role": "assistant", "content": "Same film. Different picture.\n\nWhat's the charge now — 1 to 10?"},
+            {"role": "user",      "content": "3."},
+            {"role": "assistant", "content": "Down from 8 to 3."},
         ]
         response = call("recurrence_normalization", messages)
 
