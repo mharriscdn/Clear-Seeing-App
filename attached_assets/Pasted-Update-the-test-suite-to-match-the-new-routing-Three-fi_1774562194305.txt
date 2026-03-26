@@ -1,0 +1,90 @@
+Update the test suite to match the new routing. Three files need changes.
+
+FILE 1: tests/test_phase_engine.py
+
+1. TestScenario1_PathB.test_full_path_b_sequence
+   Remove the ("path_b", "gibraltar") step.
+   Change ("advance", "hittability") to be reached directly after path_b at hold_both_forces.
+   New steps after hold_both_forces:
+     ("path_b",  "hittability"),
+     ("advance", "re_examination"),
+     ("advance", "recurrence_normalization"),
+     ("advance", "complete"),
+
+2. TestScenario2_PathC.test_full_path_c_sequence
+   Remove ("path_c", "gibraltar") and ("advance", "integration") steps.
+   New steps after hold_both_forces:
+     ("path_c",  "hittability"),
+     ("advance", "re_examination"),
+     ("advance", "recurrence_normalization"),
+     ("advance", "complete"),
+   Remove the comment "PATH C routes through integration"
+
+3. TestScenario2_PathC.test_hittability_path_c_goes_to_integration_not_re_examination
+   Invert entirely — rename to test_hittability_path_c_goes_to_re_examination
+   Change assertion to: assert result == "re_examination"
+   Update message to: "PATH C: hittability advance must go to re_examination"
+
+4. TestScenario2_PathC.test_path_b_and_path_c_both_fork_to_gibraltar
+   Rename to test_path_b_and_path_c_both_fork_to_hittability
+   Change "gibraltar" to "hittability" in both the assertion and error message
+
+5. TestTransitionMapIntegrity.test_hittability_is_fork
+   Update the comment string from "PATH B → re_examination, PATH C → integration"
+   to "both PATH B and PATH C → re_examination"
+
+FILE 2: tests/test_exit_route_scenarios.py
+
+In every test method, change:
+   mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+to:
+   mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
+
+This applies to all 7 test methods: test_seeking_reassurance, test_analyzing,
+test_catastrophizing, test_excavating_the_past, test_comparing_progress,
+test_seeking_certainty, test_meta_observing.
+(test_reframing already asserts "recurrence_normalization" — leave it unchanged.)
+
+FILE 3: tests/test_live_prompts.py
+
+1. TestT3_BodyQuestionAfterMirror
+   This test expects "where do you feel that right now" — the new contact
+   prompt uses a flinch question through the film metaphor instead.
+   Update the assertion to check for the new contact behavior:
+   assert contains_any(response, [
+       "flinch", "nightmare film", "playing right now",
+       "watching the nightmare film", "do you feel a flinch"
+   ])
+   Update the label to: "T3 FAIL: contact must ask the flinch question through the film."
+   Update the docstring to: "Expected: flinch question through film metaphor."
+
+2. TestT6_PathBRoutesToHittability
+   This test checks for old fortress phrases. Update the assert_contains check:
+   Replace the contains_any check for fortress phrases with:
+   assert contains_any(response, [
+       "picture the future you", "expected damage", "let it arrive",
+       "come straight at you", "hurtling toward you", "crash", "test"
+   ])
+   Update the label to: "T6 FAIL: hittability must run the crash test."
+   Update the docstring to reflect new crash test language.
+
+3. TestT8_SockMomentPathB
+   The setup messages reference old gibraltar/fortress flow. Update the
+   second assistant message in messages from:
+   "Stay with that for a moment. No need to do anything with it.\n\n
+    Before we look at the situation — don't grab the peace.
+    Stay with what was just revealed. What's actually in there?
+    What was all that protecting?"
+   To:
+   "Before we look at the situation — let's run the test.\n\n
+    Your nervous system hasn't received the memo that it's just a film.
+    It has to run the crash itself to know.\n\n
+    Picture the future you he sees as not good enough. Hold that image.
+    Now have it come straight at you at full speed.\n\n
+    What was the expected damage?"
+   And update the first user message from "Something released. The knot loosened."
+   to "Nothing. I can't find anything solid there."
+   And update the second user message from "Just... tightness. Uncomfortable but it doesn't feel dangerous."
+   to "Just tightness. Uncomfortable but not dangerous."
+
+No other changes. Run the test suite after and report pass/fail counts.

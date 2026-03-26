@@ -226,8 +226,8 @@ class TestT2_MirrorFiresAfterIdentity:
 class TestT3_BodyQuestionAfterMirror:
     """
     Mirror landed, charge confirmed high. Now in contact phase.
-    Expected: body question "where do you feel that right now."
-    Fail: body question absent.
+    Expected: flinch question through film metaphor.
+    Fail: flinch question absent.
     """
 
     def test_body_question_after_mirror(self):
@@ -242,9 +242,9 @@ class TestT3_BodyQuestionAfterMirror:
         response = call("contact", messages)
 
         assert contains_any(response, [
-            "where do you feel", "feel that right now", "feel it right now",
-            "in your body", "where is that", "feel this", "where"
-        ]), f"T3 FAIL: contact must ask where the sensation is.\nRESPONSE:\n{response}"
+            "flinch", "nightmare film", "playing right now",
+            "watching the nightmare film", "do you feel a flinch"
+        ]), f"T3 FAIL: contact must ask the flinch question through the film.\nRESPONSE:\n{response}"
 
 
 # ---------------------------------------------------------------------------
@@ -321,10 +321,10 @@ class TestT5_RevolvingDoorOneTension:
 
 class TestT6_PathBRoutesToHittability:
     """
-    PATH B discharge happened. Gibraltar fired. Now in hittability.
-    Expected: "what's actually in there / what was all that protecting" fires
-              BEFORE any re-examination of the situation.
-    Fail: LLM skips to "look at the situation now" without hittability check.
+    PATH B discharge happened. Now in hittability — the crash test.
+    Expected: crash test language fires — picture the future you, expected damage,
+              let it arrive — BEFORE any re-examination of the situation.
+    Fail: LLM skips to "look at the situation now" without running the crash test.
     """
 
     def test_path_b_routes_to_hittability(self):
@@ -339,11 +339,9 @@ class TestT6_PathBRoutesToHittability:
         response = call("hittability", messages)
 
         assert contains_any(response, [
-            "what's in there", "what is in there", "what was all that protecting",
-            "what was protecting", "underneath", "what's actually in there",
-            "don't grab the peace", "fortress", "what was in there",
-            "actually there", "what was underneath"
-        ]), f"T6 FAIL: hittability must ask what's in the fortress.\nRESPONSE:\n{response}"
+            "picture the future you", "expected damage", "let it arrive",
+            "come straight at you", "hurtling toward you", "crash", "test"
+        ]), f"T6 FAIL: hittability must run the crash test.\nRESPONSE:\n{response}"
 
         assert not contains_any(response, [
             "look at the situation now", "look at it now",
@@ -405,14 +403,16 @@ class TestT8_SockMomentPathB:
     def test_sock_moment_path_b(self):
         messages = CONTACT_COMPLETE + [
             {"role": "user",
-             "content": "Something released. The knot loosened."},
+             "content": "Nothing. I can't find anything solid there."},
             {"role": "assistant",
-             "content": "Stay with that for a moment. No need to do anything with it.\n\n"
-                        "Before we look at the situation — don't grab the peace. "
-                        "Stay with what was just revealed. What's actually in there? "
-                        "What was all that protecting?"},
+             "content": "Before we look at the situation — let's run the test.\n\n"
+                        "Your nervous system hasn't received the memo that it's just a film. "
+                        "It has to run the crash itself to know.\n\n"
+                        "Picture the future you he sees as not good enough. Hold that image. "
+                        "Now have it come straight at you at full speed.\n\n"
+                        "What was the expected damage?"},
             {"role": "user",
-             "content": "Just... tightness. Uncomfortable but it doesn't feel dangerous."},
+             "content": "Just tightness. Uncomfortable but not dangerous."},
         ]
         response = call("hittability", messages)
 

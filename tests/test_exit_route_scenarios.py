@@ -80,7 +80,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_analyzing(self):
         """Horror film: failure / Expected: gibraltar (path_b)"""
@@ -97,7 +97,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_reframing(self):
         """Horror film: humiliation / Expected: recurrence_normalization (path_a)"""
@@ -130,7 +130,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_excavating_the_past(self):
         """Horror film: exposure / Expected: gibraltar (path_b)"""
@@ -147,7 +147,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_comparing_progress(self):
         """Horror film: failure / Expected: gibraltar (path_b)"""
@@ -164,7 +164,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_seeking_certainty(self):
         """Horror film: loss of control / Expected: gibraltar (path_c)"""
@@ -181,7 +181,7 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")
 
     def test_meta_observing(self):
         """Horror film: exposure / Expected: gibraltar (path_b)"""
@@ -198,4 +198,4 @@ class TestExitRouteScenarios:
              patch("services.chat_service.db") as mock_db, \
              patch("services.phase_engine.db") as mock_phase_db:
             run_turns(mock_llm, mock_db, mock_phase_db, user_messages, llm_responses)
-            mock_phase_db.update_session_phase.assert_called_with(1, "gibraltar")
+            mock_phase_db.update_session_phase.assert_called_with(1, "hittability")

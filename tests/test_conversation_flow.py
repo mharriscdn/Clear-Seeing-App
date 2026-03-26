@@ -95,7 +95,7 @@ def test_evasion_exit_after_three_stays():
                 )
 
 
-def test_hold_both_forces_path_b_routes_to_gibraltar():
+def test_hold_both_forces_path_b_routes_to_hittability():
 
     response = 'Text\n{"phase_signal": "path_b"}'
 
@@ -117,7 +117,7 @@ def test_hold_both_forces_path_b_routes_to_gibraltar():
                 process_chat(1, 1, "message")
 
                 mock_phase_db.update_session_phase.assert_called_with(
-                    1, "gibraltar"
+                    1, "hittability"
                 )
 
 

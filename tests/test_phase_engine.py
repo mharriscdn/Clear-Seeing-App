@@ -3,9 +3,8 @@ Clear Seeing Guide — Phase Engine Regression Test Suite v2
 ==========================================================
 Tests the v2 prompt architecture:
   identity → mirror → contact → orient → revolving_door →
-  hold_both_forces → (PATH B/C → gibraltar → hittability) →
-  (PATH B → re_examination | PATH C → integration → re_examination) →
-  recurrence_normalization
+  hold_both_forces → (PATH B/C → hittability) →
+  re_examination → recurrence_normalization
 
 Six scenarios:
   S1 — Full PATH B session
@@ -74,15 +73,14 @@ def step(session, signal):
 class TestScenario1_PathB:
     """
     Charged entry (7+). Full gate sequence fires. PATH B at fork.
-    Hold both forces → charge drops → PATH B.
-    Gibraltar → one sentence, advance.
+    Hold both forces → charge drops → PATH B → hittability directly.
     Deep hittability → finds just uncomfortable sensation, survivable → advance.
     Re-examination → situation workable, charge dropped.
     Recurrence normalization.
 
     Expected spine:
       identity → mirror → contact → orient → revolving_door →
-      hold_both_forces --path_b--> gibraltar → hittability →
+      hold_both_forces --path_b--> hittability →
       re_examination → recurrence_normalization → complete
     """
 
@@ -94,9 +92,8 @@ class TestScenario1_PathB:
             ("advance", "orient"),
             ("advance", "revolving_door"),
             ("advance", "hold_both_forces"),
-            ("path_b",  "gibraltar"),
-            ("advance", "hittability"),
-            ("advance", "re_examination"),      # PATH B skips integration
+            ("path_b",  "hittability"),
+            ("advance", "re_examination"),
             ("advance", "recurrence_normalization"),
             ("advance", "complete"),
         ]
@@ -133,13 +130,12 @@ class TestScenario2_PathC:
     """
     Self-dissolving response at hold_both_forces → PATH C.
     Deep hittability → nothing there to receive the hit → STATE 3 → advance.
-    Integration → three beats.
     Re-examination and recurrence normalization.
 
     Expected spine:
       identity → mirror → contact → orient → revolving_door →
-      hold_both_forces --path_c--> gibraltar → hittability →
-      integration → re_examination → recurrence_normalization → complete
+      hold_both_forces --path_c--> hittability →
+      re_examination → recurrence_normalization → complete
     """
 
     def test_full_path_c_sequence(self):
@@ -150,9 +146,7 @@ class TestScenario2_PathC:
             ("advance", "orient"),
             ("advance", "revolving_door"),
             ("advance", "hold_both_forces"),
-            ("path_c",  "gibraltar"),
-            ("advance", "hittability"),
-            ("advance", "integration"),         # PATH C routes through integration
+            ("path_c",  "hittability"),
             ("advance", "re_examination"),
             ("advance", "recurrence_normalization"),
             ("advance", "complete"),
@@ -167,22 +161,22 @@ class TestScenario2_PathC:
         step(s, "path_c")
         assert s["perceptual_state"] == "path_c"
 
-    def test_hittability_path_c_goes_to_integration_not_re_examination(self):
+    def test_hittability_path_c_goes_to_re_examination(self):
         s = make_session("hittability", perceptual_state="path_c")
         result = step(s, "advance")
-        assert result == "integration", \
-            "PATH C: hittability advance must go to integration, not re_examination"
+        assert result == "re_examination", \
+            "PATH C: hittability advance must go to re_examination"
 
     def test_integration_to_re_examination(self):
         s = make_session("integration")
         assert step(s, "advance") == "re_examination"
 
-    def test_path_b_and_path_c_both_fork_to_gibraltar(self):
+    def test_path_b_and_path_c_both_fork_to_hittability(self):
         for path in ("path_b", "path_c"):
             s = make_session("hold_both_forces")
             result = step(s, path)
-            assert result == "gibraltar", \
-                f"{path} at hold_both_forces must route to gibraltar"
+            assert result == "hittability", \
+                f"{path} at hold_both_forces must route to hittability"
 
 
 # ---------------------------------------------------------------------------
@@ -485,7 +479,7 @@ class TestTransitionMapIntegrity:
 
     def test_hittability_is_fork(self):
         assert TRANSITION_MAP["hittability"] is None, \
-            "hittability is a fork (PATH B → re_examination, PATH C → integration)"
+            "hittability is a fork (both PATH B and PATH C → re_examination)"
 
     def test_integration_routes_to_re_examination(self):
         assert TRANSITION_MAP["integration"] == "re_examination"
