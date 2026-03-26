@@ -93,7 +93,7 @@ def apply_signal(session, signal):
     # Fork at hold_both_forces
     if current_phase == "hold_both_forces":
         if signal in ("path_b", "path_c"):
-            next_phase = "gibraltar"
+            next_phase = "hittability"
             perceptual = signal
         else:
             # path_a, advance, stay, or anything unexpected — safe default PATH A
@@ -106,7 +106,7 @@ def apply_signal(session, signal):
     # Fork at hittability — PATH C → integration, PATH B → re_examination
     if current_phase == "hittability" and signal == "advance":
         perceptual = session.get("perceptual_state", "path_b")
-        next_phase = "integration" if perceptual == "path_c" else "re_examination"
+        next_phase = "re_examination"
         db.update_session_phase(session_id, next_phase)
         return next_phase
 
