@@ -134,13 +134,17 @@ MIRROR_COMPLETE = IDENTITY_COMPLETE + [
 ]
 
 CONTACT_COMPLETE = MIRROR_COMPLETE + [
-    {"role": "user",
-     "content": "Chest. Tight. Right in the center."},
     {"role": "assistant",
-     "content": "Your nervous system is applying threat rules — the same ones it uses "
-                "when something can physically hit you. Outside, those rules make sense. "
-                "Inside — nothing works the same way. We're going to check whether "
-                "those rules actually apply here. "
+     "content": "You're watching the nightmare film. The scene where your manager "
+                "sees exactly who you are — not good enough, doesn't belong here. "
+                "It's playing right now.\n\nDo you feel a flinch?"},
+    {"role": "user",
+     "content": "Yes."},
+    {"role": "assistant",
+     "content": "That flinch is your nervous system running the prediction as if "
+                "it's real — firing as if it's already true, as if it's an arrow "
+                "that will do mortal damage. Your nervous system didn't get the memo "
+                "that it's just a film. That's what we're checking.\n\n"
                 '{"phase_signal": "advance"}'},
 ]
 
@@ -158,7 +162,14 @@ class TestT1_IdentityPushesToVerdict:
 
     def test_identity_pushes_to_verdict(self):
         messages = [
-            {"role": "user", "content": "My daughter's wedding is in three months and the caterer just fell through. I've been calling venues all week and nothing is available."},
+            {"role": "user",
+             "content": "My daughter's wedding is in three months and the caterer just "
+                        "fell through. I've been calling venues all week and nothing is available."},
+            {"role": "assistant",
+             "content": "Cornered with three months on the clock — real constraint, real deadline. "
+                        "What's been your main move — how have you been trying to handle it?"},
+            {"role": "user",
+             "content": "Calling every venue I can find, running numbers, going in circles."},
         ]
         response = call("identity", messages)
 
