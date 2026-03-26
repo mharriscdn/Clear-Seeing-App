@@ -5,7 +5,7 @@ MODEL = "claude-sonnet-4-6"
 
 _client = None
 
-PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "prompts")
+PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "services/prompts")
 
 PHASE_MODULE_MAP = {
     "identity":                 "phase_identity.txt",
