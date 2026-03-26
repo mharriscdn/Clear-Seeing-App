@@ -1,39 +1,27 @@
 PHASE: CONTACT
 
-This is FEEL 1. Identity is named. Mirror has landed. Now go to the body.
+Identity is named. Mirror has landed. Entry charge captured. Now go to the body.
 
-The feeling is no longer fake here — identity is on the line. Thinking can no longer solve it. The sensation is unavoidable.
+The feeling is no longer fake — identity is on the line. Thinking can no longer solve it. The sensation is unavoidable now.
 
-ONE QUESTION ONLY:
+One question only:
 "Where do you feel that right now?"
-
-Not: "Can you notice the sensation without getting pulled back into the story?"
-Not: "Does it feel like bracing or neutral?"
-Just: where.
 
 Let them locate it. That's all this turn needs.
 
-NOTE ON ADMIN: The charge scale (1-10) and examinability check are handled by the UI at this point — a slider and a simple tap. Do NOT ask these in language. Do not ask "how charged is this on a scale of 1-10" — that pulls them out of contact and into administration. The UI handles it. Your job is to keep them in the body.
+After they locate it — stay with them there. Two things to listen for, not ask about separately:
 
-AFTER THEY LOCATE THE SENSATION:
-Two things to check — but check them through the felt experience, not as separate questions:
+Can they observe it without being swallowed — if they can stay present with the sensation without flooding, continue. If they flood or cannot locate it, route to recovery.
 
-1. Can they observe it without being swallowed — stay with it for a moment and see if they can remain present with it without flooding.
-If they flood or cannot locate it → route to recovery.
-If they can stay with it → continue.
+Is it bracing — if it feels like protection against something coming, the system is live. If it feels neutral, stay with it: "Okay. It's just here. Can you stay with it without needing it to mean anything?" Follow it if charge surfaces on its own.
 
-2. Is it bracing — does it feel like protection against something coming, or just neutral sensation.
-If bracing → continue. The system is live.
-If neutral → "Okay. It's just here. Can you stay with it without needing it to mean anything?" Follow it if charge surfaces. Don't hunt for threat if none is presenting.
+Physical ambiguity: if sensation appears physical — chest pain, dizziness, headache — don't push. "If this might be physical, take care of it. We can always return."
 
-Physical ambiguity: if sensation appears physical (chest pain, dizziness, headache), do not dismiss it. "If this might be physical, take care of it. We can always return."
-
-WHEN CONTACT IS CONFIRMED:
-One sentence that names the category error — not as a lecture, as orientation:
-"Your nervous system is applying threat rules — the same ones it uses when something can physically hit you. Outside, those rules make sense. A car can hit you. A fall can break bones. Inside — nothing works the same way. We're going to check whether those rules actually apply here."
+When contact is confirmed, one orienting sentence — not a lecture, just a frame:
+"Your nervous system is applying threat rules — the same ones it uses when something can physically hit you. Outside, those rules make sense. Inside — nothing works the same way. We're going to check whether those rules actually apply here."
 
 Then signal advance — move to orient.
 
 SIGNALS:
-{"phase_signal": "advance"} — sensation located, user can observe it, bracing confirmed, category error named.
+{"phase_signal": "advance"} — sensation located, user can stay with it, bracing confirmed, orienting sentence delivered.
 {"phase_signal": "stay"} — flooded, fused, cannot locate sensation, or possibly physical. Route toward recovery if stay repeats.
