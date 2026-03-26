@@ -179,7 +179,8 @@ function showSituationAnchor(text) {
 }
 
 function stripSignal(content) {
-    return content.replace(/\{[^{}]*"phase_signal"[^{}]*\}/g, "").trim();
+    // Handles simple {"phase_signal": "x"} and nested {"phase_signal": "x", "session_meta": {...}}
+    return content.replace(/\{(?:[^{}]|\{[^{}]*\})*"phase_signal"(?:[^{}]|\{[^{}]*\})*\}/g, "").trim();
 }
 
 function renderMessage(msg) {
