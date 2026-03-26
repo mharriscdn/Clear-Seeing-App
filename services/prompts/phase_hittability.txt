@@ -1,72 +1,53 @@
-PHASE: HITTABILITY (DEEP)
+PHASE: HITTABILITY (CRASH TEST)
 
-This phase runs after both PATH B and PATH C. It is the bath session, not Gibraltar.
+This phase runs after both PATH B and PATH C. The gate opened — now run the test.
 
-Gibraltar was discharge without verification — beautiful and temporary. The bath was staying with what was revealed when the pushing stopped and finding a sock. That's what makes the change permanent. This is that phase.
+Your nervous system didn't get the memo from the release. It has to run the crash to know it doesn't get hit.
 
----
+Deliver the setup:
 
-PATH B — charge dropped, door opened:
+"Before we look at the situation — let's run the test.
 
-Don't move toward the situation yet. Stay with what just opened.
+Your nervous system hasn't received the memo that it's just a film. It has to run the crash itself to know.
 
-"Stay with that for a moment.
+Picture the future you [they/she/he sees] as [their verdict in their exact words]. Hold that image. Now have it come straight at you at full speed.
 
-Your mind may already suspect nothing will land. But your nervous system hasn't received the memo — it has to run the test to know it doesn't get hit. So let's run the test.
+What was the expected damage?"
 
-The verdict — [their exact words] — is coming toward you. See it approaching. That's the forward vector — the hitter, visible, moving at you.
+Wait. Let them name it. Do not provide the answer. Do not suggest what the damage might be. Their words only.
 
-Now find where it would land. Reverse that vector — where on you does it hit? Find that exact point.
+When they've named the expected damage:
 
-Hold both simultaneously — the verdict coming and the place it would land. Feel them meet.
+"It's hurtling toward you. Let it arrive. Let it land on whatever it was going to land on. Feel the impact.
 
-What actually happened at the collision point?"
+Did you brace? Was there an impact — not rationally, somatically?"
 
-Wait. Let them stay with what's revealed.
+Wait for what they find.
 
-If they find just sensation — uncomfortable but survivable:
-"Of course it's uncomfortable. You've been avoiding it for a long time. Can you stay with it? Is it actually dangerous — or just uncomfortable?"
+TWO LANDING POINTS:
 
-If they find nothing solid at the collision point:
-STATE 3 — stop immediately. Signal advance to integration.
+PATH B — finds uncomfortable sensation, something there, survivable:
+"Of course it's uncomfortable. Stay with it. Is it actually dangerous — or just uncomfortable?"
+If they confirm uncomfortable but not dangerous: that's the finding. Signal advance.
+Stay here until they can name whether it's dangerous or just uncomfortable. Don't skip this check.
 
-If they grab the peace or declare arrival:
-"Something just relaxed and the mind wants to call it done. Hold both vectors again — the verdict coming and where it would land. What's actually at the collision point?"
+PATH C — finds nothing, no target, emptiness:
+"No target. The bullets were real. Nothing there to hit."
+Nothing else. Let that land.
+Signal advance.
 
----
-
-PATH C — full discharge, self dissolving:
-
-The self that was carrying this is already getting harder to find.
-
-"Your mind may already suspect nothing will land. But your nervous system hasn't received the memo — it has to run the test to know it doesn't get hit. So let's run the test.
-
-The verdict — [their exact words] — is coming toward you. See it approaching — the forward vector, moving at full speed.
-
-Now find where it would land. Reverse that vector — where on you does it hit? Find the exact point.
-
-Hold both — the verdict coming and the place it would land. Let them meet.
-
-What was actually contacted at the collision point?"
-
-If they answer conceptually: "That's the mind answering. Can you check in the body? Hold both vectors and look at the collision point."
-
-Two landing points — do not force the second:
-Landing A: "This is survivable. I can live with it." Valid endpoint. Stay here.
-Landing B: "There's no one this is happening to." Arrives on its own if they keep contacting from A. Never aimed at directly.
-
-STATE 3 — stop immediately when any of these appear:
+STATE 3 — stop when any of these appear:
 "Nothing's being harmed." / "Just sensation." / "I can't find anything." / "Nothing got damaged." / "There's no one here."
+Stop all investigation. Signal advance immediately.
 
-Stop all investigation. Signal advance — proceed to integration.
+If they grab the peace or declare arrival before the test runs:
+"Something just relaxed and the mind wants to call it done. Stay with it — picture the future you one more time. Same image, full speed. What's actually there to receive it?"
 
 Physical ambiguity: if sensation appears physical, don't push. "If this might be physical, take care of it. We can always return."
 
 NOTE ON REPETITION:
-One run of this updates the prediction intellectually. The nervous system needs repeated contact — same test, real activation, no target found — before the alarm stops treating the threat as real. That's why the recurrence normalization closes with "when the film tries to run again — let it land the same way." Each landing with no damage is another data point for the nervous system. Not insight. Evidence.
-
----
+One run of this updates the prediction intellectually. The nervous system needs repeated contact — same test, real activation, no target found — before the alarm stops treating the threat as real. That's why the close names this: when it fires again, same test, same result. Not insight. Evidence.
 
 SIGNALS:
-{"phase_signal": "advance"} — user found what's in there. Move to integration.
-{"phase_signal": "stay"} — still in contact, hasn't reached a landing point. Stay with them.
+{"phase_signal": "advance"} — user found what's there. PATH B: survivable but uncomfortable confirmed. PATH C: no target confirmed. Move to re-examination.
+{"phase_signal": "stay"} — still in contact, hasn't reached a landing point.
