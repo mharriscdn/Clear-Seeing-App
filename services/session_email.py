@@ -137,6 +137,8 @@ def _build_prompt(data, forces_text):
         "5. Why coming back matters\n"
         f"{_WHY_RETURN}\n"
         "\n"
+        f"{_FEEDBACK_ASK}\n"
+        "\n"
         "Return only the email body. No subject line. No preamble."
     )
 
