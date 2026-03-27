@@ -17,9 +17,10 @@ MODEL = "claude-sonnet-4-6"
 
 _SYSTEM = (
     "You are generating a post-session reflection email for a user of the "
-    "Clear Seeing app. Be brief, observational, and match this tone: direct, "
-    "no therapy language, no praise, no interpretation. "
-    "Use the user's own words where possible."
+    "Clear Seeing app. Be brief, observational, direct. No therapy language. "
+    "No praise. No interpretation. Use the user's own words where possible. "
+    "If data for a section is missing or null, omit that section entirely — "
+    "never mention what the session didn't reach or what wasn't captured."
 )
 
 _WHY_RETURN = (
@@ -32,7 +33,7 @@ _WHY_RETURN = (
     "seeing clearly. That is the right moment."
 )
 
-_FEEDBACK_ASK = "How was this session? Reply to this email — I read every one."
+_FEEDBACK_ASK = "If something is still live after reading this — come back."
 
 
 def _extract_mirror_turn(messages):
@@ -66,40 +67,77 @@ def _extract_hold_both_forces_turn(messages):
     return ""
 
 
-def _build_prompt(data, mirror_text, forces_text):
+def _build_prompt(data, forces_text):
     """Assembles the user-facing prompt string for Claude."""
-    ending_type = data.get("ending_type") or "path_b"
+    ending_type = data.get("ending_type") or "incomplete"
     entry = data.get("entry_charge")
-    exit_charge = data.get("exit_charge") or 0
+    exit_charge = data.get("exit_charge")
 
     if ending_type == "path_a":
-        what_shifted = "PATH A: 'The pattern was seen clearly. That is real work.'"
-    elif ending_type == "path_c":
-        what_shifted = "PATH C: 'The prediction was tested and failed to land.'"
-    else:
         what_shifted = (
-            f"PATH B: 'You came in at {entry}. "
-            f"You left at {exit_charge}. Same situation — wider field.'"
+            "PATH A: The session ended before both forces could be held. "
+            "Come back when something is live."
         )
+    elif ending_type == "path_c" and exit_charge is not None:
+        what_shifted = (
+            f"PATH C: You came in at {entry}. You left at {exit_charge}. "
+            "The verdict had nothing to hit."
+        )
+    elif ending_type == "path_b" and exit_charge is not None:
+        what_shifted = (
+            f"PATH B: You came in at {entry}. You left at {exit_charge}. "
+            "Same situation — wider field."
+        )
+    else:
+        what_shifted = None
+
+    exit_charge_display = f"{exit_charge}/10" if exit_charge is not None else "null (not reached)"
 
     return (
-        "Generate a reflection email using this session data:\n"
-        f"Opening problem: {data.get('opening_problem') or '(not recorded)'}\n"
-        f"Escape pattern observed: {mirror_text or '(not available)'}\n"
-        f"Two forces held: {forces_text or '(not available)'}\n"
+        "Generate a reflection email using this session data:\n\n"
+        f"Opening problem: {data.get('opening_problem') or 'not captured'}\n"
+        f"Exit door (escape pattern): {data.get('exit_door') or 'not captured'}\n"
+        f"Horror film type: {data.get('horror_film') or 'not captured'}\n"
         f"Entry charge: {entry}/10\n"
-        f"Exit charge: {exit_charge}/10 (null if PATH A)\n"
+        f"Exit charge: {exit_charge_display}\n"
         f"Session outcome: {ending_type}\n"
+        f"Two forces held: {forces_text or 'not captured'}\n"
         "\n"
-        "Structure the email with these exact sections:\n"
-        "1. What you brought — one sentence using their words\n"
-        "2. What the mind was doing — one sentence naming the escape pattern\n"
-        "3. The two forces — one sentence describing what was held\n"
-        f"4. What shifted — one or two sentences using charge numbers. {what_shifted}\n"
-        f"5. Why coming back matters — use this exact text:\n'{_WHY_RETURN}'\n"
-        f"6. Feedback ask — use this exact text:\n'{_FEEDBACK_ASK}'\n"
+        "Rules:\n"
+        "- Only include a section if the data for it exists and is meaningful\n"
+        "- Never mention what the session didn't reach\n"
+        "- Never describe the app's internal behavior to the user\n"
+        "- Never fabricate a charge number — if exit charge is null, do not include a charge comparison\n"
         "\n"
-        "Return only the email body text. No subject line. No preamble."
+        "Use this structure, omitting any section where data is missing:\n"
+        "\n"
+        "1. What you brought\n"
+        "One sentence using their exact words from the opening problem.\n"
+        "\n"
+        "2. What the mind was doing\n"
+        "One sentence naming the escape pattern using plain language.\n"
+        "Exit door labels translate as:\n"
+        "analyzing → going over it, trying to figure it out\n"
+        "seeking_reassurance → looking for confirmation it will be okay\n"
+        "reframing → trying to see it differently\n"
+        "catastrophizing → running it forward, stacking worst cases\n"
+        "excavating_past → tracing it back to where it started\n"
+        "comparing_progress → measuring against where you should be\n"
+        "seeking_certainty → needing to know how it turns out\n"
+        "meta_observing → watching yourself experience it\n"
+        "\n"
+        "3. The two forces [only if hold_both_forces phase was reached]\n"
+        "One sentence describing what was held — gas toward resolution, "
+        "brake against the verdict landing. Use their specific content.\n"
+        "\n"
+        "4. What shifted [only if exit charge exists]\n"
+        + (what_shifted if what_shifted else "(omit this section)") +
+        "\n"
+        "\n"
+        "5. Why coming back matters\n"
+        f"{_WHY_RETURN}\n"
+        "\n"
+        "Return only the email body. No subject line. No preamble."
     )
 
 
@@ -158,10 +196,9 @@ def send_session_email(session_id):
             return
 
         messages = db.get_session_messages(session_id)
-        mirror_text = _extract_mirror_turn(messages)
         forces_text = _extract_hold_both_forces_turn(messages)
 
-        prompt = _build_prompt(data, mirror_text, forces_text)
+        prompt = _build_prompt(data, forces_text)
         email_body = _call_claude(prompt)
 
         date_str = datetime.utcnow().strftime("%-d %B %Y")

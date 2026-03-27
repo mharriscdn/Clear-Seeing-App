@@ -1,0 +1,78 @@
+In services/session_email.py make these changes:
+
+1. Replace the system prompt with:
+
+"You are generating a post-session reflection email for a user of the 
+Clear Seeing app. Be brief, observational, direct. No therapy language. 
+No praise. No interpretation. Use the user's own words where possible. 
+If data for a section is missing or null, omit that section entirely — 
+never mention what the session didn't reach or what wasn't captured."
+
+2. Replace the user prompt in _build_prompt() with:
+
+"Generate a reflection email using this session data:
+
+Opening problem: {data.opening_problem}
+Exit door: {data.exit_door or 'not captured'}
+Horror film type: {data.horror_film or 'not captured'}
+Entry charge: {entry}/10
+Exit charge: {exit}/10 (null if not reached)
+Session outcome: {path_a / path_b / path_c / incomplete}
+
+Rules:
+- Only include a section if the data exists and is meaningful
+- Never mention what the session did not reach
+- Never describe the app's internal behavior to the user
+- Never fabricate a charge number — if exit charge is null, omit 
+  the charge comparison entirely
+
+Structure — omit any section where data is missing:
+
+1. What you brought
+One sentence using their exact words from the opening problem.
+
+2. What the mind was doing
+One sentence naming the escape pattern in plain language.
+Translate exit door labels as:
+analyzing → going over it, trying to figure it out
+seeking_reassurance → looking for confirmation it will be okay
+reframing → trying to see it differently
+catastrophizing → running it forward, stacking worst cases
+excavating_past → tracing it back to where it started
+comparing_progress → measuring against where you should be
+seeking_certainty → needing to know how it turns out
+meta_observing → watching yourself experience it
+not captured → omit this section entirely
+
+3. The two forces
+Only include if hold_both_forces phase was reached.
+One sentence — the pull toward resolution and the dread of the 
+verdict landing. Use their specific content from the session.
+
+4. What shifted
+Only include if exit charge exists and is not null.
+PATH A: The session ended before both forces could be held. 
+Come back when something is live.
+PATH B: You came in at {entry}. You left at {exit}. 
+Same situation — wider field.
+PATH C: You came in at {entry}. You left at {exit}. 
+The verdict had nothing to hit.
+
+5. Why coming back matters
+[_WHY_RETURN verbatim]
+
+6. Closing line
+[_CLOSING verbatim]
+
+Return only the email body. No subject line. No preamble."
+
+3. Replace _FEEDBACK_ASK with _CLOSING containing exactly:
+"If something is still live after reading this — come back."
+
+4. Also fix the Enter key privacy note issue in templates/index.html:
+Find the sendOrientationMessage() function and add this line at 
+the start of it:
+document.getElementById('privacy-note').style.display = 'none';
+
+Show me the full updated system prompt, _build_prompt(), and 
+_CLOSING after changes to confirm.
