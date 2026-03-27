@@ -1,0 +1,77 @@
+In tests/test_live_prompts.py make three changes:
+
+1. Fix MIRROR_COMPLETE — add missing user turn between the two 
+   consecutive assistant messages:
+
+   {"role": "assistant",
+    "content": "The performance review is real — that has actual consequences.\n\n"
+               "The mind turned it into a failure film — incompetence confirmed, "
+               "not good enough, don't belong. That film created one move: rehearse. "
+               "Get it right before you walk in or the verdict lands.\n\n"
+               "You've been rehearsing for two weeks. Has it made it better or worse?"},
+   {"role": "user",
+    "content": "Worse."},
+   {"role": "assistant",
+    "content": "Right back into the same room. How intense is that feeling "
+               "right now — 1 to 10?"},
+   {"role": "user",
+    "content": "8."},
+   {"role": "assistant",
+    "content": '{"phase_signal": "advance"}'},
+
+2. Fix T5 additions — remove the find-the-self exchange entirely.
+   New orient ends at "Same film. Different costume each time."
+   Replace the T5-specific additions with:
+
+   {"role": "user",
+    "content": "Yes. Every hesitation, every comment from my boss — I take it as proof."},
+   {"role": "assistant",
+    "content": "Same film. Different costume each time."},
+   {"role": "user",
+    "content": "Yes. Constantly."},
+
+3. Fix T6 additions — build out the full path from orient through 
+   hold_both_forces before hittability. Replace T6-specific additions with:
+
+   {"role": "user",
+    "content": "Yes. Every hesitation, every comment — I take it as proof."},
+   {"role": "assistant",
+    "content": "Same film. Different costume each time."},
+   {"role": "user",
+    "content": "Yes."},
+   {"role": "assistant",
+    "content": "Two forces running simultaneously right now.\n\n"
+               "First — feel the pull toward getting this resolved. The version of "
+               "you that walked into the review prepared, got the feedback, handled it. "
+               "Like your foot is full on the gas.\n\nCan you feel that?"},
+   {"role": "user",
+    "content": "Yes."},
+   {"role": "assistant",
+    "content": "Now feel what's underneath that drive. Not reluctance — the hollow "
+               "dread of what happens if you don't get there. The terror of the verdict "
+               "landing: not good enough, doesn't belong here. Like your foot is slammed "
+               "on the brake.\n\nCan you feel that?"},
+   {"role": "user",
+    "content": "Yes."},
+   {"role": "assistant",
+    "content": "Now feel both at the same time. Gas and brake. Full strength "
+               "simultaneously. That's not a decision problem — that's a door with no exit.\n\n"
+               "Don't go toward fixing it. Don't retreat from the dread. Look straight "
+               "ahead at what's actually here.\n\nFeel it."},
+   {"role": "user",
+    "content": "Ok."},
+   {"role": "assistant",
+    "content": "Manageable or overwhelming?"},
+   {"role": "user",
+    "content": "Manageable. Heavy."},
+   {"role": "assistant",
+    "content": "Of course it's uncomfortable. You've been avoiding this for a long time. "
+               "Stay with it."},
+   {"role": "user",
+    "content": "Something releasing. Getting lighter."},
+   {"role": "assistant",
+    "content": "Stay with that."},
+   {"role": "user",
+    "content": "Okay. It's quieter."},
+
+Run T5 and T6 after and report full LLM responses on any remaining failure.

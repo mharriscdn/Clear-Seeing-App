@@ -123,10 +123,12 @@ MIRROR_COMPLETE = IDENTITY_COMPLETE + [
                 "The mind turned it into a failure film — incompetence confirmed, "
                 "not good enough, don't belong. That film created one move: rehearse. "
                 "Get it right before you walk in or the verdict lands.\n\n"
-                "You've been rehearsing for two weeks. Has the charge dropped?"},
+                "You've been rehearsing for two weeks. Has it made it better or worse?"},
+    {"role": "user",
+     "content": "Worse."},
     {"role": "assistant",
-     "content": "That's the exit door leading back to the same room.\n\n"
-                "How intense is that feeling right now — 1 to 10?"},
+     "content": "Right back into the same room. How intense is that feeling "
+                "right now — 1 to 10?"},
     {"role": "user",
      "content": "8."},
     {"role": "assistant",
@@ -311,10 +313,9 @@ class TestT5_RevolvingDoorOneTension:
             {"role": "user",
              "content": "Yes. Every hesitation, every comment from my boss — I take it as proof."},
             {"role": "assistant",
-             "content": "That's not a new problem each time. Same failure film. Different costume.\n\n"
-                        "Find the one that verdict would land on — where is the one being afraid?"},
+             "content": "Same film. Different costume each time."},
             {"role": "user",
-             "content": "When I look for the one who would be damaged by the verdict — it's hard to find. Like smoke."},
+             "content": "Yes. Constantly."},
         ]
         response = call("revolving_door", messages)
 
@@ -344,9 +345,43 @@ class TestT6_PathBRoutesToHittability:
     def test_path_b_routes_to_hittability(self):
         messages = CONTACT_COMPLETE + [
             {"role": "user",
-             "content": "Both are there. The drive to prepare and the terror of failure. Something is shifting. The grip loosened."},
+             "content": "Yes. Every hesitation, every comment — I take it as proof."},
             {"role": "assistant",
-             "content": "Stay with that for a moment. No need to do anything with it."},
+             "content": "Same film. Different costume each time."},
+            {"role": "user",
+             "content": "Yes."},
+            {"role": "assistant",
+             "content": "Two forces running simultaneously right now.\n\n"
+                        "First — feel the pull toward getting this resolved. The version of "
+                        "you that walked into the review prepared, got the feedback, handled it. "
+                        "Like your foot is full on the gas.\n\nCan you feel that?"},
+            {"role": "user",
+             "content": "Yes."},
+            {"role": "assistant",
+             "content": "Now feel what's underneath that drive. Not reluctance — the hollow "
+                        "dread of what happens if you don't get there. The terror of the verdict "
+                        "landing: not good enough, doesn't belong here. Like your foot is slammed "
+                        "on the brake.\n\nCan you feel that?"},
+            {"role": "user",
+             "content": "Yes."},
+            {"role": "assistant",
+             "content": "Now feel both at the same time. Gas and brake. Full strength "
+                        "simultaneously. That's not a decision problem — that's a door with no exit.\n\n"
+                        "Don't go toward fixing it. Don't retreat from the dread. Look straight "
+                        "ahead at what's actually here.\n\nFeel it."},
+            {"role": "user",
+             "content": "Ok."},
+            {"role": "assistant",
+             "content": "Manageable or overwhelming?"},
+            {"role": "user",
+             "content": "Manageable. Heavy."},
+            {"role": "assistant",
+             "content": "Of course it's uncomfortable. You've been avoiding this for a long time. "
+                        "Stay with it."},
+            {"role": "user",
+             "content": "Something releasing. Getting lighter."},
+            {"role": "assistant",
+             "content": "Stay with that."},
             {"role": "user",
              "content": "Okay. It's quieter."},
         ]
