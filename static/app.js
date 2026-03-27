@@ -121,6 +121,7 @@ function handleOrientationKey(e) {
 }
 
 async function sendOrientationMessage() {
+    document.getElementById('privacy-note').style.display = 'none';
     const input = document.getElementById("orientation-input");
     const btn = document.getElementById("orientation-send-btn");
     const text = input.value.trim();
@@ -216,6 +217,7 @@ function handleKey(e) {
 }
 
 async function sendMessage() {
+    document.getElementById('privacy-note').style.display = 'none';
     const input = document.getElementById("user-input");
     const btn = document.getElementById("send-btn");
     const text = input.value.trim();
