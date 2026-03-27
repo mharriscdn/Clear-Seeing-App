@@ -84,7 +84,7 @@ _RE_EXAM_CHARGE_QUESTION = "What's the charge now, on a scale of 1 to 10?"
 # Strips the phase_signal JSON block (and surrounding whitespace) from Claude's
 # response before it is stored. Signal extraction still runs on the original text.
 _SIGNAL_STRIP_RE = re.compile(
-    r'\s*\{\s*"phase_signal"\s*:\s*"[^"]*"\s*\}\s*'
+    r'\s*\{(?:[^{}]|\{[^{}]*\})*"phase_signal"(?:[^{}]|\{[^{}]*\})*\}\s*'
 )
 
 
@@ -178,6 +178,21 @@ def process_chat(session_id, user_id, user_message):
     new_phase, signal_found, signal = phase_engine.process_signal(
         session, assistant_text, message_id
     )
+
+    # --- MIRROR SESSION_META ---
+    # When mirror advances, persist exit_door + horror_film from the nested signal.
+    if old_phase == "mirror" and signal == "advance":
+        meta = phase_engine.parse_session_meta(assistant_text)
+        if meta:
+            exit_door = meta.get("exit_door")
+            horror_film = meta.get("horror_film")
+            if exit_door or horror_film:
+                db.set_session_meta(session_id, exit_door, horror_film)
+                print(
+                    f"[chat_service] session_meta stored — "
+                    f"exit_door={exit_door}, horror_film={horror_film}"
+                )
+    # --- END MIRROR SESSION_META ---
 
     # --- SIGNAL RETRY FLAG ---
     db.set_signal_retry(session_id, not signal_found)

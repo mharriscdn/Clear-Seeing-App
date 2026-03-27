@@ -109,6 +109,9 @@ def _build_prompt(data, forces_text):
         "- Never describe the app's internal behavior to the user\n"
         "- Never fabricate a charge number — if exit charge is null, do not include a charge comparison\n"
         "\n"
+        "Use plain text section headers with no markdown, no asterisks, no bold "
+        "formatting. Separate sections with a blank line only.\n"
+        "\n"
         "Use this structure, omitting any section where data is missing:\n"
         "\n"
         "1. What you brought\n"
@@ -202,6 +205,7 @@ def send_session_email(session_id):
 
         prompt = _build_prompt(data, forces_text)
         email_body = _call_claude(prompt)
+        email_body = email_body.replace("**", "").replace("__", "")
 
         date_str = datetime.utcnow().strftime("%-d %B %Y")
         subject = f"Your Clear Seeing session — {date_str}"

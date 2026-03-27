@@ -53,7 +53,7 @@ def test_chat_advance_signal():
             user_message="I keep asking my partner if everything is okay.",
         )
 
-        mock_phase_db.update_session_phase.assert_called_once_with(1, "examinability")
+        mock_phase_db.update_session_phase.assert_called_once_with(1, "contact")
         # Phase signal JSON must be stripped from the returned text before display
         assert '{"phase_signal"' not in assistant_text
         assert "Let's examine what happens when the reassurance question appears." in assistant_text

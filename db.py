@@ -133,6 +133,14 @@ def init_db():
         "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS titration_cycles INTEGER DEFAULT 0"
     )
 
+    # Mirror session_meta columns
+    cur.execute(
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS exit_door TEXT DEFAULT NULL"
+    )
+    cur.execute(
+        "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS horror_film TEXT DEFAULT NULL"
+    )
+
     # Trial + Stripe subscription columns
     cur.execute(
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMP"
@@ -609,6 +617,8 @@ def get_session_email_data(session_id):
             s.opening_problem,
             s.entry_charge,
             s.exit_charge,
+            s.exit_door,
+            s.horror_film,
             s.reflection_email_sent,
             so.ending_type,
             u.email AS user_email
@@ -623,6 +633,21 @@ def get_session_email_data(session_id):
     cur.close()
     conn.close()
     return dict(row) if row else None
+
+
+def set_session_meta(session_id, exit_door, horror_film):
+    """Writes exit_door and horror_film captured from the mirror phase signal."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """UPDATE sessions
+           SET exit_door = %s, horror_film = %s
+           WHERE id = %s""",
+        (exit_door, horror_film, session_id),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 def mark_reflection_email_sent(session_id):

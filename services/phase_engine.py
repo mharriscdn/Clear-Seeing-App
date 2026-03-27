@@ -6,6 +6,7 @@ The LLM does not control its own phase.
 The backend does.
 """
 import re
+import json
 import db
 
 # ---------------------------------------------------------------------------
@@ -44,21 +45,56 @@ VALID_SIGNALS = {
 # ---------------------------------------------------------------------------
 
 
+def _extract_signal_block(response_text):
+    """
+    Returns the JSON block containing phase_signal, handling one level of
+    nesting (e.g. session_meta). Returns the raw string or None.
+    """
+    match = re.search(
+        r'\{(?:[^{}]|\{[^{}]*\})*"phase_signal"(?:[^{}]|\{[^{}]*\})*\}',
+        response_text
+    )
+    return match.group(0) if match else None
+
+
 def parse_signal(response_text):
     """
     Extracts phase_signal from LLM response JSON block.
+    Handles both simple and nested (session_meta) formats.
     Returns signal string, or None if missing / malformed.
-
-    Expected format anywhere in response:
-        {"phase_signal": "advance"}
     """
     try:
-        match = re.search(r'\{\s*"phase_signal"\s*:\s*"([^"]+)"\s*\}',
-                          response_text)
+        block = _extract_signal_block(response_text)
+        if block:
+            data = json.loads(block)
+            signal = data.get("phase_signal", "").strip()
+            if signal in VALID_SIGNALS:
+                return signal
+    except Exception:
+        pass
+    # Fallback: plain key scan — catches malformed outer JSON
+    try:
+        match = re.search(r'"phase_signal"\s*:\s*"([^"]+)"', response_text)
         if match:
             signal = match.group(1).strip()
             if signal in VALID_SIGNALS:
                 return signal
+    except Exception:
+        pass
+    return None
+
+
+def parse_session_meta(response_text):
+    """
+    Extracts the session_meta dict from a nested mirror signal, e.g.:
+        {"phase_signal": "advance", "session_meta": {"horror_film": "...", "exit_door": "..."}}
+    Returns a dict or None.
+    """
+    try:
+        block = _extract_signal_block(response_text)
+        if block:
+            data = json.loads(block)
+            return data.get("session_meta") or None
     except Exception:
         pass
     return None
