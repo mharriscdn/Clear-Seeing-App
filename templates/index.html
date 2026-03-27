@@ -57,6 +57,7 @@
                     <textarea id="orientation-input" rows="3" onkeydown="handleOrientationKey(event)"></textarea>
                     <button id="orientation-send-btn" onclick="sendOrientationMessage()">Send</button>
                 </div>
+                <p id="privacy-note" style="text-align: center; font-size: 0.75rem; color: #666; margin-top: 8px;">Private. No human reads your session.</p>
             </div>
         </div>
     </div>
@@ -85,5 +86,10 @@
 </div>
 
 <script src="/static/app.js"></script>
+<script>
+document.getElementById('orientation-send-btn').addEventListener('click', function() {
+    document.getElementById('privacy-note').style.display = 'none';
+});
+</script>
 </body>
 </html>
