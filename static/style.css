@@ -67,12 +67,20 @@ p {
 }
 
 .nightmare-list {
-    margin: 12px 0;
+    margin: 10px 0 14px 0;
     padding-left: 18px;
+    font-size: inherit;
+    line-height: 1.5;
 }
 
 .nightmare-list li {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.nightmare-list li::marker {
+    font-size: 0.9em;
 }
 
 .headline {
