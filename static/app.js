@@ -110,6 +110,25 @@ async function startSession() {
 }
 
 // ---------------------------------------------------------------------------
+// Card selection
+// ---------------------------------------------------------------------------
+
+let selectedRole = null;
+
+function selectCard(roleName, cardEl) {
+    selectedRole = roleName;
+    document.querySelectorAll('.role-card').forEach(function(c) {
+        c.classList.remove('selected');
+    });
+    cardEl.classList.add('selected');
+    document.getElementById('card-continue-wrap').style.display = 'block';
+}
+
+function beginWithRole() {
+    // Wired in Step 3
+}
+
+// ---------------------------------------------------------------------------
 // Orientation / first message
 // ---------------------------------------------------------------------------
 

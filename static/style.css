@@ -322,6 +322,131 @@ body.session-started .session-preamble {
     cursor: not-allowed;
 }
 
+/* ─── CARD SELECTION SCREEN ─────────────────────────────── */
+
+.card-select-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.card-select-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--fg);
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+}
+
+.card-select-sub {
+    font-size: 14px;
+    color: #777777;
+    font-style: italic;
+    margin: 0 0 32px;
+}
+
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+.role-card {
+    width: 200px;
+    background: #FFFFFF;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 24px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    text-align: center;
+}
+
+.role-card:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
+    transform: translateY(-2px);
+}
+
+.role-card.selected {
+    border-color: #333333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #444444;
+}
+
+.card-name {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-bottom: 8px;
+}
+
+.card-question {
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+#card-continue-wrap {
+    margin-bottom: 24px;
+}
+
+#card-continue-btn {
+    background: #111111;
+    border: none;
+    border-radius: 6px;
+    color: #FFFFFF;
+    font-family: Georgia, serif;
+    font-size: 0.8rem;
+    padding: 12px 36px;
+    cursor: pointer;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.15s ease;
+}
+
+#card-continue-btn:hover {
+    background: #333333;
+    transform: translateY(-1px);
+}
+
+.card-privacy {
+    font-size: 12px;
+    color: #888888;
+    margin: 0 0 6px;
+}
+
+.card-how-link {
+    font-size: 13px;
+    margin: 0;
+}
+
+.card-how-link a {
+    color: #555555;
+    text-decoration: none;
+}
+
+.card-how-link a:hover {
+    color: #888888;
+}
+
 /* ─── CHAT HEADER (carried from session entry) ────────────── */
 
 #chat-header {

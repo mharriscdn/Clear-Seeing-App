@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clear Seeing</title>
-    <link rel="stylesheet" href="/static/style.css?v=6" />
+    <link rel="stylesheet" href="/static/style.css?v=7" />
 </head>
 <body>
 
@@ -95,23 +95,96 @@
         </div>
     </div>
 
-    <!-- ORIENTATION SCREEN -->
+    <!-- ORIENTATION SCREEN — card selection -->
     <div id="orientation-screen" style="display:none;">
-        <div class="orientation-inner">
-            <div class="session-header">
-                <div class="session-logo">CLEAR SEEING</div>
-            </div>
+        <div class="card-select-inner">
+            <div class="session-logo">CLEAR SEEING</div>
             <div class="session-divider"></div>
-            <p class="session-preamble">You've thought about it, talked about it, tried to figure it out. Still here. You already know what it is.</p>
-            <p class="session-prompt">What feels most urgent to fix, resolve, or escape right now?</p>
-            <p class="session-how-link"><a href="/how-it-works">How does this work? →</a></p>
-            <div class="orientation-input-wrap">
-                <div class="orientation-input-row">
-                    <textarea id="orientation-input" rows="3" onkeydown="handleOrientationKey(event)"></textarea>
-                    <button id="orientation-send-btn" onclick="sendOrientationMessage()">Send</button>
+            <p class="card-select-title">Pick one that feels closest</p>
+            <p class="card-select-sub">You don&rsquo;t need it to be true. Just real enough.</p>
+
+            <div class="card-grid">
+
+                <div class="role-card" onclick="selectCard('THE IMPOSTER', this)">
+                    <div class="card-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 6 C12 6 7 11 7 18 L7 24 C7 30 13 35 20 35 C27 35 33 30 33 24 L33 18 C33 11 28 6 20 6 Z"/>
+                            <path d="M14 20 Q14 23 17 23 Q20 23 20 20"/>
+                            <path d="M20 20 Q20 23 23 23 Q26 23 26 20"/>
+                            <path d="M13 28 Q16.5 31 20 31 Q23.5 31 27 28"/>
+                        </svg>
+                    </div>
+                    <div class="card-name">THE IMPOSTER</div>
+                    <div class="card-question">What if they see through me?</div>
                 </div>
-                <p id="privacy-note" style="text-align: center; font-size: 0.75rem; color: #666; margin-top: 8px;">Private. No human reads your session.</p>
+
+                <div class="role-card" onclick="selectCard('THE ABANDONED', this)">
+                    <div class="card-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="20" cy="11" r="5"/>
+                            <path d="M11 35 L11 26 C11 21 15 18 20 18 C25 18 29 21 29 26 L29 35"/>
+                            <path d="M5 25 L8 25"/>
+                            <path d="M32 25 L35 25"/>
+                            <path d="M5 30 L8 30"/>
+                            <path d="M32 30 L35 30"/>
+                        </svg>
+                    </div>
+                    <div class="card-name">THE ABANDONED</div>
+                    <div class="card-question">What if I end up alone?</div>
+                </div>
+
+                <div class="role-card" onclick="selectCard('THE FRAUD', this)">
+                    <div class="card-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 5 L33 10 L33 22 C33 30 20 36 20 36 C20 36 7 30 7 22 L7 10 Z"/>
+                            <path d="M21 12 L18 19 L22 21 L19 29"/>
+                        </svg>
+                    </div>
+                    <div class="card-name">THE FRAUD</div>
+                    <div class="card-question">What if I can&rsquo;t hold this together?</div>
+                </div>
+
+                <div class="role-card" onclick="selectCard('THE MARKED', this)">
+                    <div class="card-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="20" cy="20" r="14"/>
+                            <circle cx="20" cy="20" r="7"/>
+                            <circle cx="20" cy="20" r="2.5" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </div>
+                    <div class="card-name">THE MARKED</div>
+                    <div class="card-question">What if this moment defines me?</div>
+                </div>
+
+                <div class="role-card" onclick="selectCard('THE UNRAVELING', this)">
+                    <div class="card-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 20 C5 20 11 11 20 11 C29 11 35 20 35 20 C35 20 29 29 20 29 C11 29 5 20 5 20 Z"/>
+                            <circle cx="20" cy="20" r="5"/>
+                            <path d="M20 6 L20 3"/>
+                            <path d="M29 11 L32 8"/>
+                            <path d="M34 20 L37 20"/>
+                            <path d="M29 29 L32 32"/>
+                            <path d="M20 34 L20 37"/>
+                        </svg>
+                    </div>
+                    <div class="card-name">THE UNRAVELING</div>
+                    <div class="card-question">What if everything starts slipping?</div>
+                </div>
+
             </div>
+
+            <div id="card-continue-wrap" style="display:none;">
+                <button id="card-continue-btn" onclick="beginWithRole()">Begin Session</button>
+            </div>
+
+            <p class="card-privacy">Private. No human reads your session.</p>
+            <p class="card-how-link"><a href="/how-it-works">How does this work? &rarr;</a></p>
+
+            <!-- hidden elements kept for JS compatibility until Step 3 -->
+            <textarea id="orientation-input" style="display:none;" rows="3" onkeydown="handleOrientationKey(event)"></textarea>
+            <button id="orientation-send-btn" style="display:none;" onclick="sendOrientationMessage()">Send</button>
+            <p id="privacy-note" style="display:none;"></p>
         </div>
     </div>
 
