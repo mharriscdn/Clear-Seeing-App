@@ -127,8 +127,16 @@ def process_chat(session_id, user_id, user_message):
     # Save user message
     db.save_message(session_id, "user", user_message)
 
+    starting_phase = None
     if is_first_user_reply:
         db.set_opening_problem(session_id, user_message)
+        # Set starting phase based on arrival path:
+        # card selection → orientation; cold arrival → identity
+        if user_message.lstrip().startswith('[ROLE:'):
+            starting_phase = "orientation"
+        else:
+            starting_phase = "identity"
+        db.update_session_phase(session_id, starting_phase)
 
     # Capture entry_charge if the user just answered the charge question
     _try_capture_entry_charge(session_id, session, existing_messages, user_message)
@@ -140,8 +148,11 @@ def process_chat(session_id, user_id, user_message):
     all_messages = existing_messages + [{"role": "user", "content": user_message}]
     claude_messages = [{"role": m["role"], "content": m["content"]} for m in all_messages]
 
-    # Call Claude — returns token dict
-    result = llm.call_claude(claude_messages, session, signal_retry=signal_retry)
+    # Call Claude — use starting_phase for prompt selection on turn 1; keep session unmutated
+    claude_session = dict(session)
+    if starting_phase:
+        claude_session["conversation_phase"] = starting_phase
+    result = llm.call_claude(claude_messages, claude_session, signal_retry=signal_retry)
     assistant_text  = result["content"]
     input_tokens    = result["input_tokens"]
     output_tokens   = result["output_tokens"]

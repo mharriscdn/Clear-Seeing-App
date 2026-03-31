@@ -15,6 +15,7 @@ import db
 # ---------------------------------------------------------------------------
 
 TRANSITION_MAP = {
+    "orientation": "identity",
     "identity": "mirror",
     "mirror": "contact",
     "contact": "orient",

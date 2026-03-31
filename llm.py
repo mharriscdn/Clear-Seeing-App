@@ -8,6 +8,7 @@ _client = None
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "services/prompts")
 
 PHASE_MODULE_MAP = {
+    "orientation":              "phase_orientation.txt",
     "identity":                 "phase_identity.txt",
     "mirror":                   "phase_mirror.txt",
     "contact":                  "phase_contact.txt",
@@ -24,6 +25,7 @@ PHASE_MODULE_MAP = {
 }
 
 TRANSITION_MAP = {
+    "orientation":              "identity",
     "identity":                 "mirror",
     "mirror":                   "contact",
     "contact":                  "orient",
