@@ -63,7 +63,16 @@ p {
     max-width: 180px;
     opacity: 0.8;
     display: block;
-    margin: 20px auto 8px auto;
+    margin: 20px auto 16px auto;
+}
+
+.nightmare-list {
+    margin: 12px 0;
+    padding-left: 18px;
+}
+
+.nightmare-list li {
+    margin-bottom: 6px;
 }
 
 .headline {
