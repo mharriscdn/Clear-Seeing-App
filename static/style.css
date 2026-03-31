@@ -22,6 +22,10 @@ html, body {
     line-height: 1.65;
 }
 
+p {
+    margin-bottom: 10px;
+}
+
 #app {
 }
 
@@ -59,7 +63,7 @@ html, body {
     max-width: 180px;
     opacity: 0.8;
     display: block;
-    margin: 20px auto 12px auto;
+    margin: 20px auto 8px auto;
 }
 
 .headline {
@@ -427,7 +431,7 @@ body.session-started .session-preamble {
     padding: 1rem 0 1.5rem;
     border-top: 1px solid var(--chat-border);
     align-items: center;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 #user-input {
