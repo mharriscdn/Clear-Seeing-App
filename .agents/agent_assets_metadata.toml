@@ -42,3 +42,9 @@ id = "ELElQ6RE3lwlFrWvV_o85"
 uri = "file://static/prompts.zip"
 type = "unspecified"
 title = "services/prompts — all 19 files"
+
+[[outputs]]
+id = "eTy29a9IHRsj6Lgc-zbCw"
+uri = "file://static/prompts_download.zip"
+type = "unspecified"
+title = "prompts.zip — 19 files"
