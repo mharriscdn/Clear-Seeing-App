@@ -1,0 +1,227 @@
+We are updating the app in three steps. Show me each change 
+before deploying. Do not touch any backend code, routing, 
+prompts, or database — frontend and templates only.
+
+─────────────────────────────────────────
+STEP 1 — UPDATE LANDING PAGE TEXT
+─────────────────────────────────────────
+
+Replace all text on the landing page with the following. 
+Keep all existing styling, layout, and structure — 
+text replacement only.
+
+---
+
+CLEAR SEEING
+
+When the distortion goggles are on, life turns into a nightmare.
+
+One foot on the gas — trying to escape it.
+One foot on the brake — terrified of what might happen.
+
+When the goggles come off —
+
+no gas.
+no brake.
+
+The next move is obvious.
+
+---
+
+The relationship. The work mistake. The financial pressure.
+The years of seeking that never arrive.
+
+The situation is almost always workable. It's what the mind
+says it means about you that makes it unsurvivable.
+
+When you see clearly you handle reality. Make the call.
+Send the message. Deal with what's actually in front of you.
+
+When the distortion goggles are on, you're turning reality
+into a nightmare. Bracing against something about to happen to you.
+
+---
+
+This app runs a test:
+
+Is there actually someone there
+for that to happen to?
+
+When you look —
+
+nothing is there.
+
+Not as an idea. When you actually check, there's nothing
+there to be hit.
+
+And without something there to be hit —
+
+the nightmare can't land.
+
+The distortion goggles come off. What's left is just the
+situation. And the part of you that can handle it.
+
+---
+
+You've already had moments where this dropped.
+
+Everything was just what it is. No threat. No verdict.
+
+Then it came back.
+
+That's awakening.
+Not waking up from your life.
+Waking up from the nightmare about it.
+
+---
+
+You don't have to bring your real life.
+Most people can't at first.
+
+So we don't start there.
+
+We use roles.
+
+Not because they're true — but because they let it feel
+like it's happening to you without the risk. Like a scene
+in a movie. You know it's not real. But your body still reacts.
+
+That's enough.
+
+---
+
+Three moves. Twenty minutes.
+
+1. Pick a role — something where it feels like 
+   you're the one in it.
+2. Step into the scene — just enough that it feels real.
+3. Run the test — look directly for what's about to be hit.
+
+You can feel the system bracing.
+
+And then —
+
+nothing is there.
+
+That's the break.
+
+---
+
+It doesn't mean it sticks immediately. The system rebuilds.
+The reaction comes back.
+
+But each time you run it when it's live — the grip weakens.
+
+Repeated contact ends the loop.
+
+---
+
+Works best when something is charged — 5 out of 10 or higher.
+Private. No human reads your session.
+
+[BEGIN SESSION button]
+
+─────────────────────────────────────────
+STEP 2 — BUILD NEW CARD SELECTION SCREEN
+─────────────────────────────────────────
+
+Replace the current session start screen with a new card 
+selection UI. Light theme throughout — white/cream background, 
+clean and inviting.
+
+Layout and design:
+
+- White or off-white background (#fafaf8 or similar)
+- Elegant serif or clean sans font throughout
+- Header: CLEAR SEEING — centered, spaced caps, large
+- Thin horizontal rule below header
+- Centered subtitle in medium weight:
+  "Pick one that feels closest"
+- Centered sub-subtitle, lighter/smaller:
+  "You don't need it to be true. Just real enough."
+- Five cards in a grid: 3 top row, 2 bottom row centered
+- Each card: white background, subtle drop shadow, 
+  rounded corners (12px), padding 24px
+- Inside each card: simple line icon centered at top, 
+  character name in bold spaced caps below icon, 
+  "What if..." question in lighter weight below name
+- Cards are clickable, hover state: slight shadow increase
+- Selected state: thin border highlight (#333 or similar)
+- No dark backgrounds, no heavy colours
+
+The five cards:
+
+┌─────────────────────┐
+│     [mask icon]     │
+│   THE IMPOSTER      │
+│ What if they see    │
+│   through me?       │
+└─────────────────────┘
+
+┌─────────────────────┐
+│   [figure icon]     │
+│  THE ABANDONED      │
+│  What if I end up   │
+│      alone?         │
+└─────────────────────┘
+
+┌──────────────────────┐
+│ [cracked shield icon]│
+│    THE FRAUD         │
+│  What if I can't     │
+│ hold this together?  │
+└──────────────────────┘
+
+┌─────────────────────┐
+│  [marked icon]      │
+│   THE MARKED        │
+│ What if this moment │
+│    defines me?      │
+└─────────────────────┘
+
+┌─────────────────────┐
+│    [eye icon]       │
+│  THE UNRAVELING     │
+│ What if everything  │
+│ starts slipping?    │
+└─────────────────────┘
+
+Below the cards, centered, smaller text:
+"Private. No human reads your session."
+Small link below that: "How does this work? →"
+
+─────────────────────────────────────────
+STEP 3 — POST-SELECTION RESPONSE
+─────────────────────────────────────────
+
+When a user selects a card and clicks through (or the card 
+triggers the session start), the first message shown in the 
+chat interface should be:
+
+"Good. You're playing THE [ROLE NAME].
+
+Write a scene where this character's worst fear is about 
+to happen. Doesn't have to be real — just plausible enough 
+to feel it. A situation, a moment, something that could 
+happen to someone like this.
+
+What's the scene?"
+
+This message should appear as the first app message in the 
+chat, before the user types anything. It should feel like 
+the app has already started — they just need to write the scene.
+
+The selected role name should also be passed as context 
+to the backend so the orientation prompt knows which 
+character is in play. Pass it as a session variable or 
+prepend it to the first user message in this format:
+[ROLE: THE FRAUD] or similar — whatever is cleanest 
+for the existing architecture.
+
+─────────────────────────────────────────
+SHOW ME EACH STEP BEFORE DEPLOYING
+─────────────────────────────────────────
+
+Show me step 1 changes first. When I approve, move to 
+step 2. When I approve, move to step 3. Do not combine 
+steps or deploy anything without my approval.
