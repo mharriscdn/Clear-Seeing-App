@@ -1,6 +1,8 @@
 let currentSessionId = null;
 let currentPhase = null;
 let holdTimerId = null;
+let selectedRole = null;
+let roleInjected = false;
 
 // ---------------------------------------------------------------------------
 // Hold-both-forces timer
@@ -113,8 +115,6 @@ async function startSession() {
 // Card selection
 // ---------------------------------------------------------------------------
 
-let selectedRole = null;
-
 function selectCard(roleName, cardEl) {
     selectedRole = roleName;
     document.querySelectorAll('.role-card').forEach(function(c) {
@@ -125,7 +125,24 @@ function selectCard(roleName, cardEl) {
 }
 
 function beginWithRole() {
-    // Wired in Step 3
+    if (!selectedRole || !currentSessionId) return;
+
+    const btn = document.getElementById('card-continue-btn');
+    btn.disabled = true;
+    btn.textContent = 'Starting\u2026';
+
+    document.body.classList.add('session-started');
+    document.getElementById('orientation-screen').style.display = 'none';
+    document.getElementById('chat-area').style.display = 'flex';
+
+    const intro = document.getElementById('chat-intro');
+    const el = document.createElement('div');
+    el.className = 'message assistant';
+    el.textContent = "Good. You\u2019re playing " + selectedRole + ".\n\nGive me a situation \u2014 a specific moment in time where this character\u2019s fear could show up.\n\nSomething like: \u2018I\u2019m about to walk into my boss\u2019s office for a performance review and I\u2019m not sure I have the answers he\u2019s going to want.\u2019\n\nDoesn\u2019t have to be real. But the more specific the moment, the better the test runs.\n\nWhat\u2019s the situation?";
+    intro.appendChild(el);
+
+    const userInput = document.getElementById('user-input');
+    if (userInput) userInput.focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -207,7 +224,11 @@ function renderMessage(msg) {
     const transcript = document.getElementById("transcript");
     const el = document.createElement("div");
     el.className = `message ${msg.role}`;
-    el.textContent = msg.role === "assistant" ? stripSignal(msg.content) : msg.content;
+    let content = msg.role === "assistant" ? stripSignal(msg.content) : msg.content;
+    if (msg.role === "user") {
+        content = content.replace(/^\[ROLE:[^\]]*\]\s*/, '');
+    }
+    el.textContent = content;
     transcript.appendChild(el);
     transcript.scrollTop = transcript.scrollHeight;
 }
@@ -249,13 +270,20 @@ async function sendMessage() {
     input.disabled = true;
     btn.disabled = true;
 
+    let textToSend = text;
+    if (!roleInjected && selectedRole) {
+        textToSend = '[ROLE: ' + selectedRole + '] ' + text;
+        roleInjected = true;
+        showSituationAnchor(text);
+    }
+
     renderMessage({ role: "user", content: text });
 
     try {
         const res = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session_id: currentSessionId, user_message: text }),
+            body: JSON.stringify({ session_id: currentSessionId, user_message: textToSend }),
         });
 
         const data = await res.json();

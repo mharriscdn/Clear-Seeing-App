@@ -507,6 +507,12 @@ body.session-started .session-preamble {
     padding: 40px 20px;
 }
 
+#chat-intro {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0 0;
+}
+
 #transcript {
     flex: 1;
     display: flex;
