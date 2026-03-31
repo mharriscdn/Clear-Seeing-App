@@ -1,0 +1,116 @@
+AGENT PROMPT (COPY / PASTE)
+
+Task: Convert the Clear Seeing app UI from dark theme to a clean, minimal light theme while preserving layout, spacing, and functionality.
+
+Scope
+Do NOT change layout, structure, or functionality
+Do NOT change any backend logic
+Only update CSS + minimal HTML class adjustments if needed
+Maintain current spacing and typography hierarchy
+Goal
+
+Shift the UI from:
+
+black background / white text
+→ to
+light background / dark text
+
+Make the app feel:
+
+calm
+approachable
+low-friction
+not like a therapy or terminal interface
+Theme Specification
+Global
+
+Replace dark theme with:
+
+body {
+  background-color: #F7F7F5;
+  color: #111111;
+}
+Text
+color: #111111;       /* primary */
+color: #666666;       /* secondary */
+Increase readability slightly (avoid thin/light fonts)
+Keep typography simple and minimal
+Input Box (IMPORTANT)
+
+Current: dark textarea
+Change to:
+
+textarea, input {
+  background-color: #FFFFFF;
+  color: #111111;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+Add:
+
+textarea:focus, input:focus {
+  outline: none;
+  border-color: #CCCCCC;
+}
+Buttons
+
+Replace dark/flat buttons with:
+
+button {
+  background-color: #111111;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #333333;
+}
+Containers / Sections
+
+If any containers are dark, replace with:
+
+.container, .chat-box, .panel {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 10px;
+}
+Shadows (subtle)
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+Use sparingly.
+
+Links
+a {
+  color: #111111;
+  text-decoration: underline;
+}
+Remove
+Pure black backgrounds (#000)
+Harsh contrast white-on-black sections
+Any "terminal-like" styling
+Preserve
+Current layout
+Spacing
+Minimalism
+Calm tone
+No added UI clutter
+Optional (if trivial)
+Slightly increase line-height for readability:
+line-height: 1.5;
+Final Check
+
+Ensure:
+
+App feels visually consistent with the main website (light theme)
+No elements remain dark-themed
+Input + first interaction feel easy and low-pressure
+No visual regressions
+Deliverable
+Updated CSS (or styles section)
+Minimal HTML class updates if required
+No functional changes
