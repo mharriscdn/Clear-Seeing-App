@@ -36,3 +36,9 @@ id = "aE_bYtJTFEFRO-YKF18kY"
 uri = "file://clear_seeing_review_bundle.zip"
 type = "unspecified"
 title = "clear_seeing_review_bundle.zip"
+
+[[outputs]]
+id = "ELElQ6RE3lwlFrWvV_o85"
+uri = "file://static/prompts.zip"
+type = "unspecified"
+title = "services/prompts — all 19 files"
