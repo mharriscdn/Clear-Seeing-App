@@ -121,15 +121,11 @@ function selectCard(roleName, cardEl) {
         c.classList.remove('selected');
     });
     cardEl.classList.add('selected');
-    document.getElementById('card-continue-wrap').style.display = 'block';
+    beginWithRole();
 }
 
 function beginWithRole() {
     if (!selectedRole || !currentSessionId) return;
-
-    const btn = document.getElementById('card-continue-btn');
-    btn.disabled = true;
-    btn.textContent = 'Starting\u2026';
 
     document.body.classList.add('session-started');
     document.getElementById('orientation-screen').style.display = 'none';
