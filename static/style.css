@@ -55,10 +55,11 @@ html, body {
 }
 
 .door-image {
-    max-width: 260px;
-    width: 100%;
+    width: 180px;
+    max-width: 180px;
+    opacity: 0.9;
     display: block;
-    margin: 8px auto 20px auto;
+    margin: 20px auto;
 }
 
 .headline {
@@ -87,8 +88,8 @@ html, body {
 .landing-rule {
     width: 100%;
     height: 1px;
-    background: #E5E5E5;
-    margin: 24px 0;
+    background: #EAEAEA;
+    margin: 32px 0;
 }
 
 .landing-body {
@@ -135,11 +136,12 @@ html, body {
     text-transform: uppercase;
     margin-top: 24px;
     border-radius: 6px;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
 }
 
 #start-btn:hover {
     background: #333333;
+    transform: translateY(-1px);
 }
 
 #start-btn:disabled {
@@ -219,7 +221,7 @@ html, body {
 .session-divider {
     width: 180px;
     height: 1px;
-    background: #E5E5E5;
+    background: #EAEAEA;
     margin: 0.8rem 0 1.4rem;
 }
 
@@ -274,17 +276,20 @@ body.session-started .session-preamble {
     font-family: Georgia, serif;
     font-size: 0.95rem;
     background: #FFFFFF;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
+    border: 1px solid #DDDDDD;
+    border-radius: 10px;
     color: var(--fg);
-    padding: 12px;
+    padding: 14px;
     resize: none;
     outline: none;
     line-height: 1.5;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
 }
 
 #orientation-input:focus {
-    border-color: #CCCCCC;
+    border-color: #BBBBBB;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 #orientation-send-btn {
@@ -300,11 +305,12 @@ body.session-started .session-preamble {
     text-transform: uppercase;
     white-space: nowrap;
     height: fit-content;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
 }
 
 #orientation-send-btn:hover {
     background: #333333;
+    transform: translateY(-1px);
 }
 
 #orientation-send-btn:disabled {
@@ -354,14 +360,22 @@ body.session-started .session-preamble {
     line-height: 1.55;
 }
 
+/* ─── MAIN CONTAINER ──────────────────────────────────────── */
+
+.main-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
 /* ─── CHAT AREA ───────────────────────────────────────────── */
 
 #chat-area {
     display: flex;
     flex-direction: column;
-    max-width: 700px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
 #transcript {
@@ -382,7 +396,8 @@ body.session-started .session-preamble {
 
 .message.assistant {
     background: #FFFFFF;
-    border-left: 2px solid #111111;
+    border: 1px solid #EEEEEE;
+    border-radius: 10px;
     color: #111111;
     align-self: flex-start;
     margin-right: auto;
@@ -390,6 +405,7 @@ body.session-started .session-preamble {
     max-width: 75%;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding: 14px 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -418,17 +434,20 @@ body.session-started .session-preamble {
     font-family: Georgia, serif;
     font-size: 0.95rem;
     background: #FFFFFF;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
+    border: 1px solid #DDDDDD;
+    border-radius: 10px;
     color: var(--fg);
-    padding: 0.6rem 0.8rem;
+    padding: 14px;
     resize: none;
     outline: none;
     line-height: 1.5;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
 }
 
 #user-input:focus {
-    border-color: #CCCCCC;
+    border-color: #BBBBBB;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 #send-btn {
@@ -442,11 +461,12 @@ body.session-started .session-preamble {
     cursor: pointer;
     letter-spacing: 0.03em;
     height: fit-content;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
 }
 
 #send-btn:hover {
     background: #333333;
+    transform: translateY(-1px);
 }
 
 #send-btn:disabled {
