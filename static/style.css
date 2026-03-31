@@ -47,7 +47,7 @@ html, body {
 .logo {
     font-family: Georgia, serif;
     font-size: 34px;
-    font-weight: normal;
+    font-weight: bold;
     letter-spacing: 0.18em;
     color: var(--fg);
     text-transform: uppercase;
@@ -57,9 +57,9 @@ html, body {
 .door-image {
     width: 180px;
     max-width: 180px;
-    opacity: 0.9;
+    opacity: 0.8;
     display: block;
-    margin: 20px auto;
+    margin: 20px auto 12px auto;
 }
 
 .headline {
@@ -266,9 +266,9 @@ body.session-started .session-preamble {
 
 .orientation-input-row {
     display: flex;
-    gap: 0.6rem;
+    gap: 10px;
     width: 100%;
-    align-items: flex-end;
+    align-items: center;
 }
 
 #orientation-input {
@@ -304,7 +304,7 @@ body.session-started .session-preamble {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     white-space: nowrap;
-    height: fit-content;
+    height: 42px;
     transition: all 0.15s ease;
 }
 
@@ -396,7 +396,7 @@ body.session-started .session-preamble {
 
 .message.assistant {
     background: #FFFFFF;
-    border: 1px solid #EEEEEE;
+    border: 1px solid #F0F0F0;
     border-radius: 10px;
     color: #111111;
     align-self: flex-start;
@@ -423,10 +423,11 @@ body.session-started .session-preamble {
 
 #input-row {
     display: flex;
-    gap: 0.75rem;
+    gap: 10px;
     padding: 1rem 0 1.5rem;
     border-top: 1px solid var(--chat-border);
-    align-items: flex-end;
+    align-items: center;
+    margin-top: 12px;
 }
 
 #user-input {
@@ -460,7 +461,7 @@ body.session-started .session-preamble {
     padding: 0.6rem 1.2rem;
     cursor: pointer;
     letter-spacing: 0.03em;
-    height: fit-content;
+    height: 42px;
     transition: all 0.15s ease;
 }
 
