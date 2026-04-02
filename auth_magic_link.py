@@ -158,8 +158,11 @@ def request_link():
     return render_template("login.html", sent=True)
 
 
-@bp.route("/verify", methods=["GET"])
+@bp.route("/verify", methods=["GET", "HEAD"])
 def verify():
+    if request.method == "HEAD":
+        return make_response("", 200)
+
     raw_token = request.args.get("token", "")
     if not raw_token:
         return render_template("login.html", error="Invalid or missing login link.")
