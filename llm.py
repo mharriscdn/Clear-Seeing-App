@@ -7,40 +7,6 @@ _client = None
 
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "services/prompts")
 
-PHASE_MODULE_MAP = {
-    "orientation":              "phase_orientation.txt",
-    "identity":                 "phase_identity.txt",
-    "mirror":                   "phase_mirror.txt",
-    "contact":                  "phase_contact.txt",
-    "recovery":                 "phase_recovery.txt",
-    "orient":                   "phase_orient.txt",
-    "revolving_door":           "phase_revolving_door.txt",
-    "hold_both_forces":         "phase_hold_both_forces.txt",
-    "hittability":              "phase_hittability.txt",
-    "integration":              "phase_integration.txt",
-    "gibraltar":                "phase_gibraltar.txt",
-    "re_examination":           "phase_re_examination.txt",
-    "recurrence_normalization": "phase_recurrence_normalization.txt",
-    "complete":                 None,
-}
-
-TRANSITION_MAP = {
-    "orientation":              "identity",
-    "identity":                 "mirror",
-    "mirror":                   "contact",
-    "contact":                  "orient",
-    "recovery":                 "orient",
-    "orient":                   "revolving_door",
-    "revolving_door":           "hold_both_forces",
-    "hold_both_forces":         None,
-    "gibraltar":                "hittability",
-    "hittability":              None,
-    "integration":              "re_examination",
-    "re_examination":           "recurrence_normalization",
-    "recurrence_normalization": "complete",
-    "complete":                 None,
-}
-
 
 def _get_client():
     global _client
@@ -49,79 +15,35 @@ def _get_client():
     return _client
 
 
-def _load(filename):
-    """Load a prompt file from the prompts directory."""
-    with open(os.path.join(PROMPTS_DIR, filename), "r") as f:
+def _load_session_prompt():
+    path = os.path.join(PROMPTS_DIR, "session.txt")
+    with open(path, "r") as f:
         return f.read().strip()
 
 
-def get_system_prompt(phase="mirror", signal_retry=False):
+def call_claude(messages):
     """
-    Assembles system prompt as a list of Anthropic content blocks.
-    Each block carries cache_control so Anthropic can cache the prompt.
-
-    Cached blocks (type ephemeral):
-      - core.txt
-      - current phase module
-      - signal_instruction.txt
-
-    Not cached:
-      - next phase module appended on signal_retry (conditional, variable)
-
-    Falls back to core + signal only if phase is 'complete' or unrecognised.
-    """
-    core = _load("core.txt")
-    signal = _load("signal_instruction.txt")
-
-    phase_file = PHASE_MODULE_MAP.get(phase)
-
-    if phase_file:
-        phase_module = _load(phase_file)
-        blocks = [
-            {"type": "text", "text": core,         "cache_control": {"type": "ephemeral"}},
-            {"type": "text", "text": phase_module,  "cache_control": {"type": "ephemeral"}},
-            {"type": "text", "text": signal,        "cache_control": {"type": "ephemeral"}},
-        ]
-
-        if signal_retry:
-            next_phase = TRANSITION_MAP.get(phase)
-            next_file = PHASE_MODULE_MAP.get(next_phase) if next_phase else None
-            if next_file:
-                next_module = _load(next_file)
-                blocks.append({
-                    "type": "text",
-                    "text": f"--- NEXT PHASE (for reference) ---\n\n{next_module}",
-                })
-
-        return blocks
-
-    # Fallback — phase is 'complete' or unrecognised
-    return [
-        {"type": "text", "text": core,   "cache_control": {"type": "ephemeral"}},
-        {"type": "text", "text": signal, "cache_control": {"type": "ephemeral"}},
-    ]
-
-
-def call_claude(messages, session, signal_retry=False):
-    """
-    Calls Claude with an assembled modular system prompt (content blocks).
+    Calls Claude with the v9 session prompt as a single cached system block.
     messages: list of dicts with 'role' and 'content'
-    session:  session dict — conversation_phase used to select phase module
-    signal_retry: if True, next phase module is appended for context
 
     Returns a dict:
       {
         "content":      <assistant message text>,
         "input_tokens": int,
         "output_tokens": int,
-        "cached_tokens": int,   # cache_read_input_tokens only
+        "cached_tokens": int,
         "model":        str,
       }
-    cache_creation_input_tokens is logged but not returned (not billed to user).
     """
     client = _get_client()
-    phase = session.get("conversation_phase", "mirror") if session else "mirror"
-    system_blocks = get_system_prompt(phase, signal_retry=signal_retry)
+    system_prompt = _load_session_prompt()
+    system_blocks = [
+        {
+            "type": "text",
+            "text": system_prompt,
+            "cache_control": {"type": "ephemeral"},
+        }
+    ]
 
     response = client.messages.create(
         model=MODEL,
