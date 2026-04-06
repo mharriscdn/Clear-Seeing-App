@@ -1,0 +1,17 @@
+Here's what changes. It's mostly deletion.
+Prompts — replace all with one file:
+Delete everything in services/prompts/. All phase files gone. Replace with one file: services/prompts/session.txt containing v9. That's the only prompt file.
+llm.py — simplify:
+Remove PHASE_MODULE_MAP and TRANSITION_MAP entirely. The Claude call becomes: one cached system prompt + conversation history + user message. Every turn, same prompt. No phase-based prompt loading. Enable Anthropic prompt caching on the system prompt so it's cached after first call.
+phase_engine.py — gut or delete:
+No more phase routing. No transitions. The session has one phase: "session." If you want to keep the file for future use, leave it empty. But nothing calls it anymore.
+chat_service.py — simplify:
+Remove starting phase override logic. Remove phase detection. When user sends first message, load the one prompt, start the conversation. The [ROLE: ...] prefix from card selection passes through as the first user message — the prompt already knows what to do with it.
+DB — no schema change needed:
+The phase column in sessions can stay, just set it to "session" for all new sessions or ignore it. No new tables. No new columns. Conversation history is already stored. Charge is handled conversationally, not in the DB — unless you want to track it for analytics later, which would be a charge_start and charge_end integer column on sessions. Optional.
+Frontend — no change:
+Card selection screen works as-is. Session screen works as-is. Landing page works as-is. The prompt change is invisible to the frontend.
+Tests — most break, that's fine:
+test_phase_engine.py, test_live_prompts.py, test_exit_route_scenarios.py, test_conversation_flow.py, test_full_session.py — all test the old phase system. They'd need rewriting. New tests are simpler: send a role + scene, verify Claude doesn't skip steps, verify it catches exits, verify it closes properly. Far fewer tests needed.
+What to tell Replit Agent:
+"Replace all prompt files in services/prompts/ with this single file. Remove PHASE_MODULE_MAP, TRANSITION_MAP, and all phase routing from llm.py and phase_engine.py. Simplify chat_service.py to load one system prompt every turn with prompt caching enabled. Remove starting phase override logic. Keep card selection working — the [ROLE: ...] prefix passes through as the first message."
