@@ -82,9 +82,6 @@ If you are in crisis: 988 (Canada/US) &middot;
 <a href="https://findahelpline.com" style="color:#555;">findahelpline.com</a>
 </p>
 
-<p style="font-size:10px;line-height:1.6;color:#888;margin:16px 0 0;font-family:Georgia,serif;">
-New to Clear Seeing? Read the <a href="https://app.clearseeing.ca/user-manual" target="_blank" style="color:#888;">full guide</a> before your first session.
-</p>
 
 </body></html>
 """
