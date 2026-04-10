@@ -1,4 +1,4 @@
-# Clear Seeing Guide
+# Clear Being Guide
 
 ## Overview
 A minimal conversational AI coaching app built with Python Flask. The conversation is the product — no gamification, no wellness UI. Users log in via Replit Auth, start sessions, and converse with Claude.

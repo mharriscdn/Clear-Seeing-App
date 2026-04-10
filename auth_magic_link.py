@@ -41,7 +41,7 @@ def _resend_key():
 
 
 def _email_from():
-    return os.environ.get("EMAIL_FROM", "noreply@clearseeing.ca")
+    return os.environ.get("EMAIL_FROM", "noreply@clearbeing.ca")
 
 
 def _jwt_secret():
@@ -68,11 +68,11 @@ def _send_welcome_email(to_email, verify_url, expiry):
 <html><body style="background:#fff;color:#000;font-family:Georgia,serif;padding:40px 32px;max-width:560px;margin:0 auto;text-align:center;">
 
 <p style="font-size:12px;line-height:1.7;margin:0 0 28px;">
-Clear Seeing works best for people who are stuck. Not broken.
+Clear Being works best for people who are stuck. Not broken.
 </p>
 
 <p style="margin:0 0 28px;">
-  <a href="{verify_url}" style="{_BUTTON_STYLE}">Enter Clear Seeing &rarr;</a>
+  <a href="{verify_url}" style="{_BUTTON_STYLE}">Enter Clear Being &rarr;</a>
 </p>
 
 <p style="font-size:10px;font-style:italic;line-height:1.6;color:#555;margin:0;">
@@ -85,7 +85,7 @@ If you are in crisis: 988 (Canada/US) &middot;
 
 </body></html>
 """
-    _post_email(to_email, "Your Clear Seeing login link", html)
+    _post_email(to_email, "Your Clear Being login link", html)
 
 
 def _send_login_email(to_email, verify_url, expiry):
@@ -93,14 +93,14 @@ def _send_login_email(to_email, verify_url, expiry):
 <html><body style="background:#000;color:#fff;font-family:Georgia,serif;padding:40px 32px;max-width:560px;">
 
 <p style="margin:0 0 32px;">
-  <a href="{verify_url}" style="{_BUTTON_STYLE}">Log in to Clear Seeing</a>
+  <a href="{verify_url}" style="{_BUTTON_STYLE}">Log in to Clear Being</a>
 </p>
 
 <p style="font-size:10px;color:#555;margin:0;">This link expires in {expiry} minutes.</p>
 
 </body></html>
 """
-    _post_email(to_email, "Your Clear Seeing login link", html)
+    _post_email(to_email, "Your Clear Being login link", html)
 
 
 def _post_email(to_email, subject, html):

@@ -23,7 +23,7 @@ def generate():
 
     doc = Document()
 
-    title = doc.add_heading("CLEAR SEEING GUIDE — Session Prompt v9", level=0)
+    title = doc.add_heading("CLEAR BEING GUIDE — Session Prompt v9", level=0)
     title.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
     note = doc.add_paragraph(

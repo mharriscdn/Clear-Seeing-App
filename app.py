@@ -150,8 +150,8 @@ def create_checkout_session():
     if not price_id:
         return "Subscription price not configured.", 500
 
-    success_url = "https://app.clearseeing.ca"
-    cancel_url = "https://app.clearseeing.ca/paywall"
+    success_url = "https://app.clearbeing.ca"
+    cancel_url = "https://app.clearbeing.ca/paywall"
 
     try:
         session = stripe_webhooks.create_paywall_checkout(

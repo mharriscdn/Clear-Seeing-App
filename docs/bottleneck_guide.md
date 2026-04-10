@@ -1,4 +1,4 @@
-CLEAR SEEING APP
+CLEAR BEING APP
 Bottleneck Guide
 Version 1 — March 2026
 

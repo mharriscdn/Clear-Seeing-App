@@ -1,4 +1,4 @@
-CLEAR SEEING APP
+CLEAR BEING APP
 DB Safety Guide
 Version 1 — March 2026
 This is the simple, no-bullshit workflow to avoid breaking production. Read it before touching anything database-related.

@@ -17,7 +17,7 @@ MODEL = "claude-sonnet-4-6"
 
 _SYSTEM = (
     "You are generating a post-session reflection email for a user of the "
-    "Clear Seeing app. Be brief, observational, direct. No therapy language. "
+    "Clear Being app. Be brief, observational, direct. No therapy language. "
     "No praise. No interpretation. Use the user's own words where possible. "
     "If data for a section is missing or null, omit that section entirely — "
     "never mention what the session didn't reach or what wasn't captured."
@@ -26,7 +26,7 @@ _SYSTEM = (
 _WHY_RETURN = (
     "The patterns that fired today did not form overnight. They formed through "
     "repetition — thousands of small moments where the nervous system learned "
-    "to brace against something it predicted would be dangerous. Clear Seeing "
+    "to brace against something it predicted would be dangerous. Clear Being "
     "works the same way, in reverse. Each time both forces are held and the "
     "charge releases, the nervous system updates its prediction. The grip "
     "loosens. Not through insight. Through repetition. Use it when you are not "
@@ -208,7 +208,7 @@ def send_session_email(session_id):
         email_body = email_body.replace("**", "").replace("__", "")
 
         date_str = datetime.utcnow().strftime("%-d %B %Y")
-        subject = f"Your Clear Seeing session — {date_str}"
+        subject = f"Your Clear Being session — {date_str}"
 
         _send_via_resend(data["user_email"], subject, email_body)
 

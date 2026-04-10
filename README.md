@@ -1,4 +1,4 @@
-# Clear Seeing Guide
+# Clear Being Guide
 
 A minimal conversational AI coaching app. The conversation is the product.
 
